@@ -3,6 +3,11 @@ enum Affect {
 }
 
 enum LevelMark {
+	StepSmall;
+	StepHight;
+
+	CliffSmall;
+	CliffHigh;
 }
 
 enum Item {

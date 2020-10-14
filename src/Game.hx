@@ -47,10 +47,10 @@ class Game extends Process {
 		camera = new Camera();
 		fx = new Fx();
 		hud = new ui.Hud();
-		startLevel( world.levels[0] );
+		startLevel(0);
 	}
 
-	function startLevel(l:World.World_Level) {
+	function startLevel(idx:Int) {
 		// Cleanup
 		if( level!=null )
 			level.destroy();
@@ -60,7 +60,7 @@ class Game extends Process {
 		gc();
 
 		// Create elements
-		level = new Level(l);
+		level = new Level( idx, world.levels[idx] );
 		hero = new en.Hero( level.data.l_Entities.all_Hero[0] );
 		camera.trackTarget( hero, true );
 
@@ -69,13 +69,17 @@ class Game extends Process {
 		Process.resizeAll();
 	}
 
+	public inline function restartLevel() {
+		startLevel(level.idx);
+	}
+
 	/**
 		Called when the CastleDB changes on the disk, if hot-reloading is enabled in Boot.hx
 	**/
 	public function onCdbReload() {}
 	public function onLedReload(json:String) {
 		world.parseJson(json);
-		startLevel( world.levels[0] );
+		restartLevel();
 	}
 
 	override function onResize() {
@@ -182,16 +186,36 @@ class Game extends Process {
 		if( !ui.Console.ME.isActive() && !ui.Modal.hasAny() ) {
 			#if hl
 			// Exit
-			if( ca.isKeyboardPressed(Key.ESCAPE) )
+			if( ca.isKeyboardPressed(K.ESCAPE) )
 				if( !cd.hasSetS("exitWarn",3) )
 					trace(Lang.t._("Press ESCAPE again to exit."));
 				else
 					hxd.System.exit();
 			#end
 
+			#if debug
+			// Level marks
+			if( ca.isKeyboardPressed(K.M) ) {
+				var allMarks = LevelMark.getConstructors();
+				for( cx in 0...level.wid )
+				for( cy in 0...level.hei ) {
+					var i = 0;
+					for( id in allMarks ) {
+						var m = LevelMark.createByName(id);
+						if( level.hasMark(m, cx,cy) )
+							fx.markerText(cx,cy, id.substr(0,2), C.makeColorHsl(i/allMarks.length), 10 );
+						i++;
+					}
+				}
+			}
+			#end
+
 			// Restart
 			if( ca.selectPressed() )
-				Main.ME.startGame();
+				restartLevel();
+
+			if( ca.isKeyboardPressed(K.R) && ca.isKeyboardDown(K.SHIFT) )
+				startLevel(0);
 		}
 	}
 }

@@ -12,6 +12,9 @@ class Entity {
 	var utmod(get,never) : Float; inline function get_utmod() return Game.ME.utmod;
 	public var hud(get,never) : ui.Hud; inline function get_hud() return Game.ME.hud;
 
+	public var onGround(get,never) : Bool;
+		inline function get_onGround() return !isAlive() ? true : yr==1 && level.hasCollision(cx,cy+1) && dyTotal==0;
+
 	/** Cooldowns **/
 	public var cd : dn.Cooldown;
 
@@ -33,6 +36,7 @@ class Entity {
 	// Velocities
     public var dx = 0.;
 	public var dy = 0.;
+	public var gravityMul = 1.0;
 
 	// Uncontrollable bump velocities, usually applied by external
 	// factors (think of a bumper in Sonic for example)
@@ -204,6 +208,14 @@ class Entity {
 
 	public inline function distPx(e:Entity) return M.dist(footX, footY, e.footX, e.footY);
 	public inline function distPxFree(x:Float, y:Float) return M.dist(footX, footY, x, y);
+
+	inline function canSeeThrough(x,y) {
+		return x==cx && y==cy ? true : !level.hasCollision(x,y);
+	}
+
+	public inline function sightCheckCase(x,y) {
+		return dn.Bresenham.checkThinLine(cx,cy, x,y, canSeeThrough);
+	}
 
 	public function makePoint() return new CPoint(cx,cy, xr,yr);
 
@@ -470,6 +482,8 @@ class Entity {
 		prevFrameFootY = footY;
 	}
 
+	function onLand() {}
+
 	public function fixedUpdate() {} // runs at a "guaranteed" 30 fps
 
     public function update() { // runs at an unknown fps
@@ -479,7 +493,15 @@ class Entity {
 		while( steps>0 ) {
 			xr+=step;
 
-			// [ add X collisions checks here ]
+			if( level.hasCollision(cx+1,cy) && xr>0.5 ) {
+				dx *= Math.pow(0.9,tmod);
+				xr = 0.5;
+			}
+
+			if( level.hasCollision(cx-1,cy) && xr<0.5 ) {
+				dx *= Math.pow(0.9,tmod);
+				xr = 0.5;
+			}
 
 			while( xr>1 ) { xr--; cx++; }
 			while( xr<0 ) { xr++; cx--; }
@@ -491,12 +513,19 @@ class Entity {
 		if( M.fabs(bdx)<=0.0005*tmod ) bdx = 0;
 
 		// Y
+		if( !onGround )
+			dy += gravityMul * Const.GRAVITY * tmod;
 		var steps = M.ceil( M.fabs(dyTotal*tmod) );
 		var step = dyTotal*tmod / steps;
 		while( steps>0 ) {
 			yr+=step;
 
-			// [ add Y collisions checks here ]
+			if( yr>1 && level.hasCollision(cx,cy+1) ) {
+				yr = 1;
+				dy = 0;
+				bdy = 0;
+				onLand();
+			}
 
 			while( yr>1 ) { yr--; cy++; }
 			while( yr<0 ) { yr++; cy--; }
