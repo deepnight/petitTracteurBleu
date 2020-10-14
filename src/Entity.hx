@@ -15,6 +15,9 @@ class Entity {
 	public var onGround(get,never) : Bool;
 		inline function get_onGround() return !isAlive() ? true : yr==1 && level.hasCollision(cx,cy+1) && dyTotal==0;
 
+	public var onGroundRecently(get,never) : Bool;
+		inline function get_onGroundRecently() return onGround || isAlive() && cd.has("wasOnGround");
+
 	/** Cooldowns **/
 	public var cd : dn.Cooldown;
 
@@ -482,11 +485,12 @@ class Entity {
 		prevFrameFootY = footY;
 	}
 
-	function onLand() {}
+	function onLand() {
+	}
 
 	public function fixedUpdate() {} // runs at a "guaranteed" 30 fps
 
-    public function update() { // runs at an unknown fps
+	public function update() { // runs at an unknown fps
 		// X
 		var steps = M.ceil( M.fabs(dxTotal*tmod) );
 		var step = dxTotal*tmod / steps;
@@ -513,8 +517,11 @@ class Entity {
 		if( M.fabs(bdx)<=0.0005*tmod ) bdx = 0;
 
 		// Y
-		if( !onGround )
+		if( onGround )
+			cd.setS("wasOnGround",0.25);
+		else
 			dy += gravityMul * Const.GRAVITY * tmod;
+
 		var steps = M.ceil( M.fabs(dyTotal*tmod) );
 		var step = dyTotal*tmod / steps;
 		while( steps>0 ) {
@@ -523,6 +530,7 @@ class Entity {
 			if( yr>1 && level.hasCollision(cx,cy+1) ) {
 				yr = 1;
 				dy = 0;
+				bdx *= 0.66;
 				bdy = 0;
 				onLand();
 			}

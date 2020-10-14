@@ -7,7 +7,7 @@ class Const {
 	public static var UI_SCALE = 1.0;
 	public static var GRID = 16;
 
-	public static var GRAVITY = 0.02;
+	public static var GRAVITY = 0.016;
 
 	static var _uniq = 0;
 	public static var NEXT_UNIQ(get,never) : Int; static inline function get_NEXT_UNIQ() return _uniq++;
