@@ -129,9 +129,14 @@ class Hero extends Entity {
 		}
 
 		// Grab items
-		for(e in en.Item.ALL)
-			if( e.isAlive() && !e.isCarried() && distCase(e)<=1 && !e.cd.has("heroPickLock") )
-				startCarrying(e);
+		for(e in en.Item.ALL) {
+			if( e.isAlive() && !e.isCarried() && !e.cd.has("heroPickLock") ) {
+				if( e.gravityMul==0 && !onGround && distCase(e)<=4 && M.fabs(cx-e.cx)<=2 )
+					startCarrying(e);
+				else if( e.gravityMul>0 && distCase(e)<=1.5 )
+					startCarrying(e);
+			}
+		}
 
 		#if debug
 		if( ca.isKeyboardPressed(K.BACKSPACE) )

@@ -67,10 +67,13 @@ class Game extends Process {
 		camera.trackTarget( hero, true );
 
 		for(e in level.data.l_Entities.all_Item)
-			new en.Item(e);
+			new en.Item(e.f_type, e.cx, e.cy);
 
 		for(e in level.data.l_Entities.all_Home)
 			new en.Home(e);
+
+		for(e in level.data.l_Entities.all_ItemGenerator)
+			new en.ItemGen(e);
 
 		fx.clear();
 		hud.invalidate();

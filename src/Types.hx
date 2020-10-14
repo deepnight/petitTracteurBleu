@@ -11,7 +11,3 @@ enum LevelMark {
 
 	EdgeGrab;
 }
-
-enum Item {
-	Wood;
-}

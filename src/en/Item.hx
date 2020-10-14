@@ -3,11 +3,13 @@ package en;
 class Item extends Entity {
 	public static var ALL : Array<Item> = [];
 
-	var data : World.Entity_Item;
+	var type : World.Enum_Item;
 
-	public function new(e:World.Entity_Item) {
-		data = e;
-		super(e.cx, e.cy);
+	public function new(t:World.Enum_Item, x,y) {
+		type = t;
+		super(x, y);
+		xr = rnd(0.1, 0.9);
+		yr = rnd(0.1, 0.9);
 		ALL.push(this);
 	}
 
