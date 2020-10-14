@@ -4,3 +4,7 @@ enum Affect {
 
 enum LevelMark {
 }
+
+enum Item {
+	Wood;
+}

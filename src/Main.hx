@@ -28,16 +28,24 @@ class Main extends dn.Process {
 
         // Hot reloading
 		#if debug
-        hxd.res.Resource.LIVE_UPDATE = true;
-        hxd.Res.data.watch(function() {
-            delayer.cancelById("cdb");
+			hxd.res.Resource.LIVE_UPDATE = true;
 
-            delayer.addS("cdb", function() {
-            	Data.load( hxd.Res.data.entry.getBytes().toString() );
-            	if( Game.ME!=null )
-                    Game.ME.onCdbReload();
-            }, 0.2);
-        });
+			hxd.Res.data.watch(function() {
+				delayer.cancelById("cdb");
+				delayer.addS("cdb", function() {
+					Data.load( hxd.Res.data.entry.getBytes().toString() );
+					if( Game.ME!=null )
+						Game.ME.onCdbReload();
+				}, 0.2);
+			});
+
+			hxd.Res.world.world.watch(function() {
+				delayer.cancelById("led");
+				delayer.addS("led", function() {
+					if( Game.ME!=null )
+						Game.ME.onLedReload( hxd.Res.world.world.entry.getBytes().toString() );
+				}, 0.2);
+			});
 		#end
 
 		// Assets & data init
@@ -58,8 +66,12 @@ class Main extends dn.Process {
 		controller.bind(START, Key.N);
 
 		// Start
+		#if js
 		new dn.heaps.GameFocusHelper(Boot.ME.s2d, Assets.fontMedium);
 		delayer.addF( startGame, 1 );
+		#else
+		startGame();
+		#end
 	}
 
 	public function startGame() {

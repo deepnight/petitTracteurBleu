@@ -29,6 +29,8 @@ class Game extends Process {
 	/** LEd world data **/
 	public var world : World;
 
+	public var hero : en.Hero;
+
 	public function new() {
 		super(Main.ME);
 		ME = this;
@@ -45,16 +47,35 @@ class Game extends Process {
 		camera = new Camera();
 		fx = new Fx();
 		hud = new ui.Hud();
-		level = new Level(world.all_levels.FirstLevel);
+		startLevel( world.levels[0] );
+	}
 
+	function startLevel(l:World.World_Level) {
+		// Cleanup
+		if( level!=null )
+			level.destroy();
+
+		for(e in Entity.ALL)
+			e.destroy();
+		gc();
+
+		// Create elements
+		level = new Level(l);
+		hero = new en.Hero( level.data.l_Entities.all_Hero[0] );
+		camera.trackTarget( hero, true );
+
+		fx.clear();
+		hud.invalidate();
 		Process.resizeAll();
-		trace(Lang.t._("Game is ready."));
 	}
 
 	/**
 		Called when the CastleDB changes on the disk, if hot-reloading is enabled in Boot.hx
 	**/
-	public function onCdbReload() {
+	public function onCdbReload() {}
+	public function onLedReload(json:String) {
+		world.parseJson(json);
+		startLevel( world.levels[0] );
 	}
 
 	override function onResize() {
