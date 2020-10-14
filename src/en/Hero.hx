@@ -34,9 +34,15 @@ class Hero extends Entity {
 	// }
 
 	function jump() {
+		setSquashX(0.6);
 		bdy = 0;
 		dy = -0.25;
 		cd.setS("extraJump",0.15);
+	}
+
+	override function onLand() {
+		super.onLand();
+		setSquashY(0.6);
 	}
 
 	var cliffInsistF = 0.;
