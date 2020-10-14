@@ -11,6 +11,7 @@ class Entity {
 	var tmod(get,never) : Float; inline function get_tmod() return Game.ME.tmod;
 	var utmod(get,never) : Float; inline function get_utmod() return Game.ME.utmod;
 	public var hud(get,never) : ui.Hud; inline function get_hud() return Game.ME.hud;
+	public var hero(get,never) : en.Hero; inline function get_hero() return Game.ME.hero;
 
 	public var onGround(get,never) : Bool;
 		inline function get_onGround() return !isAlive() ? true : yr==1 && level.hasCollision(cx,cy+1) && dyTotal==0;
@@ -107,6 +108,10 @@ class Entity {
 
 	var actions : Array<{ id:String, cb:Void->Void, t:Float }> = [];
 
+	var carriedEnts : Array<Entity> = [];
+	var carrier : Null<Entity>;
+	var carriedShaking : Float = 0.;
+
     public function new(x:Int, y:Int) {
         uid = Const.NEXT_UNIQ;
 		ALL.push(this);
@@ -170,6 +175,47 @@ class Entity {
 		onPosManuallyChanged();
 	}
 
+
+	public function startCarrying(e:Entity) {
+		if( !isCarrying(e) ) {
+			if( e.isCarried() )
+				e.carrier.stopCarrying(this);
+			carriedEnts.push(e);
+			e.carrier = this;
+			e.onBeingCarried(this);
+		}
+	}
+	public function stopCarrying(e:Entity) {
+		if( carriedEnts.remove(e) ) {
+			e.carrier = null;
+			e.onStopBeingCarried(this);
+		}
+	}
+
+	public function onBeingCarried(by:Entity) {}
+	public function onStopBeingCarried(by:Entity) {}
+
+	public function getCarrier() : Null<Entity> {
+		for(e in ALL)
+			if( e.isCarrying(this) )
+				return e;
+		return null;
+	}
+
+	public function isCarrying(e:Entity) {
+		for( ce in carriedEnts )
+			if( ce==e )
+				return true;
+		return false;
+	}
+
+	public function isCarryingAny() {
+		return carriedEnts.length>0;
+	}
+
+	public function isCarried() return carrier!=null;
+
+
 	public function setPosPixel(x:Float, y:Float) {
 		cx = Std.int(x/Const.GRID);
 		cy = Std.int(y/Const.GRID);
@@ -204,6 +250,7 @@ class Entity {
 
 	public inline function dirTo(e:Entity) return e.centerX<centerX ? -1 : 1;
 	public inline function dirToAng() return dir==1 ? 0. : M.PI;
+	public inline function angToFeet(e:Entity) return Math.atan2(e.footY-footY, e.footX-footX);
 	public inline function getMoveAng() return Math.atan2(dyTotal,dxTotal);
 
 	public inline function distCase(e:Entity) return M.dist(cx+xr, cy+yr, e.cx+e.xr, e.cy+e.yr);
@@ -230,7 +277,13 @@ class Entity {
     }
 
     public function dispose() {
-        ALL.remove(this);
+		ALL.remove(this);
+
+		// Drop carrieds
+		for(e in carriedEnts)
+			if( e.isAlive() )
+				e.onStopBeingCarried(this);
+		carriedEnts = null;
 
 		baseColor = null;
 		blinkColor = null;
@@ -450,6 +503,13 @@ class Entity {
 		sprSquashX += (1-sprSquashX) * 0.2;
 		sprSquashY += (1-sprSquashY) * 0.2;
 
+		if( isCarried() ) {
+			spr.x += -10 + (uid%21);
+			spr.x += Math.cos(ftime*0.07 + uid*1.1) * (5+(uid%3)) * carriedShaking;
+			spr.y += -M.fabs( Math.sin(ftime*0.13 + uid*0.9) * (5+(uid%5)) ) * carriedShaking;
+		}
+		carriedShaking *= Math.pow(0.98,tmod);
+
 		// Blink
 		if( !cd.has("keepBlink") ) {
 			blinkColor.r*=Math.pow(0.60, tmod);
@@ -491,18 +551,55 @@ class Entity {
 	public function fixedUpdate() {} // runs at a "guaranteed" 30 fps
 
 	public function update() { // runs at an unknown fps
+		// Lost carrier
+		if( carrier!=null && !carrier.isAlive() ) {
+			var e = carrier;
+			onStopBeingCarried(e);
+			carrier = null;
+		}
+
+		// Lost carried(s)
+		var i = 0;
+		while( i<carriedEnts.length ) {
+			if( !carriedEnts[i].isAlive() )
+				carriedEnts.splice(i,1);
+			else
+				i++;
+		}
+
+		// Follow carrier
+		if( isCarried() ) {
+			bdx = bdy = 0;
+			if( distCase(carrier)>0.2 ) {
+				var a = angToFeet(carrier);
+				dx+=Math.cos(a)*0.05;
+				dy+=Math.sin(a)*0.08;
+			}
+			dx *= Math.pow(0.92,tmod);
+			dy *= Math.pow(0.92,tmod);
+		}
+
+		// Shake carriage
+		if( M.fabs(dxTotal)>0.03 || M.fabs(dyTotal)>0.03 ) {
+			for(e in carriedEnts) {
+				e.carriedShaking += 0.05*tmod;
+				if( e.carriedShaking>1 )
+					e.carriedShaking = 1;
+			}
+		}
+
 		// X
 		var steps = M.ceil( M.fabs(dxTotal*tmod) );
 		var step = dxTotal*tmod / steps;
 		while( steps>0 ) {
 			xr+=step;
 
-			if( level.hasCollision(cx+1,cy) && xr>0.65 ) {
+			if( !isCarried() && level.hasCollision(cx+1,cy) && xr>0.65 ) {
 				dx *= Math.pow(0.9,tmod);
 				xr = 0.65;
 			}
 
-			if( level.hasCollision(cx-1,cy) && xr<0.35 ) {
+			if( !isCarried() && level.hasCollision(cx-1,cy) && xr<0.35 ) {
 				dx *= Math.pow(0.9,tmod);
 				xr = 0.35;
 			}
@@ -517,7 +614,7 @@ class Entity {
 		if( M.fabs(bdx)<=0.0005*tmod ) bdx = 0;
 
 		// Y
-		if( onGround )
+		if( onGround || isCarried() )
 			cd.setS("wasOnGround",0.25);
 		else
 			dy += gravityMul * Const.GRAVITY * tmod;
@@ -527,7 +624,7 @@ class Entity {
 		while( steps>0 ) {
 			yr+=step;
 
-			if( yr>1 && level.hasCollision(cx,cy+1) ) {
+			if( !isCarried() && yr>1 && level.hasCollision(cx,cy+1) ) {
 				yr = 1;
 				dy = 0;
 				bdx *= 0.66;

@@ -59,10 +59,15 @@ class Game extends Process {
 			e.destroy();
 		gc();
 
-		// Create elements
+		// Init
 		level = new Level( idx, world.levels[idx] );
+
+		// Create entities
 		hero = new en.Hero( level.data.l_Entities.all_Hero[0] );
 		camera.trackTarget( hero, true );
+
+		for(e in level.data.l_Entities.all_Item)
+			new en.Item(e);
 
 		fx.clear();
 		hud.invalidate();
