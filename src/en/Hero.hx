@@ -24,14 +24,14 @@ class Hero extends Entity {
 		cd.setS("autoWalk",t);
 	}
 
-	var autoActions : Array<{ weight:Float, cb:Void->Void }> = [];
+	// var autoActions : Array<{ weight:Float, cb:Void->Void }> = [];
 
-	inline function queueAutoAction(weight:Float, cb:Void->Void) {
-		autoActions.push({
-			weight: weight,
-			cb: cb,
-		});
-	}
+	// inline function queueAutoAction(weight:Float, cb:Void->Void) {
+	// 	autoActions.push({
+	// 		weight: weight,
+	// 		cb: cb,
+	// 	});
+	// }
 
 	function jump() {
 		bdy = 0;
@@ -60,22 +60,16 @@ class Hero extends Entity {
 			if( onGround ) {
 				// Climb small step
 				if( level.hasMark(StepSmall, cx, cy, dir) && sightCheckCase(cx,cy) ) {
-					var stepDir = level.getMarkDir(StepSmall, cx, cy);
-					queueAutoAction( (M.sign(dir)==M.sign(stepDir) ? 2 : 0 ), ()->{
-						jump();
-						autoWalkS(stepDir, 0.3);
-						xr = 0.5;
-						dy*=0.45;
-					});
+					jump();
+					autoWalkS(level.getMarkDir(StepHight, cx, cy), 0.3);
+					xr = 0.5;
+					dy*=0.45;
 				}
 				// Climb high step
 				if( level.hasMark(StepHight, cx, cy, dir) && sightCheckCase(cx,cy) ) {
-					var stepDir = level.getMarkDir(StepHight, cx, cy);
-					queueAutoAction( (M.sign(dir)==M.sign(stepDir) ? 2 : 0 ), ()->{
-						jump();
-						autoWalkS(stepDir, 0.3);
-						xr = 0.5;
-					});
+					jump();
+					autoWalkS(level.getMarkDir(StepHight, cx, cy), 0.3);
+					xr = 0.5;
 				}
 			}
 		}
@@ -121,19 +115,20 @@ class Hero extends Entity {
 			dy += -0.04*tmod;
 		}
 
-		if( autoActions.length>0 ) {
-			var dh = new dn.DecisionHelper(autoActions);
-			dh.score( (a)->a.weight );
-			dh.getBest().cb();
-			autoActions = [];
-		}
+		// Execute 1 auto-action
+		// if( autoActions.length>0 ) {
+		// 	var dh = new dn.DecisionHelper(autoActions);
+		// 	dh.score( (a)->a.weight );
+		// 	dh.getBest().cb();
+		// 	autoActions = [];
+		// }
 
 		// Grab items
 		for(e in en.Item.ALL) {
 			if( e.isAlive() && !e.isCarried() && !e.cd.has("heroPickLock") ) {
 				if( e.gravityMul==0 && !onGround && distCase(e)<=4 && M.fabs(cx-e.cx)<=2 )
 					startCarrying(e);
-				else if( e.gravityMul>0 && distCase(e)<=1.5 )
+				else if( distCase(e)<=1.5 )
 					startCarrying(e);
 			}
 		}

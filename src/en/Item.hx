@@ -11,6 +11,11 @@ class Item extends Entity {
 		xr = rnd(0.1, 0.9);
 		yr = rnd(0.1, 0.9);
 		ALL.push(this);
+
+
+		var g = new h2d.Graphics(spr);
+		g.beginFill(0xffcc00);
+		g.drawCircle(0,-3,6);
 	}
 
 	override function dispose() {
@@ -21,6 +26,11 @@ class Item extends Entity {
 	override function onStopBeingCarried(by:Entity) {
 		super.onStopBeingCarried(by);
 		cd.setS("heroPickLock",0.5);
+	}
+
+	override function postUpdate() {
+		super.postUpdate();
+		spr.rotation = Math.cos(ftime*0.2 + uid)*0.1;
 	}
 }
 
