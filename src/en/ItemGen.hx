@@ -84,7 +84,7 @@ class ItemGen extends Entity {
 			spawn();
 		}
 
-		fx.markerEntity(this, cd.has("spawnLock") ? 0xff0000 : 0x00ff00, true);
+		// fx.markerEntity(this, cd.has("spawnLock") ? 0xff0000 : 0x00ff00, true);
 	}
 }
 
