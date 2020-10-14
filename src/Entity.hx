@@ -493,14 +493,14 @@ class Entity {
 		while( steps>0 ) {
 			xr+=step;
 
-			if( level.hasCollision(cx+1,cy) && xr>0.5 ) {
+			if( level.hasCollision(cx+1,cy) && xr>0.65 ) {
 				dx *= Math.pow(0.9,tmod);
-				xr = 0.5;
+				xr = 0.65;
 			}
 
-			if( level.hasCollision(cx-1,cy) && xr<0.5 ) {
+			if( level.hasCollision(cx-1,cy) && xr<0.35 ) {
 				dx *= Math.pow(0.9,tmod);
-				xr = 0.5;
+				xr = 0.35;
 			}
 
 			while( xr>1 ) { xr--; cx++; }

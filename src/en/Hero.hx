@@ -6,6 +6,10 @@ class Hero extends Entity {
 	public function new(e:World.Entity_Hero) {
 		super(e.cx, e.cy);
 		ca = Main.ME.controller.createAccess("hero");
+
+		var g = new h2d.Graphics(spr);
+		g.beginFill(0x3059ab);
+		g.drawRect(-10,-16,20,16);
 	}
 
 	override function dispose() {
@@ -43,7 +47,7 @@ class Hero extends Entity {
 
 		// Walk
 		if( ca.leftDist()>0 && !cd.has("autoWalk") ) {
-			dx += Math.cos( ca.leftAngle() ) * spd * tmod;
+			dx += Math.cos( ca.leftAngle() ) * spd * (1-0.5*cd.getRatio("slowdown")) * tmod;
 			dir = M.radDistance( ca.leftAngle(), 0 ) <= M.PIHALF ? 1 : -1;
 			if( onGround && level.hasMark(CliffHigh,cx,cy,dir) )
 				cliffInsistF += tmod;
@@ -57,7 +61,7 @@ class Hero extends Entity {
 						jump();
 						autoWalkS(stepDir, 0.3);
 						xr = 0.5;
-						dy*=0.5;
+						dy*=0.2;
 					});
 				}
 				// Climb high step
@@ -82,14 +86,24 @@ class Hero extends Entity {
 		}
 
 		// Brake on cliff
-		if( onGround && level.hasMark(CliffHigh, cx,cy, M.sign(dxTotal)) && cliffInsistF<=1*Const.FPS ) {
-			trace("brake");
+		if( onGround && level.hasMark(CliffHigh, cx,cy, M.sign(dxTotal)) && cliffInsistF<=0.8*Const.FPS ) {
 			var cliffXr = ( 0.5 + 0.4*M.sign(dxTotal) );
 			var ratio = 1-M.fabs( cliffXr - xr );
-			dx *= Math.pow(0.9 - ratio*0.8,tmod);
-			// debug( M.pretty(ratio,1) );
+			dx *= Math.pow(0.95 - 0.7*ratio,tmod);
 		}
 
+		// Edge grabbing
+		if( level.hasMark(EdgeGrab,cx,cy) && !onGround && dyTotal>0 ) {
+			var edgeDir = level.getMarkDir(EdgeGrab,cx,cy);
+			if( M.sign(ca.lxValue())==edgeDir && level.hasMark(EdgeGrab,cx,cy) ) {
+				dx = edgeDir * 0.05;
+				autoWalkS( edgeDir, 0.1 );
+				dy = -0.3;
+				xr = 0.5;
+				yr = M.fmin(yr,0.4);
+				bdy = 0;
+			}
+		}
 
 		// Jump
 		if( onGround && ca.aPressed() ) {
@@ -113,26 +127,6 @@ class Hero extends Entity {
 			// 			xr = 0.5;
 			// 		});
 			// 	}
-			// }
-
-			// for(stepDir in [-2,-1,1,2]) {
-			// 	// Climb small step
-			// 	if( level.hasMark(StepSmall,cx,cy) ) {
-			// 		var stepDir = level.getMarkDir(StepSmall,cx,cy);
-			// 		queueAutoAction( -M.iabs(stepDir) + (M.sign(dir)==M.sign(stepDir) ? 5 : 0 ), ()->{
-			// 			autoWalkS(stepDir, M.fabs(stepDir)>1 ? 0.45 : 0.3);
-			// 			xr = 0.5;
-			// 			dy*=0.5;
-			// 		});
-			// 	}
-			// 	// if( level.hasCollision(cx+stepDir,cy) && !level.hasCollision(cx+stepDir,cy-1) )
-
-			// 	// Climb high step
-			// 	// if( level.hasCollision(cx+stepDir,cy) && level.hasCollision(cx+stepDir,cy-1) && !level.hasCollision(cx+stepDir,cy-2) )
-			// 	// 	queueAutoAction( -M.iabs(stepDir) + (M.sign(dir)==M.sign(stepDir) ? 5 : 0 ), ()->{
-			// 	// 		autoWalkS(stepDir, M.fabs(stepDir)>1 ? 0.45 : 0.3);
-			// 	// 		xr = 0.5;
-			// 	// 	});
 			// }
 		}
 		else if( cd.has("extraJump") ) {

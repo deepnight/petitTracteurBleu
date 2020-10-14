@@ -28,12 +28,18 @@ class Level extends dn.Process {
 					else if( hasCollision(cx+dir,cy) && hasCollision(cx+dir,cy-1) && !hasCollision(cx+dir,cy-2) )
 						setMark(StepHight, cx,cy, dir);
 
-					if( !hasCollision(cx+dir,cy) && !hasCollision(cx+dir,cy+2) )
+					if( !hasCollision(cx+dir,cy) && !hasCollision(cx+dir,cy+3) )
 						setMark(CliffHigh, cx,cy, dir);
 					else if( !hasCollision(cx+dir,cy) && !hasCollision(cx+dir,cy+1) )
 						setMark(CliffSmall, cx,cy, dir);
 				}
 			}
+
+			if( !hasCollision(cx,cy) ) //&& !hasCollision(cx,cy+1) )
+				for( dir in [-1,1] ) {
+					if( hasCollision(cx+dir,cy) && !hasCollision(cx+dir,cy-1) )
+						setMark(EdgeGrab, cx,cy, dir);
+				}
 		}
 	}
 

@@ -8,6 +8,8 @@ enum LevelMark {
 
 	CliffSmall;
 	CliffHigh;
+
+	EdgeGrab;
 }
 
 enum Item {
