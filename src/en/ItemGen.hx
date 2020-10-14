@@ -16,6 +16,9 @@ class ItemGen extends Entity {
 		yr = 0.5;
 		gravityMul = 0;
 		collidesWithWalls = false;
+
+		for(i in 0...data.f_maxChildren)
+			spawn();
 	}
 
 	function spawn() {
@@ -60,9 +63,17 @@ class ItemGen extends Entity {
 		ALL.remove(this);
 	}
 
+	public function reset() {
+		cd.unset("spawnLock");
+		cd.unset("spawnTick");
+		while( children.length < data.f_maxChildren )
+			spawn();
+	}
+
 	override function update() {
 		super.update();
 
+		// Children are picked-up or lost
 		var i = 0;
 		while( i<children.length ) {
 			var e = children[i];
@@ -74,17 +85,17 @@ class ItemGen extends Entity {
 				i++;
 		}
 
-		// if( children.length==data.f_maxChildren || distCase(hero)<=6 )
+		// Spawn
 		if( children.length==data.f_maxChildren )
-			cd.setS("spawnLock", rnd(8,10), false);
+			cd.setS("spawnLock", rnd(15,20), false);
 		else if( distCase(hero)<=6 )
-			cd.setS("spawnLock", rnd(2,4), false);
+			cd.setS("spawnLock", rnd(10,20), false);
 		else if( !cd.has("spawnLock") && !cd.has("spawnTick") ) {
-			cd.setS("spawnTick", rnd(1,5));
+			cd.setS("spawnTick", rnd(2,5));
 			spawn();
 		}
 
-		// fx.markerEntity(this, cd.has("spawnLock") ? 0xff0000 : 0x00ff00, true);
+		fx.markerEntity(this, cd.has("spawnLock") ? 0xff0000 : 0x00ff00, true);
 	}
 }
 
