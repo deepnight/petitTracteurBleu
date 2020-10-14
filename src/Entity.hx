@@ -527,8 +527,8 @@ class Entity {
 		spr.scaleX *= 0.9 + Math.cos(t)*0.1;
 		spr.scaleY *= 0.9 + Math.sin(t)*0.1;
 
-		sprSquashX += (1-sprSquashX) * 0.2;
-		sprSquashY += (1-sprSquashY) * 0.2;
+		sprSquashX += (1-sprSquashX) * 0.12;
+		sprSquashY += (1-sprSquashY) * 0.12;
 
 		if( isCarried() ) {
 			spr.x += 6*carriedRandOffset;
@@ -606,8 +606,8 @@ class Entity {
 			var ty = carrier.footY;
 			if( M.dist(footX, footY, tx, ty) > 0.2*Const.GRID ) {
 				var a = Math.atan2(ty-footY, tx-footX);
-				dx+=Math.cos(a)*0.05;
-				dy+=Math.sin(a)*0.08;
+				dx+=Math.cos(a)*0.05 * tmod;
+				dy+=Math.sin(a)*0.08 * tmod;
 			}
 			dx *= Math.pow(0.92,tmod);
 			dy *= Math.pow(0.92,tmod);
