@@ -19,8 +19,8 @@ class Home extends Entity {
 
 	override function startCarrying(e:Entity) {
 		super.startCarrying(e);
-		for(h in ItemGen.ALL)
-			h.reset();
+		// for(h in ItemGen.ALL)
+		// 	h.reset();
 	}
 
 	override function update() {

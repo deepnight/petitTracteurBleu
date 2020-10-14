@@ -38,6 +38,7 @@ class Hero extends Entity {
 		bdy = 0;
 		dy = -0.25;
 		cd.setS("extraJump",0.15);
+		cd.unset("wasOnGround");
 	}
 
 	override function onLand() {
@@ -115,8 +116,9 @@ class Hero extends Entity {
 		}
 
 		// Jump
-		if( ca.aPressed() && ( onGround || onGroundRecently ) )
+		if( ca.aPressed() && ( onGround || onGroundRecently ) ) {
 			jump();
+		}
 		else if( cd.has("extraJump") ) {
 			dy += -0.04*tmod;
 		}
@@ -134,7 +136,7 @@ class Hero extends Entity {
 			if( e.isAlive() && !e.isCarried() && !e.cd.has("heroPickLock") ) {
 				if( e.gravityMul==0 && !onGround && distCase(e)<=4 && M.fabs(cx-e.cx)<=2 )
 					startCarrying(e);
-				else if( distCase(e)<=1.5 )
+				else if( distCase(e)<=2.5 )
 					startCarrying(e);
 			}
 		}
