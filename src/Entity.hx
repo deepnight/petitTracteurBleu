@@ -111,10 +111,16 @@ class Entity {
 	var carriedEnts : Array<Entity> = [];
 	var carrier : Null<Entity>;
 	var carriedShaking : Float = 0.;
+	var carriageWidth: Float = 1.;
+	var carriedRandOffset : Float;
+
+	var collidesWithWalls = true;
+
 
     public function new(x:Int, y:Int) {
         uid = Const.NEXT_UNIQ;
 		ALL.push(this);
+		carriedRandOffset = rnd(-1,1);
 
 		cd = new dn.Cooldown(Const.FPS);
 		ucd = new dn.Cooldown(Const.FPS);
@@ -130,7 +136,12 @@ class Entity {
 
 		if( ui.Console.ME.hasFlag("bounds") )
 			enableBounds();
-    }
+	}
+
+	@:keep
+	public function toString() {
+		return Type.getClassName(Type.getClass(this)) + '@$cx,$cy';
+	}
 
 	public function initLife(v) {
 		life = maxLife = v;
@@ -179,17 +190,29 @@ class Entity {
 	public function startCarrying(e:Entity) {
 		if( !isCarrying(e) ) {
 			if( e.isCarried() )
-				e.carrier.stopCarrying(this);
+				e.carrier.stopCarrying(e);
 			carriedEnts.push(e);
 			e.carrier = this;
 			e.onBeingCarried(this);
 		}
 	}
+
 	public function stopCarrying(e:Entity) {
 		if( carriedEnts.remove(e) ) {
+			e.setPosCase(cx,cy);
+			e.xr = xr;
+			e.yr = yr;
 			e.carrier = null;
 			e.onStopBeingCarried(this);
 		}
+	}
+
+	public function stopCarryingAnything() {
+		if( carriedEnts.length==0 )
+			return;
+
+		for(e in carriedEnts.copy() )
+			stopCarrying(e);
 	}
 
 	public function onBeingCarried(by:Entity) {}
@@ -504,7 +527,7 @@ class Entity {
 		sprSquashY += (1-sprSquashY) * 0.2;
 
 		if( isCarried() ) {
-			spr.x += -10 + (uid%21);
+			spr.x += 6*carriedRandOffset;
 			spr.x += Math.cos(ftime*0.07 + uid*1.1) * (5+(uid%3)) * carriedShaking;
 			spr.y += -M.fabs( Math.sin(ftime*0.13 + uid*0.9) * (5+(uid%5)) ) * carriedShaking;
 		}
@@ -548,6 +571,11 @@ class Entity {
 	function onLand() {
 	}
 
+
+	inline function hasCollisionsWithWalls() {
+		return !isCarried() && collidesWithWalls;
+	}
+
 	public function fixedUpdate() {} // runs at a "guaranteed" 30 fps
 
 	public function update() { // runs at an unknown fps
@@ -568,10 +596,12 @@ class Entity {
 		}
 
 		// Follow carrier
-		if( isCarried() ) {
+		if( isCarried() && !cd.has("carriedFollowLock")) {
 			bdx = bdy = 0;
-			if( distCase(carrier)>0.2 ) {
-				var a = angToFeet(carrier);
+			var tx = carrier.footX + carrier.carriageWidth*carriedRandOffset;
+			var ty = carrier.footY;
+			if( M.dist(footX, footY, tx, ty) > 0.2*Const.GRID ) {
+				var a = Math.atan2(ty-footY, tx-footX);
 				dx+=Math.cos(a)*0.05;
 				dy+=Math.sin(a)*0.08;
 			}
@@ -594,12 +624,12 @@ class Entity {
 		while( steps>0 ) {
 			xr+=step;
 
-			if( !isCarried() && level.hasCollision(cx+1,cy) && xr>0.65 ) {
+			if( hasCollisionsWithWalls() && level.hasCollision(cx+1,cy) && xr>0.65 ) {
 				dx *= Math.pow(0.9,tmod);
 				xr = 0.65;
 			}
 
-			if( !isCarried() && level.hasCollision(cx-1,cy) && xr<0.35 ) {
+			if( hasCollisionsWithWalls() && level.hasCollision(cx-1,cy) && xr<0.35 ) {
 				dx *= Math.pow(0.9,tmod);
 				xr = 0.35;
 			}
@@ -624,7 +654,7 @@ class Entity {
 		while( steps>0 ) {
 			yr+=step;
 
-			if( !isCarried() && yr>1 && level.hasCollision(cx,cy+1) ) {
+			if( hasCollisionsWithWalls() && yr>1 && level.hasCollision(cx,cy+1) ) {
 				yr = 1;
 				dy = 0;
 				bdx *= 0.66;

@@ -16,11 +16,9 @@ class Item extends Entity {
 		ALL.remove(this);
 	}
 
-	override function update() {
-		super.update();
-
-		if( !isCarried() && hero.isAlive() && distCase(hero)<=1 )
-			hero.startCarrying(this);
+	override function onStopBeingCarried(by:Entity) {
+		super.onStopBeingCarried(by);
+		cd.setS("heroPickLock",0.5);
 	}
 }
 

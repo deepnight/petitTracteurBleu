@@ -97,7 +97,6 @@ class Hero extends Entity {
 		// Bump away from cliffs
 		var cliffDir = level.getMarkDir(CliffHigh,cx,cy);
 		if( onGround && level.hasMark(CliffHigh,cx,cy) && cliffInsistF<=0 && ( cliffDir==1 && xr>=0.6 || cliffDir==-1 && xr<=0.4 ) ) {
-			fx.markerEntity(this,0xffcc00,true);
 			bump(-cliffDir*0.03, -0.1);
 		}
 
@@ -128,6 +127,18 @@ class Hero extends Entity {
 			dh.getBest().cb();
 			autoActions = [];
 		}
+
+		// Grab items
+		for(e in en.Item.ALL)
+			if( e.isAlive() && !e.isCarried() && distCase(e)<=1 && !e.cd.has("heroPickLock") )
+				startCarrying(e);
+
+		#if debug
+		if( ca.isKeyboardPressed(K.BACKSPACE) )
+			stopCarryingAnything();
+		#end
+
+		debug(carriedEnts.length);
 	}
 
 }

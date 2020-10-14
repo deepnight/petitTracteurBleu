@@ -69,6 +69,9 @@ class Game extends Process {
 		for(e in level.data.l_Entities.all_Item)
 			new en.Item(e);
 
+		for(e in level.data.l_Entities.all_Home)
+			new en.Home(e);
+
 		fx.clear();
 		hud.invalidate();
 		Process.resizeAll();
