@@ -40,8 +40,6 @@ class Home extends Entity {
 
 		for(e in carriedEnts)
 			e.carriedShaking = 1;
-
-		debug(carriedEnts.length);
 	}
 }
 

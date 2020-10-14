@@ -137,8 +137,6 @@ class Hero extends Entity {
 		if( ca.isKeyboardPressed(K.BACKSPACE) )
 			stopCarryingAnything();
 		#end
-
-		debug(carriedEnts.length);
 	}
 
 }
