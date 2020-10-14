@@ -523,6 +523,10 @@ class Entity {
         spr.scaleY = sprScaleY * sprSquashY;
 		spr.visible = entityVisible;
 
+		var t = ftime*0.1 + uid;
+		spr.scaleX *= 0.9 + Math.cos(t)*0.1;
+		spr.scaleY *= 0.9 + Math.sin(t)*0.1;
+
 		sprSquashX += (1-sprSquashX) * 0.2;
 		sprSquashY += (1-sprSquashY) * 0.2;
 
