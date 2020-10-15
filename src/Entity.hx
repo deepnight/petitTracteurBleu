@@ -115,6 +115,7 @@ class Entity {
 	var carriedRandOffset : Float;
 
 	var collidesWithWalls = true;
+	var hasCartoonDistorsion = true;
 
 
     public function new(x:Int, y:Int) {
@@ -517,15 +518,18 @@ class Entity {
     }
 
     public function postUpdate() {
-        spr.x = (cx+xr)*Const.GRID;
-        spr.y = (cy+yr)*Const.GRID;
+        spr.x = Std.int( footX );
+        spr.y = Std.int( footY );
         spr.scaleX = dir*sprScaleX * sprSquashX;
         spr.scaleY = sprScaleY * sprSquashY;
 		spr.visible = entityVisible;
 
-		var t = ftime*0.1 + uid;
-		spr.scaleX *= 0.9 + Math.cos(t)*0.1;
-		spr.scaleY *= 0.9 + Math.sin(t)*0.1;
+		// Cartoon distortion
+		if( hasCartoonDistorsion ) {
+			var t = ftime*0.1 + uid;
+			spr.scaleX *= 0.9 + Math.cos(t)*0.1;
+			spr.scaleY *= 0.9 + Math.sin(t)*0.1;
+		}
 
 		sprSquashX += (1-sprSquashX) * 0.12;
 		sprSquashY += (1-sprSquashY) * 0.12;

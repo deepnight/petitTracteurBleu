@@ -2,14 +2,32 @@ package en;
 
 class Hero extends Entity {
 	var ca : dn.heaps.Controller.ControllerAccess;
+	var back : HSprite;
+	var largeWheel : HSprite;
+	var smallWheel : HSprite;
+	var turnOverAnim = 0.;
 
 	public function new(e:World.Entity_Hero) {
 		super(e.cx, e.cy);
 		ca = Main.ME.controller.createAccess("hero");
 
-		var g = new h2d.Graphics(spr);
-		g.beginFill(0x3059ab);
-		g.drawRect(-10,-16,20,16);
+		spr.set("tractorBase");
+		game.scroller.add(spr, Const.DP_HERO);
+
+		back = Assets.tiles.h_get("tractorBack",0, 0.5,1);
+		game.scroller.add(back, Const.DP_HERO_BACK);
+
+		largeWheel = Assets.tiles.h_get("wheelLarge",0, 0.5,0.5);
+		game.scroller.add(largeWheel, Const.DP_HERO_BACK);
+
+		smallWheel = Assets.tiles.h_get("wheelSmall",0, 0.5,0.5);
+		game.scroller.add(smallWheel, Const.DP_HERO_BACK);
+
+		hasCartoonDistorsion = false;
+
+		// var g = new h2d.Graphics(spr);
+		// g.beginFill(0x3059ab);
+		// g.drawRect(-10,-16,20,16);
 	}
 
 	override function dispose() {
@@ -46,6 +64,38 @@ class Hero extends Entity {
 		setSquashY(0.6);
 	}
 
+	override function postUpdate() {
+		super.postUpdate();
+
+		spr.scaleX *= (1-turnOverAnim*0.7);
+		turnOverAnim *= Math.pow(0.8,tmod);
+
+		var t = ftime*0.1 + uid;
+		// spr.scaleX *= 0.95 + Math.cos(t)*0.05;
+		// spr.scaleY *= 0.95 + Math.sin(t)*0.05;
+		// spr.y += -1 + Math.sin(t)*2;
+
+		back.x = spr.x;
+		back.y = spr.y;
+		back.scaleX = sprScaleX*dir;
+		back.scaleY = sprScaleY;
+
+		smallWheel.x = Std.int( footX + dir*9 * (1-turnOverAnim) );
+		smallWheel.y = footY - 4 + ( onGround ? 0 : dyTotal>=0.05*tmod ? 2 : -1 );
+
+		largeWheel.x = Std.int( footX - dir*6 * (1-turnOverAnim) );
+		largeWheel.y = footY - 6 + ( onGround ? 0 : dyTotal>=0.05*tmod ? 2 : -1 );
+
+		if( onGround && ca.lxValue()!=0 ) {
+			largeWheel.y-=rnd(0,1);
+			smallWheel.y-=rnd(0,1);
+			spr.scaleY *= 1 + 0.05*Math.cos(ftime*0.4+uid);
+		}
+
+		// var t = ftime*0.1 + uid;
+		// smallWheel.scaleY = 0.8 + Math.sin(t)*0.2;
+	}
+
 	var cliffInsistF = 0.;
 	override function update() {
 		super.update();
@@ -59,7 +109,12 @@ class Hero extends Entity {
 		// Walk
 		if( ca.leftDist()>0 && !cd.has("autoWalk") ) {
 			dx += Math.cos( ca.leftAngle() ) * spd * (1-0.5*cd.getRatio("slowdown")) * tmod;
+			var oldDir = dir;
 			dir = M.radDistance( ca.leftAngle(), 0 ) <= M.PIHALF ? 1 : -1;
+
+			if( oldDir!=dir )
+				turnOverAnim = 1;
+
 			if( onGround && level.hasMark(CliffHigh,cx,cy,dir) )
 				cliffInsistF += tmod;
 
