@@ -89,7 +89,7 @@ class ItemGen extends Entity {
 		if( children.length==data.f_maxChildren )
 			cd.setS("spawnLock", rnd(15,20), false);
 		else if( distCase(hero)<=6 )
-			cd.setS("spawnLock", rnd(10,20), false);
+			cd.setS("spawnLock", rnd(6,8), false);
 		else if( !cd.has("spawnLock") && !cd.has("spawnTick") ) {
 			cd.setS("spawnTick", rnd(2,5));
 			spawn();
