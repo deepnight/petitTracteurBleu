@@ -7,7 +7,6 @@ class Level extends dn.Process {
 
 	public var idx : Int;
 	public var data : World.World_Level;
-	var tilesetSource : h2d.Tile;
 
 	var marks : Map< LevelMark, Map<Int,Int> > = new Map();
 	var invalidated = true;
@@ -17,7 +16,6 @@ class Level extends dn.Process {
 		this.idx = idx;
 		createRootInLayers(Game.ME.scroller, Const.DP_BG);
 		data = lvl;
-		tilesetSource = hxd.Res.world.tiles.toTile();
 
 		for(cy in 0...hei)
 		for(cx in 0...wid) {
@@ -98,7 +96,8 @@ class Level extends dn.Process {
 	function render() {
 		root.removeChildren();
 
-		var tg = new h2d.TileGroup(tilesetSource, root);
+		var atlasTile = Assets.ledTilesets.get( data.l_Collisions.tileset.identifier );
+		var tg = new h2d.TileGroup(atlasTile, root);
 		data.l_Collisions.renderInTileGroup(tg, false);
 	}
 
