@@ -67,13 +67,17 @@ class Hero extends Entity {
 	override function postUpdate() {
 		super.postUpdate();
 
+		var moving = ca.lxValue()!=0;
+		var movingOnGround = onGround && moving;
+
 		spr.scaleX *= (1-turnOverAnim*0.7);
 		turnOverAnim *= Math.pow(0.8,tmod);
 
 		var t = ftime*0.1 + uid;
-		// spr.scaleX *= 0.95 + Math.cos(t)*0.05;
-		// spr.scaleY *= 0.95 + Math.sin(t)*0.05;
-		// spr.y += -1 + Math.sin(t)*2;
+		spr.scaleX *= 0.95 + Math.cos(t)*0.05;
+		spr.scaleY *= 0.95 + Math.sin(t)*0.05;
+		if( !movingOnGround )
+			spr.y += -1 + Math.sin(t)*2;
 
 		back.x = spr.x;
 		back.y = spr.y;
@@ -86,11 +90,18 @@ class Hero extends Entity {
 		largeWheel.x = Std.int( footX - dir*6 * (1-turnOverAnim) );
 		largeWheel.y = footY - 6 + ( onGround ? 0 : dyTotal>=0.05*tmod ? 2 : -1 );
 
-		if( onGround && ca.lxValue()!=0 ) {
+		if( movingOnGround ) {
 			largeWheel.y-=rnd(0,1);
 			smallWheel.y-=rnd(0,1);
 			spr.scaleY *= 1 + 0.05*Math.cos(ftime*0.4+uid);
+			spr.y += -M.fabs( Math.sin( ftime*0.5+uid)*1 );
 		}
+
+		if( movingOnGround && !cd.hasSetS("grass",0.06) )
+			fx.grass(footX, footY, -dir);
+
+		if( !cd.hasSetS("smoke", moving ? 0.18 : 0.5 ) )
+			fx.tractorSmoke(footX-dir*6, footY-8, -dir);
 
 		// var t = ftime*0.1 + uid;
 		// smallWheel.scaleY = 0.8 + Math.sin(t)*0.2;

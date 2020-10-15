@@ -20,9 +20,37 @@ fxCircle0
   index: -1
 fxDot0
   rotate: false
-  xy: 121, 18
+  xy: 117, 21
   size: 3, 3
   orig: 3, 3
+  offset: 0, 0
+  index: -1
+fxDust0
+  rotate: false
+  xy: 121, 18
+  size: 5, 3
+  orig: 5, 3
+  offset: 0, 0
+  index: -1
+fxDust1
+  rotate: false
+  xy: 112, 26
+  size: 4, 3
+  orig: 4, 3
+  offset: 0, 0
+  index: -1
+fxDust2
+  rotate: false
+  xy: 112, 21
+  size: 4, 4
+  orig: 4, 4
+  offset: 0, 0
+  index: -1
+fxDust3
+  rotate: false
+  xy: 121, 22
+  size: 4, 4
+  orig: 4, 4
   offset: 0, 0
   index: -1
 fxImpact0

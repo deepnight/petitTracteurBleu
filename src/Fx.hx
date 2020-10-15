@@ -132,6 +132,54 @@ class Fx extends dn.Process {
 		return level.hasCollision( Std.int((p.x+offX)/Const.GRID), Std.int((p.y+offY)/Const.GRID) );
 	}
 
+	function _dustPhysics(p:HParticle) {
+		if( collides(p,0,1) ) {
+			p.dx = 0;
+			p.dy = 0;
+			p.dx*= Math.pow(0.5,tmod);
+			p.dr = 0;
+			p.gy *= Math.pow(0.96,tmod);
+		}
+	}
+
+	public function tractorSmoke(x:Float, y:Float, dir:Int) {
+		for(i in 0...10) {
+			var p = allocBgNormal( getTile("fxSmoke"), x+rnd(0,5,true), y+rnd(0,5,true) );
+			p.colorize(0xd7b988);
+			p.setFadeS( rnd(0.05,0.10), 0.5, rnd(0.5,1) );
+			p.rotation = rnd(0,M.PI2);
+			p.dr = rnd(0,0.05,true);
+			p.scale = rnd(0.1,0.2);
+			p.scaleMul = rnd(1.01,1.02);
+			p.dy = -2;
+			p.gx = rnd(0.003,0.004);
+			p.gy = -rnd(0.010,0.012);
+			p.frict = rnd(0.93,0.94);
+			p.lifeS = rnd(0.2,0.7);
+		}
+	}
+
+	public function grass(x:Float, y:Float, dir:Int) {
+		for(i in 0...3) {
+			var p = allocTopNormal(getTile("fxDust"), x+rnd(0,10,true), y-rnd(0,2));
+			p.setFadeS(rnd(0.4,1), 0, rnd(0.2,0.3));
+			p.colorize(0x8aab52);
+			p.dx = dir*rnd(1,2);
+			p.dy = -rnd(1,2);
+			// p.gx = rnd(0,0.03);
+			p.gy = rnd(0.05,0.10);
+			p.frict = rnd(0.94,0.96);
+
+			p.scaleX = rnd(0.3,1,true);
+			p.scaleY = rnd(0.3,1,true);
+			p.rotation = rnd(0,M.PI2);
+			p.dr = rnd(0,0.03,true);
+
+			p.lifeS = rnd(1,2);
+			p.onUpdate = _dustPhysics;
+		}
+	}
+
 	public function flashBangS(c:UInt, a:Float, ?t=0.1) {
 		var e = new h2d.Bitmap(h2d.Tile.fromColor(c,1,1,a));
 		game.root.add(e, Const.DP_FX_FRONT);
