@@ -33,6 +33,9 @@ class Hero extends Entity {
 	override function dispose() {
 		super.dispose();
 
+		back.remove();
+		largeWheel.remove();
+		smallWheel.remove();
 		ca.dispose();
 		ca = null;
 	}
@@ -79,11 +82,6 @@ class Hero extends Entity {
 		if( !movingOnGround )
 			spr.y += -1 + Math.sin(t)*2;
 
-		back.x = spr.x;
-		back.y = spr.y;
-		back.scaleX = sprScaleX*dir;
-		back.scaleY = sprScaleY;
-
 		smallWheel.x = Std.int( footX + dir*9 * (1-turnOverAnim) );
 		smallWheel.y = footY - 4 + ( onGround ? 0 : dyTotal>=0.05*tmod ? 2 : -1 );
 
@@ -102,6 +100,11 @@ class Hero extends Entity {
 
 		if( !cd.hasSetS("smoke", moving ? 0.18 : 0.5 ) )
 			fx.tractorSmoke(footX-dir*6, footY-8, -dir);
+
+		back.x = spr.x+1;
+		back.y = spr.y;
+		back.scaleX = spr.scaleX;
+		back.scaleY = spr.scaleY;
 
 		// var t = ftime*0.1 + uid;
 		// smallWheel.scaleY = 0.8 + Math.sin(t)*0.2;

@@ -8,6 +8,8 @@ class Const {
 	public static var GRID = 16;
 
 	public static var GRAVITY = 0.016;
+	public static var PARALLAX_COLOR = C.hexToInt("#ffb600");
+	public static var BG_COLOR = C.hexToInt("#805c93");
 
 	static var _uniq = 0;
 	public static var NEXT_UNIQ(get,never) : Int; static inline function get_NEXT_UNIQ() return _uniq++;

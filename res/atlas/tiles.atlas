@@ -1,145 +1,152 @@
 
 tiles.png
-size: 128,64
+size: 512,512
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+bg
+  rotate: false
+  xy: 1, 1
+  size: 400, 400
+  orig: 400, 400
+  offset: 0, 0
+  index: -1
 empty
   rotate: false
-  xy: 119, 17
+  xy: 1, 509
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 fxCircle0
   rotate: false
-  xy: 1, 46
+  xy: 1, 480
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 fxDot0
   rotate: false
-  xy: 117, 21
+  xy: 58, 494
   size: 3, 3
   orig: 3, 3
   offset: 0, 0
   index: -1
 fxDust0
   rotate: false
-  xy: 121, 18
+  xy: 52, 490
   size: 5, 3
   orig: 5, 3
   offset: 0, 0
   index: -1
 fxDust1
   rotate: false
-  xy: 112, 26
+  xy: 58, 490
   size: 4, 3
   orig: 4, 3
   offset: 0, 0
   index: -1
 fxDust2
   rotate: false
-  xy: 112, 21
+  xy: 35, 507
   size: 4, 4
   orig: 4, 4
   offset: 0, 0
   index: -1
 fxDust3
   rotate: false
-  xy: 121, 22
+  xy: 40, 507
   size: 4, 4
   orig: 4, 4
   offset: 0, 0
   index: -1
 fxImpact0
   rotate: false
-  xy: 112, 1
+  xy: 35, 497
   size: 15, 9
   orig: 15, 9
   offset: 0, 0
   index: -1
 fxLine0
   rotate: false
-  xy: 80, 34
+  xy: 45, 507
   size: 33, 3
   orig: 33, 3
   offset: 0, 0
   index: -1
 fxLineDir0
   rotate: false
-  xy: 80, 38
+  xy: 52, 486
   size: 33, 3
   orig: 33, 3
   offset: 0, 0
   index: -1
 fxSmallCircle0
   rotate: false
-  xy: 121, 11
+  xy: 51, 497
   size: 6, 6
   orig: 6, 6
   offset: 0, 0
   index: -1
 fxSmoke0
   rotate: false
-  xy: 1, 1
+  xy: 1, 402
   size: 44, 44
   orig: 44, 44
   offset: 0, 0
   index: -1
 fxTail0
   rotate: false
-  xy: 46, 34
+  xy: 1, 497
   size: 33, 11
   orig: 33, 11
   offset: 0, 0
   index: -1
 pixel
   rotate: false
-  xy: 119, 19
+  xy: 3, 509
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 tractorBack0
   rotate: false
-  xy: 46, 1
+  xy: 1, 447
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 tractorBase0
   rotate: false
-  xy: 79, 1
+  xy: 34, 447
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 uiBar
   rotate: false
-  xy: 112, 17
+  xy: 61, 480
   size: 6, 3
   orig: 6, 3
   offset: 0, 0
   index: -1
 uiBarBg
   rotate: false
-  xy: 112, 11
+  xy: 52, 480
   size: 8, 5
   orig: 8, 5
   offset: 0, 0
   index: -1
 wheelLarge0
   rotate: false
-  xy: 18, 46
+  xy: 18, 480
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wheelSmall0
   rotate: false
-  xy: 35, 46
+  xy: 35, 480
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

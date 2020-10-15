@@ -57,7 +57,7 @@ class Camera extends dn.Process {
 			var s = 0.006;
 			var deadZone = 5;
 			var tx = target.footX;
-			var ty = target.footY;
+			var ty = target.footY - Const.GRID*2;
 
 			var d = M.dist(x,y, tx, ty);
 			if( d>=deadZone ) {

@@ -40,7 +40,7 @@ class Game extends Process {
 		createRootInLayers(Main.ME.root, Const.DP_BG);
 
 		scroller = new h2d.Layers();
-		root.add(scroller, Const.DP_BG);
+		root.add(scroller, Const.DP_MAIN);
 		scroller.filter = new h2d.filter.ColorMatrix(); // force rendering for pixel perfect
 
 		world = new World();

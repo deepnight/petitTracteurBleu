@@ -10,12 +10,24 @@ class Level extends dn.Process {
 
 	var marks : Map< LevelMark, Map<Int,Int> > = new Map();
 	var invalidated = true;
+	var sky : HSprite;
+	var parallax : h2d.TileGroup;
 
 	public function new(idx:Int, lvl:World.World_Level) {
 		super(Game.ME);
 		this.idx = idx;
 		createRootInLayers(Game.ME.scroller, Const.DP_BG);
 		data = lvl;
+
+		sky = Assets.tiles.h_get("bg", 0, 0,1);
+		Game.ME.root.add(sky, Const.DP_BG);
+		sky.filter = new h2d.filter.Blur(2, 1, 2);
+
+		parallax = new h2d.TileGroup( Assets.ledTilesets.get(data.l_Parallax.tileset.identifier) );
+		Game.ME.root.add(parallax, Const.DP_BG);
+		parallax.colorMatrix = C.getColorizeMatrixH2d(Const.PARALLAX_COLOR, 0.9);
+		parallax.filter = new h2d.filter.Blur(2, 1, 2);
+		// parallax.alpha = 0.7;
 
 		for(cy in 0...hei)
 		for(cx in 0...wid) {
@@ -39,6 +51,19 @@ class Level extends dn.Process {
 						setMark(EdgeGrab, cx,cy, dir);
 				}
 		}
+	}
+
+	override function onDispose() {
+		super.onDispose();
+		sky.remove();
+		parallax.remove();
+	}
+
+	override function onResize() {
+		super.onResize();
+		sky.y = h();
+		sky.setScale( M.fmax( w()/sky.tile.width, h()/sky.tile.height ) );
+		parallax.setScale(Const.SCALE);
 	}
 
 	/**
@@ -97,8 +122,19 @@ class Level extends dn.Process {
 		root.removeChildren();
 
 		var atlasTile = Assets.ledTilesets.get( data.l_Collisions.tileset.identifier );
-		var tg = new h2d.TileGroup(atlasTile, root);
-		data.l_Collisions.renderInTileGroup(tg, false);
+
+		var bg = new h2d.TileGroup(atlasTile, root);
+		data.l_BgElements.renderInTileGroup(bg, false);
+		bg.colorMatrix = C.getColorizeMatrixH2d(Const.BG_COLOR, 0.4);
+
+		var shadow = new h2d.TileGroup(atlasTile, root);
+		data.l_Shadows.renderInTileGroup(shadow, false);
+		shadow.alpha = data.l_Shadows.opacity;
+
+		var front = new h2d.TileGroup(atlasTile, root);
+		data.l_Collisions.renderInTileGroup(front, false);
+
+		data.l_Parallax.renderInTileGroup(parallax, true);
 	}
 
 	override function postUpdate() {
@@ -108,5 +144,8 @@ class Level extends dn.Process {
 			invalidated = false;
 			render();
 		}
+
+		parallax.x = game.scroller.x*0.7;
+		parallax.y = game.scroller.y*0.75;
 	}
 }
