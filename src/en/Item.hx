@@ -12,10 +12,13 @@ class Item extends Entity {
 		yr = rnd(0.1, 0.9);
 		ALL.push(this);
 
+		var tileInf = game.world.getEnumTileInfosFromValue(type);
+		var atlas = Assets.ledTilesets.get( tileInf.tileset.identifier );
+		var t = atlas.sub( tileInf.x, tileInf.y, tileInf.w, tileInf.h );
+		t.setCenterRatio(0.5,1);
+		var bmp = new h2d.Bitmap(t,spr);
 
-		var g = new h2d.Graphics(spr);
-		g.beginFill(0xffcc00);
-		g.drawCircle(0,-3,6);
+		spr.set("empty");
 	}
 
 	override function dispose() {
