@@ -55,6 +55,10 @@ class Home extends Entity {
 			if( !e.cd.has("homePickLock") && e.cd.has("homePicked") ) {
 				e.cd.unset("homePicked");
 				startCarrying(e);
+				game.delayer.addS(()->{
+					if( !e.destroyed && e.spr!=null && !fx.destroyed )
+						fx.homeDrop(e.spr.x, e.spr.y-4);
+				}, 0.3);
 			}
 		}
 

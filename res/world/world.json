@@ -1365,7 +1365,7 @@
 							} ]
 						}
 					] },
-					{ "__identifier": "Hero", "__grid": [42,14], "__tile": null, "defUid": 20, "px": [680,240], "fieldInstances": [] },
+					{ "__identifier": "Hero", "__grid": [28,13], "__tile": null, "defUid": 20, "px": [456,224], "fieldInstances": [] },
 					{ "__identifier": "ItemGenerator", "__grid": [45,11], "__tile": { "tilesetUid": 34, "srcRect": [144,96,16,16] }, "defUid": 29, "px": [728,184], "fieldInstances": [
 						{
 							"__identifier": "maxChildren",
@@ -1445,7 +1445,17 @@
 							"realEditorValues": [{ "id": "V_Int", "params": [3] }]
 						},
 						{ "__identifier": "minGroundDist", "__value": 0, "__type": "Int", "defUid": 111, "realEditorValues": [] }
-					] }
+					] },
+					{ "__identifier": "Item", "__grid": [30,13], "__tile": { "tilesetUid": 34, "srcRect": [128,96,16,16] }, "defUid": 25, "px": [488,224], "fieldInstances": [{
+						"__identifier": "type",
+						"__value": "Wood",
+						"__type": "LocalEnum.Item",
+						"defUid": 37,
+						"realEditorValues": [{
+							"id": "V_String",
+							"params": ["Wood"]
+						}]
+					}] }
 				]
 			},
 			{

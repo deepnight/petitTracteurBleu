@@ -45,17 +45,18 @@ class Item extends Entity {
 		}
 
 
-		switch type {
-			case Wood:
-				fx.pick(footX, footY-8);
-				fx.grass(footX, footY, -dirTo(by));
+		if( neverPicked ) {
+			switch type {
+				case Wood:
+					fx.pick(footX, footY-8);
+					fx.grass(footX, footY, -dirTo(by));
 
-			case Apple:
-				if( neverPicked ) {
+				case Apple:
 					fx.pick(footX, footY+4);
 					fx.leaves(footX, footY+4);
-				}
+			}
 		}
+
 		neverPicked = false;
 	}
 

@@ -181,6 +181,13 @@ class Fx extends dn.Process {
 	}
 
 	public function pick(x:Float, y:Float) {
+		var p = allocTopAdd(getTile("halo"), x,y);
+		p.setFadeS(0.3, 0, 1);
+		p.colorize(0x348bff);
+		p.rotation = rnd(0,M.PI2);
+		p.lifeS = 0;
+
+
 		var n = 8;
 		for(i in 0...n) {
 			var a = M.PI2*i/n;
@@ -193,7 +200,35 @@ class Fx extends dn.Process {
 			p.scaleY = rnd(0.5,1,true) * p.scaleX;
 			p.ds = 0.2;
 			p.dsFrict = 0.9;
-			p.scaleMul = 0.97;
+			p.scaleMul = rnd(0.9,0.93);
+			p.lifeS = 0.5;
+			p.dr = 0.1;
+		}
+	}
+
+	public function homeDrop(x:Float, y:Float) {
+		var c = 0xff5654;
+		var p = allocTopAdd(getTile("halo"), x,y);
+		p.setFadeS(0.3, 0, 1);
+		p.colorize(c);
+		p.rotation = rnd(0,M.PI2);
+		p.lifeS = 0;
+
+		var n = 50;
+		for(i in 0...n) {
+			var a = M.PI2*i/n + rnd(0,0.1,true);
+			var p = allocTopAdd(getTile("fxLineDir"), x,y);
+			p.setFadeS(rnd(0.5,0.7), 0, 0.1);
+			p.setCenterRatio(0.8,0.5);
+			p.rotation = a;
+			p.colorize(c);
+			p.scaleX = rnd(0.2,0.5);
+			p.scaleY = 2;
+			p.ds = 0.2;
+			p.dsFrict = 0.9;
+			p.scaleMul = rnd(0.9,0.93);
+			p.lifeS = 0.5;
+			p.dr = rnd(0.02, 0.03, true);
 		}
 	}
 
