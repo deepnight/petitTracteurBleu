@@ -1,8 +1,8 @@
 package en;
 
 class Cart extends Entity {
-	var trackPoints = new haxe.ds.Vector(30);
-	var trackIdx = 0;
+	// var trackPoints = new haxe.ds.Vector(30);
+	// var trackIdx = 0;
 
 	public function new() {
 		super( hero.cx, hero.cy);
