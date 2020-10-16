@@ -4,12 +4,23 @@ class Home extends Entity {
 	public static var ALL : Array<Home> = [];
 
 	var data : World.Entity_Home;
+	var storageAng : Float;
+	var storageSize : Float;
 
 	public function new(e:World.Entity_Home) {
 		data = e;
 		super(e.cx, e.cy);
 		ALL.push(this);
-		carriageWidth = data.f_keepRadius*Const.GRID * 0.75;
+		storageAng = Math.atan2( data.f_storage[1].cy-data.f_storage[0].cy, data.f_storage[1].cx-data.f_storage[0].cx );
+		storageSize = M.dist( data.f_storage[0].cx, data.f_storage[0].cy, data.f_storage[1].cx, data.f_storage[1].cy ) - 1;
+	}
+
+	override function getCarriageX(offset:Float):Float {
+		return ( data.f_storage[0].cx+0.5 + Math.cos(storageAng)*storageSize * (0.5+offset*0.5) ) * Const.GRID;
+	}
+
+	override function getCarriageY(offset:Float):Float {
+		return ( data.f_storage[0].cy+1 + Math.sin(storageAng)*storageSize * (0.5+offset*0.5) ) * Const.GRID;
 	}
 
 	override function dispose() {
