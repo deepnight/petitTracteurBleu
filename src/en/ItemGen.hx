@@ -30,7 +30,7 @@ class ItemGen extends Entity {
 			case FloatInAir:
 				dh.keepOnly( (pt)->!level.hasCollision(pt.x,pt.y) );
 				dh.keepOnly( (pt)->sightCheckCase(pt.x,pt.y) );
-				dh.keepOnly( (pt)->level.getGroundDist(pt.x,pt.y)<=4 );
+				dh.keepOnly( (pt)->level.getGroundDist(pt.x,pt.y)<=5 );
 				dh.keepOnly( (pt)->level.getGroundDist(pt.x,pt.y)>=data.f_minGroundDist );
 
 			case OnGround:

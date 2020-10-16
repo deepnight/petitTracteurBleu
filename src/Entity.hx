@@ -30,6 +30,7 @@ class Entity {
 
 	/** Unique identifier **/
 	public var uid : Int;
+	public var randVal = rnd(0,1);
 
 	// Position in the game world
     public var cx = 0;

@@ -4,6 +4,7 @@ class Item extends Entity {
 	public static var ALL : Array<Item> = [];
 
 	var type : World.Enum_Item;
+	var neverPicked = true;
 
 	public function new(t:World.Enum_Item, x,y) {
 		type = t;
@@ -12,14 +13,18 @@ class Item extends Entity {
 		yr = rnd(0.1, 0.9);
 		ALL.push(this);
 
-		var tileInf = game.world.getEnumTileInfosFromValue(type);
-		var atlas = Assets.ledTilesets.get( tileInf.tileset.identifier );
-		var t = atlas.sub( tileInf.x, tileInf.y, tileInf.w, tileInf.h );
-		t.setCenterRatio(0.5,1);
-		var bmp = new h2d.Bitmap(t,spr);
-		bmp.colorMatrix = spr.colorMatrix;
+		if( spr.lib.exists("item"+type.getName()) )
+			spr.set("item"+type.getName());
+		else
+			spr.set("itemApple");
 
-		spr.set("empty");
+		switch type {
+			case Wood:
+				spr.filter = new dn.heaps.filter.PixelOutline();
+
+			case Apple:
+				hasCartoonDistorsion = false;
+		}
 	}
 
 	override function dispose() {
@@ -38,16 +43,41 @@ class Item extends Entity {
 			colorMatrix.load( C.getColorizeMatrixH2d(Const.BG_COLOR, 0.4) );
 			spr.alpha = 0.5;
 		}
+
+
+		switch type {
+			case Wood:
+				fx.pick(footX, footY-8);
+				fx.grass(footX, footY, -dirTo(by));
+
+			case Apple:
+				if( neverPicked ) {
+					fx.pick(footX, footY+4);
+					fx.leaves(footX, footY+4);
+				}
+		}
+		neverPicked = false;
 	}
 
 	override function postUpdate() {
 		super.postUpdate();
-		spr.rotation = Math.cos(ftime*0.2 + uid)*0.1;
+		if( gravityMul==0 && !isCarried() ) {
+			spr.setCenterRatio(0.5,0.2);
+			spr.rotation = Math.cos(ftime*0.1 + randVal*M.PI2) * (0.2 + 0.1*randVal);
+		}
+		else
+			spr.setCenterRatio(0.5,1);
 
 		if( isCarried() )
 			addToLayer(Const.DP_BG);
 		else
 			addToLayer(Const.DP_MAIN);
+	}
+
+	override function update() {
+		super.update();
+		if( onGround && !isCarried() && !cd.hasSetS("jump",0.4) )
+			dy = -0.2;
 	}
 }
 

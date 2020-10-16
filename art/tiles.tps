@@ -181,7 +181,21 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">export_tiles/apple0.png</key>
+            <key type="filename">export_tiles/bg.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>100,100,200,200</rect>
+                <key>scale9Paddings</key>
+                <rect>100,100,200,200</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">export_tiles/cart0.png</key>
             <key type="filename">export_tiles/tractorBack0.png</key>
             <key type="filename">export_tiles/tractorBase0.png</key>
@@ -197,21 +211,6 @@
                 <rect>8,8,16,16</rect>
                 <key>scale9Paddings</key>
                 <rect>8,8,16,16</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">export_tiles/bg.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>100,100,200,200</rect>
-                <key>scale9Paddings</key>
-                <rect>100,100,200,200</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -232,6 +231,8 @@
                 <false/>
             </struct>
             <key type="filename">export_tiles/fxCircle0.png</key>
+            <key type="filename">export_tiles/itemApple.png</key>
+            <key type="filename">export_tiles/itemWood.png</key>
             <key type="filename">export_tiles/wheelLarge0.png</key>
             <key type="filename">export_tiles/wheelSmall0.png</key>
             <struct type="IndividualSpriteSettings">
@@ -295,6 +296,8 @@
             </struct>
             <key type="filename">export_tiles/fxDust2.png</key>
             <key type="filename">export_tiles/fxDust3.png</key>
+            <key type="filename">export_tiles/fxLeaf2.png</key>
+            <key type="filename">export_tiles/fxLeaf3.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -321,6 +324,22 @@
                 <rect>4,2,7,5</rect>
                 <key>scale9Paddings</key>
                 <rect>4,2,7,5</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">export_tiles/fxLeaf0.png</key>
+            <key type="filename">export_tiles/fxLeaf1.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>1,1,3,2</rect>
+                <key>scale9Paddings</key>
+                <rect>1,1,3,2</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

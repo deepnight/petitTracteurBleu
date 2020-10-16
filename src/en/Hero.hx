@@ -37,7 +37,7 @@ class Hero extends Entity {
 		// game.scroller.add(gyro, Const.DP_HERO);
 
 		hasCartoonDistorsion = false;
-		carriageWidth*=0.5;
+		carriageWidth*=0.25;
 
 		// var g = new h2d.Graphics(spr);
 		// g.beginFill(0x3059ab);
@@ -50,7 +50,7 @@ class Hero extends Entity {
 	}
 
 	override function getCarriageY(offset:Float):Float {
-		return game.cart.footY + Math.sin(sprRotation) * carriageWidth * offset;
+		return game.cart.footY - 4 + Math.sin(sprRotation) * carriageWidth * offset;
 	}
 
 	override function dispose() {

@@ -180,6 +180,44 @@ class Fx extends dn.Process {
 		}
 	}
 
+	public function pick(x:Float, y:Float) {
+		var n = 8;
+		for(i in 0...n) {
+			var a = M.PI2*i/n;
+			var p = allocTopAdd(getTile("fxImpact"), x,y);
+			p.setFadeS(rnd(0.5,0.7), 0, 0.1);
+			p.setCenterRatio(1,0.5);
+			p.rotation = a;
+			p.colorize(0x44c9ff);
+			p.scaleX = 0.2;
+			p.scaleY = rnd(0.5,1,true) * p.scaleX;
+			p.ds = 0.2;
+			p.dsFrict = 0.9;
+			p.scaleMul = 0.97;
+		}
+	}
+
+	public function leaves(x:Float, y:Float) {
+		for(i in 0...20) {
+			var p = allocTopNormal(getTile("fxLeaf"), x+rnd(0,10,true), y+rnd(0,8,true));
+			p.setFadeS(rnd(0.4,0.8), rnd(0,0.2), rnd(1,2));
+			p.colorize(0xb5e16c);
+			p.dx = rnd(0,1,true);
+			p.dy = -rnd(0.2,1);
+			p.gx = rnd(0,0.01);
+			p.gy = rnd(0.01,0.03);
+			p.frict = rnd(0.96,0.98);
+
+			p.scaleX = rnd(0.3,1,true);
+			p.scaleY = rnd(0.3,1,true);
+			p.rotation = rnd(0,M.PI2);
+			p.dr = rnd(0,0.03,true);
+
+			p.lifeS = rnd(1,2);
+			p.onUpdate = _dustPhysics;
+		}
+	}
+
 	public function flashBangS(c:UInt, a:Float, ?t=0.1) {
 		var e = new h2d.Bitmap(h2d.Tile.fromColor(c,1,1,a));
 		game.root.add(e, Const.DP_FX_FRONT);
