@@ -214,15 +214,15 @@ class Fx extends dn.Process {
 		p.rotation = rnd(0,M.PI2);
 		p.lifeS = 0;
 
-		var n = 50;
+		var n = 20;
 		for(i in 0...n) {
 			var a = M.PI2*i/n + rnd(0,0.1,true);
 			var p = allocTopAdd(getTile("fxLineDir"), x,y);
-			p.setFadeS(rnd(0.5,0.7), 0, 0.1);
+			p.setFadeS(rnd(0.3,0.5), 0, 0.1);
 			p.setCenterRatio(0.8,0.5);
 			p.rotation = a;
 			p.colorize(c);
-			p.scaleX = rnd(0.2,0.5);
+			p.scaleX = rnd(0.5,1);
 			p.scaleY = 2;
 			p.ds = 0.2;
 			p.dsFrict = 0.9;
