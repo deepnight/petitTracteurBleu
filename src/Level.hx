@@ -38,7 +38,7 @@ class Level extends dn.Process {
 					else if( hasCollision(cx+dir,cy) && hasCollision(cx+dir,cy-1) && !hasCollision(cx+dir,cy-2) )
 						setMark(StepHight, cx,cy, dir);
 
-					if( !hasCollision(cx+dir,cy) && !hasCollision(cx+dir,cy+3) )
+					if( !hasCollision(cx+dir,cy) && !hasCollision(cx+dir,cy+3) && !hasCollision(cx+dir,cy+1) )
 						setMark(CliffHigh, cx,cy, dir);
 					else if( !hasCollision(cx+dir,cy) && !hasCollision(cx+dir,cy+1) )
 						setMark(CliffSmall, cx,cy, dir);
@@ -114,7 +114,17 @@ class Level extends dn.Process {
 
 	/** Return TRUE if "Collisions" layer contains a collision value **/
 	public inline function hasCollision(cx,cy) : Bool {
-		return !isValid(cx,cy) ? true : data.l_Collisions.getInt(cx,cy)==0;
+		return !isValid(cx,cy) ? true : data.l_Collisions.getInt(cx,cy)==0 || data.l_Collisions.getInt(cx,cy)==2;
+	}
+
+	public function getGroundDist(cx,cy) {
+		if( hasCollision(cx,cy) )
+			return 0;
+
+		var d = 0;
+		while( !hasCollision(cx,cy+d+1) )
+			d++;
+		return d;
 	}
 
 	/** Render current level**/
@@ -125,14 +135,20 @@ class Level extends dn.Process {
 
 		var bg = new h2d.TileGroup(atlasTile, root);
 		data.l_BgElements.renderInTileGroup(bg, false);
-		bg.colorMatrix = C.getColorizeMatrixH2d(Const.BG_COLOR, 0.4);
+		bg.colorMatrix = C.getColorizeMatrixH2d(Const.BG_COLOR, 0.6);
 
 		var shadow = new h2d.TileGroup(atlasTile, root);
 		data.l_Shadows.renderInTileGroup(shadow, false);
 		shadow.alpha = data.l_Shadows.opacity;
 
-		var front = new h2d.TileGroup(atlasTile, root);
-		data.l_Collisions.renderInTileGroup(front, false);
+		var walls = new h2d.TileGroup(atlasTile, root);
+		data.l_Collisions.renderInTileGroup(walls, false);
+
+		var tilesMain = new h2d.TileGroup(atlasTile, root);
+		data.l_TilesMain.renderInTileGroup(tilesMain, false);
+
+		var tilesFront = new h2d.TileGroup(atlasTile, root);
+		data.l_TilesFront.renderInTileGroup(tilesFront, false);
 
 		data.l_Parallax.renderInTileGroup(parallax, true);
 	}

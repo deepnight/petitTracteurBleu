@@ -17,6 +17,7 @@ class Item extends Entity {
 		var t = atlas.sub( tileInf.x, tileInf.y, tileInf.w, tileInf.h );
 		t.setCenterRatio(0.5,1);
 		var bmp = new h2d.Bitmap(t,spr);
+		bmp.colorMatrix = spr.colorMatrix;
 
 		spr.set("empty");
 	}
@@ -29,6 +30,14 @@ class Item extends Entity {
 	override function onStopBeingCarried(by:Entity) {
 		super.onStopBeingCarried(by);
 		cd.setS("heroPickLock",0.5);
+	}
+
+	override function onBeingCarried(by:Entity) {
+		super.onBeingCarried(by);
+		if( by.is(en.Home) ) {
+			colorMatrix.load( C.getColorizeMatrixH2d(Const.BG_COLOR, 0.4) );
+			spr.alpha = 0.5;
+		}
 	}
 
 	override function postUpdate() {

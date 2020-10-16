@@ -63,6 +63,10 @@ class Cart extends Entity {
 		);
 	}
 
+	public function onHeroJump() {
+		cd.setS("recentHeroJump",0.7);
+	}
+
 	override function update() {
 		// Follow tractor
 		var cartDist = 20 * ( level.hasCollision(cx,cy) ? 0.33 : 1 );
@@ -75,12 +79,7 @@ class Cart extends Entity {
 
 		var needRecal = d>Const.GRID*1.2 || /*M.fabs(ty-footY)>=Const.GRID*0.8 || */ level.hasCollision(cx,cy);
 		var spd = needRecal ? 0.024 : 0.013;
-		// hasWallCollisions = !needRecal;
-		gravityMul = needRecal ? 0 : 1;
-		debug(needRecal);
-
-		fx.markerFree(footX,footY, 0.1, 0x00ff00);
-		fx.markerFree(tx,ty, 0.1, 0x0088ff);
+		gravityMul = cd.has("recentHeroJump") ? 0.4 : needRecal ? ( d>=Const.GRID*3 || !sightCheck(hero) ? 0 : 0.3 ) : 1;
 
 		dx += Math.cos(a) * spd*tmod;
 		dy += Math.sin(a) * spd*tmod;
@@ -103,7 +102,6 @@ class Cart extends Entity {
 				var tx = (pt.x+0.5) * Const.GRID;
 				var ty = (pt.y+0.5) * Const.GRID;
 				var a = Math.atan2(footY-ty, footX-tx);
-				fx.markerCase(pt.x,pt.y, 0xffcc00);
 				setPosPixel(
 					tx + Math.cos(a)*Const.GRID*0.5,
 					ty + Math.sin(a)*Const.GRID*0.5

@@ -5,6 +5,8 @@ class Hero extends Entity {
 	var back : HSprite;
 	var largeWheel : HSprite;
 	var smallWheel : HSprite;
+	var gyro : HSprite;
+	var halo : HSprite;
 	var turnOverAnim = 0.;
 
 	public function new(e:World.Entity_Hero) {
@@ -22,6 +24,17 @@ class Hero extends Entity {
 
 		smallWheel = Assets.tiles.h_get("wheelSmall",0, 0.5,0.5);
 		game.scroller.add(smallWheel, Const.DP_HERO_BACK);
+
+		halo = Assets.tiles.h_get("halo",0, 0.5,0.5);
+		game.scroller.add(halo, Const.DP_BG);
+		halo.colorize(0xffcc00);
+		halo.blendMode = Add;
+		halo.alpha = 0.2;
+		halo.setScale(2);
+		halo.setPosition(footX, footY);
+
+		gyro = Assets.tiles.h_get("tractorGyro",0, 0.5,1, spr);
+		// game.scroller.add(gyro, Const.DP_HERO);
 
 		hasCartoonDistorsion = false;
 		carriageWidth*=0.5;
@@ -70,6 +83,7 @@ class Hero extends Entity {
 		dy = -0.25;
 		cd.setS("extraJump",0.15);
 		cd.unset("wasOnGround");
+		game.cart.onHeroJump();
 	}
 
 	override function onLand() {
@@ -80,6 +94,11 @@ class Hero extends Entity {
 	override function postUpdate() {
 		super.postUpdate();
 
+		halo.x += ( footX-halo.x ) * 0.1;
+		halo.y += ( footY-halo.y-40 ) * 0.1;
+		halo.rotate(0.002*tmod);
+
+		// Scale anims
 		var moving = ca.lxValue()!=0;
 		var movingOnGround = onGround && moving;
 
@@ -92,6 +111,9 @@ class Hero extends Entity {
 		if( !movingOnGround )
 			spr.y += -1 + Math.sin(t)*2;
 
+		gyro.alpha = M.fabs( Math.cos(ftime*0.1) );
+
+		// Wheels
 		smallWheel.x = Std.int( footX + dir*9 * (1-turnOverAnim) );
 		smallWheel.y = footY - 4 + ( onGround ? 0 : dyTotal>=0.05*tmod ? 2 : -1 );
 
@@ -105,12 +127,14 @@ class Hero extends Entity {
 			spr.y += -M.fabs( Math.sin( ftime*0.5+uid)*1 );
 		}
 
+		// Particles
 		if( movingOnGround && !cd.hasSetS("grass",0.06) )
 			fx.grass(footX, footY, -dir);
 
 		if( !cd.hasSetS("smoke", moving ? 0.18 : 0.5 ) )
 			fx.tractorSmoke(footX-dir*6, footY-8, -dir);
 
+		// Tractor back shape
 		back.x = spr.x+1;
 		back.y = spr.y;
 		back.scaleX = spr.scaleX;

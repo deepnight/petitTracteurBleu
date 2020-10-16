@@ -306,6 +306,10 @@ class Entity {
 		return dn.Bresenham.checkThinLine(cx,cy, x,y, canSeeThrough);
 	}
 
+	public inline function sightCheck(e:Entity) {
+		return sightCheckCase(e.cx,e.cy);
+	}
+
 	public function makePoint() return new CPoint(cx,cy, xr,yr);
 
     public inline function destroy() {

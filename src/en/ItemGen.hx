@@ -30,6 +30,8 @@ class ItemGen extends Entity {
 			case FloatInAir:
 				dh.keepOnly( (pt)->!level.hasCollision(pt.x,pt.y) );
 				dh.keepOnly( (pt)->sightCheckCase(pt.x,pt.y) );
+				dh.keepOnly( (pt)->level.getGroundDist(pt.x,pt.y)<=4 );
+				dh.keepOnly( (pt)->level.getGroundDist(pt.x,pt.y)>=data.f_minGroundDist );
 
 			case OnGround:
 				dh.keepOnly( (pt)->!level.hasCollision(pt.x,pt.y) && level.hasCollision(pt.x,pt.y+1) );
@@ -80,6 +82,7 @@ class ItemGen extends Entity {
 			if( !e.isAlive() || e.isCarried() ) {
 				e.gravityMul = 1;
 				children.splice(i,1);
+				cd.setS("spawnLock", rnd(4,5), false);
 			}
 			else
 				i++;
@@ -88,8 +91,8 @@ class ItemGen extends Entity {
 		// Spawn
 		if( children.length==data.f_maxChildren )
 			cd.setS("spawnLock", rnd(15,20), false);
-		else if( distCase(hero)<=6 )
-			cd.setS("spawnLock", rnd(6,8), false);
+		// else if( distCase(hero)<=5 )
+			// cd.setS("spawnLock", rnd(2,3), false);
 		else if( !cd.has("spawnLock") && !cd.has("spawnTick") ) {
 			cd.setS("spawnTick", rnd(2,5));
 			spawn();
