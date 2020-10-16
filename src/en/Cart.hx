@@ -12,7 +12,7 @@ class Cart extends Entity {
 		hasCartoonDistorsion = false;
 
 		link = new h2d.Graphics();
-		game.scroller.add(link, Const.DP_UI);
+		game.scroller.add(link, Const.DP_MAIN);
 
 		smallWheel = Assets.tiles.h_get("wheelSmall",0, 0.5,0.5);
 		game.scroller.add(smallWheel, Const.DP_MAIN);
@@ -32,6 +32,7 @@ class Cart extends Entity {
 		super.postUpdate();
 
 		spr.y-=5;
+		spr.rotation += Math.cos(ftime*0.1)*0.04;
 		smallWheel.x = Std.int( footX );
 		smallWheel.y = Std.int( footY-4 );
 
@@ -39,7 +40,7 @@ class Cart extends Entity {
 		if( M.fabs(hero.dxTotal)>=0.03 && yr>=0.7 && level.hasCollision(cx,cy+1) && !cd.hasSetS("bump",0.3) )
 			cd.setS("bumping",rnd(0.1,0.2));
 		if( cd.has("bumping") )
-			spr.y-= Math.sin( (1-cd.getRatio("bumping")) * M.PI )*3.5;
+			spr.y-= Math.sin( (1-cd.getRatio("bumping")) * M.PI )*2;
 
 		// Wheel shakes
 		if( M.fabs(dxTotal)>=0.03 )
@@ -52,7 +53,7 @@ class Cart extends Entity {
 		var fy = hero.footY-7;
 		link.moveTo(fx,fy);
 		var tx = footX + Math.cos(sprRotation) * 9 * dirTo(hero);
-		var ty = footY - 6;
+		var ty = spr.y - 2;
 		var d = distPx(hero);
 		var tension = M.fclamp( (distPx(hero)-20)/18, 0, 1 );
 		link.curveTo(
