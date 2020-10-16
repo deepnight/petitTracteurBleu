@@ -10244,7 +10244,7 @@ var en_Cart = function() {
 	this.gravityMul = 0.33;
 	this.hasCartoonDistorsion = false;
 	this.link = new h2d_Graphics();
-	Game.ME.scroller.addChildAt(this.link,Const.DP_UI);
+	Game.ME.scroller.addChildAt(this.link,Const.DP_MAIN);
 	var frame = 0;
 	var xr = 0.5;
 	var yr = 0.5;
@@ -10373,6 +10373,10 @@ en_Cart.prototype = $extend(Entity.prototype,{
 		var _g = this.spr;
 		_g.posChanged = true;
 		_g.y -= 5;
+		var _g = this.spr;
+		var v = _g.rotation + Math.cos(Game.ME.ftime * 0.1) * 0.04;
+		_g.posChanged = true;
+		_g.rotation = v;
 		var _this = this.smallWheel;
 		_this.posChanged = true;
 		_this.x = (this.cx + this.xr) * Const.GRID | 0;
@@ -10499,7 +10503,7 @@ en_Cart.prototype = $extend(Entity.prototype,{
 		}
 		if(this.cd.fastCheck.h.hasOwnProperty(100663296)) {
 			var _g = this.spr;
-			var v = _g.y - Math.sin((1 - this.cd._getRatio(100663296)) * 3.141592653589793) * 3.5;
+			var v = _g.y - Math.sin((1 - this.cd._getRatio(100663296)) * 3.141592653589793) * 2;
 			_g.posChanged = true;
 			_g.y = v;
 		}
@@ -10526,7 +10530,7 @@ en_Cart.prototype = $extend(Entity.prototype,{
 		_this.addVertex(fx,fy,_this.curR,_this.curG,_this.curB,_this.curA,fx * _this.ma + fy * _this.mc + _this.mx,fx * _this.mb + fy * _this.md + _this.my);
 		var e = Game.ME.hero;
 		var tx = (this.cx + this.xr) * Const.GRID + Math.cos(this.sprRotation) * 9 * ((e.cx + e.xr) * Const.GRID < (this.cx + this.xr) * Const.GRID ? -1 : 1);
-		var ty = (this.cy + this.yr) * Const.GRID - 6;
+		var ty = this.spr.y - 2;
 		var e = Game.ME.hero;
 		var ax = (this.cx + this.xr) * Const.GRID;
 		var ay = (this.cy + this.yr) * Const.GRID;
