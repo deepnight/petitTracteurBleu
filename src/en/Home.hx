@@ -28,19 +28,22 @@ class Home extends Entity {
 
 		// Grab items
 		for(e in en.Item.ALL) {
-			if( e.isAlive() && !isCarrying(e) && distCase(e)<=data.f_grabRadius) {
-				if( hero.isCarrying(e) ) {
-					hero.stopCarrying(e);
-					e.hasWallCollisions = false;
-					e.bump(
-						e.dirTo(this)*rnd(0.30,0.35),
-						-rnd(0.2,0.3)
-					);
-					e.cd.setS("heroPickLock",2);
-					e.cd.setS("homePickLock",rnd(0.1,0.3));
-				}
-				else if( !e.cd.has("homePickLock") )
-					startCarrying(e);
+			// Take out of hero hands
+			if( e.isAlive() && !isCarrying(e) && distCase(e)<=data.f_grabRadius && hero.isCarrying(e) ) {
+				hero.stopCarrying(e);
+				e.cd.setS("homePicked",Const.INFINITE);
+				e.hasWallCollisions = false;
+				e.cancelVelocities();
+				e.setPosPixel(game.cart.footX, game.cart.footY-7);
+				e.bump(0, -rnd(0.2,0.3) );
+				e.cd.setS("heroPickLock",2);
+				e.cd.setS("homePickLock",rnd(0.1,0.3));
+			}
+
+			// Add to carriage
+			if( !e.cd.has("homePickLock") && e.cd.has("homePicked") ) {
+				e.cd.unset("homePicked");
+				startCarrying(e);
 			}
 		}
 

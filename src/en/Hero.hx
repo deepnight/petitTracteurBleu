@@ -12,7 +12,7 @@ class Hero extends Entity {
 		ca = Main.ME.controller.createAccess("hero");
 
 		spr.set("tractorBase");
-		game.scroller.add(spr, Const.DP_HERO);
+		addToLayer(Const.DP_HERO);
 
 		back = Assets.tiles.h_get("tractorBack",0, 0.5,1);
 		game.scroller.add(back, Const.DP_HERO_BACK);
@@ -24,6 +24,7 @@ class Hero extends Entity {
 		game.scroller.add(smallWheel, Const.DP_HERO_BACK);
 
 		hasCartoonDistorsion = false;
+		carriageWidth*=0.5;
 
 		// var g = new h2d.Graphics(spr);
 		// g.beginFill(0x3059ab);
@@ -31,12 +32,12 @@ class Hero extends Entity {
 	}
 
 
-	override function getCarriageX():Float {
-		return game.cart.footX;
+	override function getCarriageX(offset:Float):Float {
+		return game.cart.footX + Math.cos(sprRotation) * carriageWidth * offset;
 	}
 
-	override function getCarriageY():Float {
-		return game.cart.footY;
+	override function getCarriageY(offset:Float):Float {
+		return game.cart.footY + Math.sin(sprRotation) * carriageWidth * offset;
 	}
 
 	override function dispose() {

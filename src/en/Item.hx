@@ -34,6 +34,11 @@ class Item extends Entity {
 	override function postUpdate() {
 		super.postUpdate();
 		spr.rotation = Math.cos(ftime*0.2 + uid)*0.1;
+
+		if( isCarried() )
+			addToLayer(Const.DP_BG);
+		else
+			addToLayer(Const.DP_MAIN);
 	}
 }
 

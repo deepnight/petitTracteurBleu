@@ -117,6 +117,7 @@ class Entity {
 
 	var hasWallCollisions = true;
 	var hasCartoonDistorsion = true;
+	var layer = -1;
 
 
     public function new(x:Int, y:Int) {
@@ -129,7 +130,7 @@ class Entity {
         setPosCase(x,y);
 
         spr = new HSprite(Assets.tiles);
-		Game.ME.scroller.add(spr, Const.DP_MAIN);
+		addToLayer(Const.DP_MAIN);
 		spr.colorAdd = new h3d.Vector();
 		baseColor = new h3d.Vector();
 		blinkColor = new h3d.Vector();
@@ -138,6 +139,16 @@ class Entity {
 
 		if( ui.Console.ME.hasFlag("bounds") )
 			enableBounds();
+	}
+
+	function addToLayer(id:Int) {
+		if( layer==id ) {
+			game.scroller.over(spr);
+			return;
+		}
+
+		layer = id;
+		Game.ME.scroller.add(spr, id);
 	}
 
 	@:keep
@@ -220,8 +231,8 @@ class Entity {
 	public function onBeingCarried(by:Entity) {}
 	public function onStopBeingCarried(by:Entity) {}
 
-	public function getCarriageX() return footX;
-	public function getCarriageY() return footY;
+	public function getCarriageX(offset:Float) return footX + carriageWidth * offset;
+	public function getCarriageY(offset:Float) return footY;
 
 	public function getCarrier() : Null<Entity> {
 		for(e in ALL)
@@ -541,7 +552,7 @@ class Entity {
 
 		if( isCarried() ) {
 			spr.x += 6*carriedRandOffset;
-			spr.x += Math.cos(ftime*0.07 + uid*1.1) * (5+(uid%3)) * carriedShaking;
+			spr.x += Math.cos(ftime*0.07 + uid*1.1) * (5+(uid%3))*carriageWidth * carriedShaking;
 			spr.y += -M.fabs( Math.sin(ftime*0.13 + uid*0.9) * (5+(uid%5)) ) * carriedShaking;
 		}
 		carriedShaking *= Math.pow(0.98,tmod);
@@ -611,12 +622,12 @@ class Entity {
 		// Follow carrier
 		if( isCarried() && !cd.has("carriedFollowLock")) {
 			bdx = bdy = 0;
-			var tx = carrier.getCarriageX() + carrier.carriageWidth*carriedRandOffset;
-			var ty = carrier.getCarriageY();
+			var tx = carrier.getCarriageX(carriedRandOffset);
+			var ty = carrier.getCarriageY(carriedRandOffset);
 			if( M.dist(footX, footY, tx, ty) > 0.2*Const.GRID ) {
 				var a = Math.atan2(ty-footY, tx-footX);
-				dx+=Math.cos(a)*0.05 * tmod;
-				dy+=Math.sin(a)*0.08 * tmod;
+				dx+=Math.cos(a)*0.08 * tmod;
+				dy+=Math.sin(a)*0.11 * tmod;
 			}
 			dx *= Math.pow(0.92,tmod);
 			dy *= Math.pow(0.92,tmod);

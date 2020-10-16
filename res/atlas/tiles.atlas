@@ -11,6 +11,13 @@ bg
   orig: 400, 400
   offset: 0, 0
   index: -1
+cart0
+  rotate: false
+  xy: 1, 447
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 empty
   rotate: false
   xy: 1, 509
@@ -27,63 +34,63 @@ fxCircle0
   index: -1
 fxDot0
   rotate: false
-  xy: 58, 494
+  xy: 52, 480
   size: 3, 3
   orig: 3, 3
   offset: 0, 0
   index: -1
 fxDust0
   rotate: false
-  xy: 52, 490
+  xy: 44, 497
   size: 5, 3
   orig: 5, 3
   offset: 0, 0
   index: -1
 fxDust1
   rotate: false
-  xy: 58, 490
+  xy: 50, 497
   size: 4, 3
   orig: 4, 3
   offset: 0, 0
   index: -1
 fxDust2
   rotate: false
-  xy: 35, 507
+  xy: 62, 442
   size: 4, 4
   orig: 4, 4
   offset: 0, 0
   index: -1
 fxDust3
   rotate: false
-  xy: 40, 507
+  xy: 35, 503
   size: 4, 4
   orig: 4, 4
   offset: 0, 0
   index: -1
 fxImpact0
   rotate: false
-  xy: 35, 497
+  xy: 46, 435
   size: 15, 9
   orig: 15, 9
   offset: 0, 0
   index: -1
 fxLine0
   rotate: false
-  xy: 45, 507
+  xy: 35, 508
   size: 33, 3
   orig: 33, 3
   offset: 0, 0
   index: -1
 fxLineDir0
   rotate: false
-  xy: 52, 486
+  xy: 40, 503
   size: 33, 3
   orig: 33, 3
   offset: 0, 0
   index: -1
 fxSmallCircle0
   rotate: false
-  xy: 51, 497
+  xy: 62, 435
   size: 6, 6
   orig: 6, 6
   offset: 0, 0
@@ -111,28 +118,35 @@ pixel
   index: -1
 tractorBack0
   rotate: false
-  xy: 1, 447
+  xy: 34, 447
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 tractorBase0
   rotate: false
-  xy: 34, 447
+  xy: 46, 402
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tractorGyro0
+  rotate: false
+  xy: 67, 442
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 uiBar
   rotate: false
-  xy: 61, 480
+  xy: 69, 507
   size: 6, 3
   orig: 6, 3
   offset: 0, 0
   index: -1
 uiBarBg
   rotate: false
-  xy: 52, 480
+  xy: 35, 497
   size: 8, 5
   orig: 8, 5
   offset: 0, 0
