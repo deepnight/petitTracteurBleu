@@ -168,10 +168,10 @@ class Hero extends Entity {
 		}
 
 		// Brake on cliff
-		if( onGround && level.hasMark(CliffHigh, cx,cy, M.sign(dxTotal)) && cliffInsistF<=0.5*Const.FPS ) {
+		if( onGround && level.hasMark(CliffHigh, cx,cy, M.sign(dxTotal)) && cliffInsistF<=0.8*Const.FPS ) {
 			var cliffXr = ( 0.5 + 0.4*M.sign(dxTotal) );
 			var ratio = 1-M.fabs( cliffXr - xr );
-			dx *= Math.pow(0.95 - 0.7*ratio,tmod);
+			dx *= Math.pow(0.95 - 0.85*ratio,tmod);
 		}
 
 		// Bump away from cliffs
