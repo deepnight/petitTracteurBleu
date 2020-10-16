@@ -248,6 +248,7 @@
             </struct>
             <key type="filename">export_tiles/fxCircle0.png</key>
             <key type="filename">export_tiles/itemApple.png</key>
+            <key type="filename">export_tiles/itemDiamond.png</key>
             <key type="filename">export_tiles/itemWood.png</key>
             <key type="filename">export_tiles/wheelLarge0.png</key>
             <key type="filename">export_tiles/wheelSmall0.png</key>
