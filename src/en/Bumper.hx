@@ -18,7 +18,7 @@ class Bumper extends Entity {
 	}
 
 	public function onUse() {
-		game.addSlowMo("bumper", 0.5, 0.7);
+		game.addSlowMo("bumper", 0.6, 0.66);
 		cd.setS("open",0.5);
 		spr.set("bumperOut");
 		setSquashX(0.5);
