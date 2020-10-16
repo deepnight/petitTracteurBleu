@@ -51,8 +51,8 @@ class Cart extends Entity {
 		var fx = hero.footX-hero.dir*10;
 		var fy = hero.footY-7;
 		link.moveTo(fx,fy);
-		var tx = footX + dirTo(hero)*9;
-		var ty = footY-6;
+		var tx = footX + Math.cos(sprRotation) * 9 * dirTo(hero);
+		var ty = footY - 6;
 		var d = distPx(hero);
 		var tension = M.fclamp( (distPx(hero)-20)/18, 0, 1 );
 		link.curveTo(

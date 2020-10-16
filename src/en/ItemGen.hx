@@ -16,6 +16,7 @@ class ItemGen extends Entity {
 		yr = 0.5;
 		gravityMul = 0;
 		hasWallCollisions = false;
+		spr.set("empty");
 
 		for(i in 0...data.f_maxChildren)
 			spawn();
@@ -98,7 +99,7 @@ class ItemGen extends Entity {
 			spawn();
 		}
 
-		fx.markerEntity(this, cd.has("spawnLock") ? 0xff0000 : 0x00ff00, true);
+		// fx.markerEntity(this, cd.has("spawnLock") ? 0xff0000 : 0x00ff00, true);
 	}
 }
 

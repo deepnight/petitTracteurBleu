@@ -19,9 +19,9 @@ class Level extends dn.Process {
 		createRootInLayers(Game.ME.scroller, Const.DP_BG);
 		data = lvl;
 
-		sky = Assets.tiles.h_get("bg", 0, 0,1);
+		sky = Assets.tiles.h_get("bg", 0, 0,0.5);
 		Game.ME.root.add(sky, Const.DP_BG);
-		sky.filter = new h2d.filter.Blur(2, 1, 2);
+		// sky.filter = new h2d.filter.Blur(2, 1, 2);
 
 		parallax = new h2d.TileGroup( Assets.ledTilesets.get(data.l_Parallax.tileset.identifier) );
 		Game.ME.root.add(parallax, Const.DP_BG);
@@ -45,7 +45,7 @@ class Level extends dn.Process {
 				}
 			}
 
-			if( !hasCollision(cx,cy) ) //&& !hasCollision(cx,cy+1) )
+			if( !hasCollision(cx,cy) )
 				for( dir in [-1,1] ) {
 					if( hasCollision(cx+dir,cy) && !hasCollision(cx+dir,cy-1) )
 						setMark(EdgeGrab, cx,cy, dir);
@@ -61,8 +61,8 @@ class Level extends dn.Process {
 
 	override function onResize() {
 		super.onResize();
-		sky.y = h();
-		sky.setScale( M.fmax( w()/sky.tile.width, h()/sky.tile.height ) );
+		sky.y = h()*0.5;
+		sky.setScale( M.fclamp( M.fmax( w()/sky.tile.width, h()/sky.tile.height ), 1, 99 ) );
 		parallax.setScale(Const.SCALE);
 	}
 
@@ -114,7 +114,9 @@ class Level extends dn.Process {
 
 	/** Return TRUE if "Collisions" layer contains a collision value **/
 	public inline function hasCollision(cx,cy) : Bool {
-		return !isValid(cx,cy) ? true : data.l_Collisions.getInt(cx,cy)==0 || data.l_Collisions.getInt(cx,cy)==2;
+		return !isValid(cx,cy)
+			? true
+			: data.l_Collisions.getInt(cx,cy)==0 || data.l_Collisions.getInt(cx,cy)==2 || data.l_Collisions.getInt(cx,cy)==4;
 	}
 
 	public function getGroundDist(cx,cy) {
@@ -135,7 +137,7 @@ class Level extends dn.Process {
 
 		var bg = new h2d.TileGroup(atlasTile, root);
 		data.l_BgElements.renderInTileGroup(bg, false);
-		bg.colorMatrix = C.getColorizeMatrixH2d(Const.BG_COLOR, 0.6);
+		bg.colorMatrix = C.getColorizeMatrixH2d(Const.BG_COLOR, 0.8);
 
 		var shadow = new h2d.TileGroup(atlasTile, root);
 		data.l_Shadows.renderInTileGroup(shadow, false);

@@ -22,6 +22,9 @@ class Item extends Entity {
 			case Wood:
 				spr.filter = new dn.heaps.filter.PixelOutline();
 
+			case Diamond:
+				spr.filter = new dn.heaps.filter.PixelOutline(0xffffff);
+
 			case Apple:
 				hasCartoonDistorsion = false;
 		}
@@ -51,6 +54,9 @@ class Item extends Entity {
 					fx.pick(footX, footY-8);
 					fx.grass(footX, footY, -dirTo(by));
 
+				case Diamond:
+					fx.pick(footX, footY-8);
+
 				case Apple:
 					fx.pick(footX, footY+4);
 					fx.leaves(footX, footY+4);
@@ -73,6 +79,10 @@ class Item extends Entity {
 			addToLayer(Const.DP_BG);
 		else
 			addToLayer(Const.DP_MAIN);
+
+		if( type==Diamond && !isCarried() && !cd.hasSetS("shineFx",0.1) )
+			fx.shine(centerX, centerY, 0x2aadff);
+
 	}
 
 	override function update() {

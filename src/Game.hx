@@ -42,7 +42,7 @@ class Game extends Process {
 
 		scroller = new h2d.Layers();
 		root.add(scroller, Const.DP_MAIN);
-		scroller.filter = new h2d.filter.ColorMatrix(); // force rendering for pixel perfect
+		// scroller.filter = new h2d.filter.ColorMatrix(); // force rendering for pixel perfect
 
 		world = new World();
 		camera = new Camera();
@@ -76,6 +76,9 @@ class Game extends Process {
 
 		for(e in level.data.l_Entities.all_ItemGenerator)
 			new en.ItemGen(e);
+
+		for(e in level.data.l_Entities.all_Bumper)
+			new en.Bumper(e);
 
 		fx.clear();
 		hud.invalidate();

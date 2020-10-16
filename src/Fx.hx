@@ -232,6 +232,45 @@ class Fx extends dn.Process {
 		}
 	}
 
+	public function shine(x:Float, y:Float, c:UInt) {
+		var p = allocTopAdd(getTile("halo"), x,y);
+		p.setFadeS(0.3, 0.1, 0.2);
+		p.colorize(c);
+		p.rotation = rnd(0,M.PI2);
+		p.dr = rnd(0, 0.002, true);
+		p.lifeS = 0.1;
+	}
+
+	public function bumper(x:Float, y:Float) {
+		var c = 0x74f1ff;
+		var p = allocTopAdd(getTile("halo"), x,y);
+		p.setFadeS(0.3, 0, 1);
+		p.colorize(c);
+		p.rotation = rnd(0,M.PI2);
+		p.lifeS = 0;
+
+		var h = Const.GRID*5;
+		var n = 40;
+		for(i in 0...n) {
+			var h = i/n*h + rnd(0,16);
+			var a = M.PI2*i/n + rnd(0,0.1,true);
+			var p = allocTopAdd(getTile("fxLineDir"), x+rnd(0,8,true), y-h);
+			p.setFadeS(rnd(0.3,0.5), 0, 0.1);
+			// p.setCenterRatio(0.5,0.5);
+			p.rotation = -M.PIHALF;
+			p.colorize(c);
+			p.scaleX = rnd(1,2);
+			p.scaleY = 2;
+			p.dy = -rnd(1,2);
+			p.frict = rnd(0.95,0.96);
+			p.ds = 0.2;
+			p.dsFrict = 0.9;
+			p.scaleMul = rnd(0.9,0.93);
+			p.lifeS = 0.5;
+			p.delayS = 0.2 * i/n + rnd(0,0.05,true);
+		}
+	}
+
 	public function leaves(x:Float, y:Float) {
 		for(i in 0...20) {
 			var p = allocTopNormal(getTile("fxLeaf"), x+rnd(0,10,true), y+rnd(0,8,true));

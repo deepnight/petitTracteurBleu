@@ -196,6 +196,22 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">export_tiles/bumperOff.png</key>
+            <key type="filename">export_tiles/bumperOut.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>8,6,16,12</rect>
+                <key>scale9Paddings</key>
+                <rect>8,6,16,12</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">export_tiles/cart0.png</key>
             <key type="filename">export_tiles/tractorBack0.png</key>
             <key type="filename">export_tiles/tractorBase0.png</key>

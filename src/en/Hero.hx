@@ -77,13 +77,23 @@ class Hero extends Entity {
 	// 	});
 	// }
 
-	function jump() {
+	function jump(?bumper:en.Bumper) {
 		setSquashX(0.6);
-		bdy = 0;
-		dy = -0.25;
-		cd.setS("extraJump",0.15);
 		cd.unset("wasOnGround");
 		game.cart.onHeroJump();
+
+		if( bumper!=null ) {
+			cancelVelocities();
+			dy = -0.8;
+			cd.setS("bumperJump",0.2);
+			cd.setS	("walkLock",0.3);
+			bumper.onUse();
+		}
+		else {
+			bdy = 0;
+			dy = -0.25;
+			cd.setS("extraJump",0.15);
+		}
 	}
 
 	override function onLand() {
@@ -93,6 +103,8 @@ class Hero extends Entity {
 
 	override function postUpdate() {
 		super.postUpdate();
+
+		spr.rotation = M.fclampSym( dyTotal * dir, 0.1 );
 
 		halo.x += ( footX-halo.x ) * 0.1;
 		halo.y += ( footY-halo.y-40 ) * 0.1;
@@ -139,6 +151,7 @@ class Hero extends Entity {
 		back.y = spr.y;
 		back.scaleX = spr.scaleX;
 		back.scaleY = spr.scaleY;
+		back.rotation = spr.rotation;
 
 		// var t = ftime*0.1 + uid;
 		// smallWheel.scaleY = 0.8 + Math.sin(t)*0.2;
@@ -155,7 +168,7 @@ class Hero extends Entity {
 			dy = -0.11;
 
 		// Walk
-		if( ca.leftDist()>0 && !cd.has("autoWalk") ) {
+		if( ca.leftDist()>0 && !cd.has("autoWalk") && !cd.has("walkLock") ) {
 			dx += Math.cos( ca.leftAngle() ) * spd * (1-0.5*cd.getRatio("slowdown")) * tmod;
 			var oldDir = dir;
 			dir = M.radDistance( ca.leftAngle(), 0 ) <= M.PIHALF ? 1 : -1;
@@ -171,7 +184,7 @@ class Hero extends Entity {
 				// Climb small step
 				if( level.hasMark(StepSmall, cx, cy, dir) && sightCheckCase(cx,cy) ) {
 					jump();
-					autoWalkS(level.getMarkDir(StepHight, cx, cy), 0.3);
+					autoWalkS(level.getMarkDir(StepSmall, cx, cy), 0.3);
 					xr = 0.5;
 					dy*=0.45;
 				}
@@ -220,7 +233,13 @@ class Hero extends Entity {
 
 		// Jump
 		if( ca.aPressed() && ( onGround || onGroundRecently ) ) {
-			jump();
+			var dh = new dn.DecisionHelper(en.Bumper.ALL);
+			dh.keepOnly( e->distCase(e)<=2.5 );
+			dh.score( e->-distCase(e) );
+			jump( dh.getBest() );
+		}
+		else if( cd.has("bumperJump") ) {
+			dy += -0.10*tmod;
 		}
 		else if( cd.has("extraJump") ) {
 			dy += -0.04*tmod;

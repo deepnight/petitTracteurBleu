@@ -13,6 +13,7 @@ class Home extends Entity {
 		ALL.push(this);
 		storageAng = Math.atan2( data.f_storage[1].cy-data.f_storage[0].cy, data.f_storage[1].cx-data.f_storage[0].cx );
 		storageSize = M.dist( data.f_storage[0].cx, data.f_storage[0].cy, data.f_storage[1].cx, data.f_storage[1].cy ) - 1;
+		spr.set("empty");
 	}
 
 	override function getCarriageX(offset:Float):Float {
