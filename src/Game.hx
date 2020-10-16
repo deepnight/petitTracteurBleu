@@ -30,6 +30,7 @@ class Game extends Process {
 	public var world : World;
 
 	public var hero : en.Hero;
+	public var cart : en.Cart;
 
 	public function new() {
 		super(Main.ME);
@@ -65,6 +66,7 @@ class Game extends Process {
 		// Create entities
 		hero = new en.Hero( level.data.l_Entities.all_Hero[0] );
 		camera.trackTarget( hero, true );
+		cart = new en.Cart();
 
 		for(e in level.data.l_Entities.all_Item)
 			new en.Item(e.f_type, e.cx, e.cy);

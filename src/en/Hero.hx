@@ -30,6 +30,15 @@ class Hero extends Entity {
 		// g.drawRect(-10,-16,20,16);
 	}
 
+
+	override function getCarriageX():Float {
+		return game.cart.footX;
+	}
+
+	override function getCarriageY():Float {
+		return game.cart.footY;
+	}
+
 	override function dispose() {
 		super.dispose();
 

@@ -15,7 +15,7 @@ class ItemGen extends Entity {
 		xr = 0.5;
 		yr = 0.5;
 		gravityMul = 0;
-		collidesWithWalls = false;
+		hasWallCollisions = false;
 
 		for(i in 0...data.f_maxChildren)
 			spawn();

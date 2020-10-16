@@ -31,7 +31,7 @@ class Home extends Entity {
 			if( e.isAlive() && !isCarrying(e) && distCase(e)<=data.f_grabRadius) {
 				if( hero.isCarrying(e) ) {
 					hero.stopCarrying(e);
-					e.collidesWithWalls = false;
+					e.hasWallCollisions = false;
 					e.bump(
 						e.dirTo(this)*rnd(0.30,0.35),
 						-rnd(0.2,0.3)

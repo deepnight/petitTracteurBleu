@@ -72,6 +72,7 @@ class Entity {
 	public var sprScaleY = 1.0;
 	public var sprSquashX = 1.0;
 	public var sprSquashY = 1.0;
+	public var sprRotation = 0.;
 	public var entityVisible = true;
 
 	// Hit points
@@ -114,7 +115,7 @@ class Entity {
 	var carriageWidth: Float = 1.;
 	var carriedRandOffset : Float;
 
-	var collidesWithWalls = true;
+	var hasWallCollisions = true;
 	var hasCartoonDistorsion = true;
 
 
@@ -218,6 +219,9 @@ class Entity {
 
 	public function onBeingCarried(by:Entity) {}
 	public function onStopBeingCarried(by:Entity) {}
+
+	public function getCarriageX() return footX;
+	public function getCarriageY() return footY;
 
 	public function getCarrier() : Null<Entity> {
 		for(e in ALL)
@@ -523,6 +527,7 @@ class Entity {
         spr.scaleX = dir*sprScaleX * sprSquashX;
         spr.scaleY = sprScaleY * sprSquashY;
 		spr.visible = entityVisible;
+		spr.rotation = sprRotation;
 
 		// Cartoon distortion
 		if( hasCartoonDistorsion ) {
@@ -581,7 +586,7 @@ class Entity {
 
 
 	inline function hasCollisionsWithWalls() {
-		return !isCarried() && collidesWithWalls;
+		return !isCarried() && hasWallCollisions;
 	}
 
 	public function fixedUpdate() {} // runs at a "guaranteed" 30 fps
@@ -606,8 +611,8 @@ class Entity {
 		// Follow carrier
 		if( isCarried() && !cd.has("carriedFollowLock")) {
 			bdx = bdy = 0;
-			var tx = carrier.footX + carrier.carriageWidth*carriedRandOffset;
-			var ty = carrier.footY;
+			var tx = carrier.getCarriageX() + carrier.carriageWidth*carriedRandOffset;
+			var ty = carrier.getCarriageY();
 			if( M.dist(footX, footY, tx, ty) > 0.2*Const.GRID ) {
 				var a = Math.atan2(ty-footY, tx-footX);
 				dx+=Math.cos(a)*0.05 * tmod;
