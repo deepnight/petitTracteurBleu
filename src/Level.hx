@@ -32,12 +32,13 @@ class Level extends dn.Process {
 
 		skyDayBack = Assets.tiles.h_get("bgDayBack", 0, 0,0.5, skyWrapper);
 		skyNightBack = Assets.tiles.h_get("bgNightBack", 0, 0,0.5, skyWrapper);
+
 		sun = Assets.tiles.h_get("sun",0, 0.5,0.5, skyWrapper);
 		sun.blendMode = Add;
 		moon = Assets.tiles.h_get("moon",0, 0.5,0.5, skyWrapper);
 		moon.blendMode = Add;
-		skyDayFront = Assets.tiles.h_get("bgDayFront", 0, 0,0.5, skyWrapper);
 
+		skyDayFront = Assets.tiles.h_get("bgDayFront", 0, 0,0.5, skyWrapper);
 		skyNightFront = Assets.tiles.h_get("bgNightFront", 0, 0,0.5, skyWrapper);
 
 		parallax = new h2d.TileGroup( Assets.ledTilesets.get(data.l_Parallax.tileset.identifier) );

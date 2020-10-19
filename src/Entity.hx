@@ -115,6 +115,7 @@ class Entity {
 	var carriedShaking : Float = 0.;
 	var carriageWidth: Float = 1.;
 	var carriedRandOffset : Float;
+	var carriedScale = 1.0;
 
 	var hasWallCollisions = true;
 	var hasCartoonDistorsion = true;
@@ -540,16 +541,16 @@ class Entity {
     public function postUpdate() {
         spr.x = Std.int( footX );
         spr.y = Std.int( footY );
-        spr.scaleX = dir*sprScaleX * sprSquashX;
-        spr.scaleY = sprScaleY * sprSquashY;
+        spr.scaleX = dir*sprScaleX * sprSquashX * (isCarried()?carriedScale:1);
+        spr.scaleY = sprScaleY * sprSquashY * (isCarried()?carriedScale:1);
 		spr.visible = entityVisible;
 		spr.rotation = sprRotation;
 
 		// Cartoon distortion
 		if( hasCartoonDistorsion ) {
 			var t = ftime*0.1 + uid;
-			spr.scaleX *= 0.9 + Math.cos(t)*0.1;
-			spr.scaleY *= 0.9 + Math.sin(t)*0.1;
+			spr.scaleX *= 1 + Math.cos(t)*0.15;
+			spr.scaleY *= 1 + Math.sin(t)*0.15;
 		}
 
 		sprSquashX += (1-sprSquashX) * 0.12;

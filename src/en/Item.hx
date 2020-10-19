@@ -21,11 +21,17 @@ class Item extends Entity {
 		switch type {
 			case Wood:
 				spr.filter = new dn.heaps.filter.PixelOutline();
+				carriedScale = 0.5;
 
 			case Diamond:
 				spr.filter = new dn.heaps.filter.PixelOutline(0xffffff);
+				carriedScale = 1;
 
 			case Apple:
+				hasCartoonDistorsion = false;
+				carriedScale = 0.5;
+
+			case Cow:
 				hasCartoonDistorsion = false;
 		}
 	}
@@ -51,6 +57,10 @@ class Item extends Entity {
 		if( neverPicked ) {
 			switch type {
 				case Wood:
+					fx.pick(footX, footY-8);
+					fx.grass(footX, footY, -dirTo(by));
+
+				case Cow:
 					fx.pick(footX, footY-8);
 					fx.grass(footX, footY, -dirTo(by));
 
@@ -82,12 +92,18 @@ class Item extends Entity {
 
 		if( type==Diamond && !isCarried() && !cd.hasSetS("shineFx",0.1) )
 			fx.shine(centerX, centerY, 0x2aadff);
+	}
 
+	override function onLand() {
+		super.onLand();
+		if( type==Cow )
+			setSquashY(0.5);
 	}
 
 	override function update() {
 		super.update();
-		if( onGround && !isCarried() && !cd.hasSetS("jump",0.4) )
+		var freq = type==Cow ? 0.6 : 0.4;
+		if( onGround && !isCarried() && !cd.hasSetS("jump",freq) )
 			dy = -0.2;
 	}
 }
