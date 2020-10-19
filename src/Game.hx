@@ -36,6 +36,11 @@ class Game extends Process {
 	var logo : HSprite;
 	var sleepMask : HSprite;
 
+	public var mouseX = -1.;
+	public var mouseDown = false;
+	var mouseDownTime = -1.;
+
+
 	public function new() {
 		super(Main.ME);
 		ME = this;
@@ -57,8 +62,47 @@ class Game extends Process {
 		root.add(sleepMask, Const.DP_TOP);
 		sleepMask.colorize(C.hexToInt("#16162b"), 1);
 
+		Boot.ME.s2d.addEventListener( onEvents );
+
 		startLevel(0);
 	}
+
+
+	function onEvents(ev:hxd.Event) {
+		switch ev.kind {
+			case EPush: onMouseDown(ev);
+			case ERelease: onMouseUp();
+			case EMove:
+			case EOver:
+			case EOut: onMouseUp();
+			case EWheel:
+			case EFocus:
+			case EFocusLost: onMouseUp();
+			case EKeyDown:
+			case EKeyUp:
+			case EReleaseOutside: onMouseUp();
+			case ETextInput:
+			case ECheck:
+		}
+	}
+
+	function onMouseDown(e:hxd.Event) {
+		mouseDownTime = haxe.Timer.stamp();
+		mouseDown = true;
+		mouseX = e.relX;
+	}
+
+	function onMouseUp() {
+		if( mouseDown && haxe.Timer.stamp()-mouseDownTime<=0.3 )
+			hero.onShortPress( mouseX>=w()*0.5 ? 1 : -1 );
+
+		mouseDown = false;
+	}
+
+	function onMouseMove(e:hxd.Event) {
+		mouseX = e.relX;
+	}
+
 
 	function startLevel(idx:Int) {
 		// Cleanup
@@ -148,6 +192,8 @@ class Game extends Process {
 
 	override function onDispose() {
 		super.onDispose();
+
+		Boot.ME.s2d.removeEventListener( onEvents );
 
 		fx.destroy();
 		for(e in Entity.ALL)

@@ -79,7 +79,15 @@ class Hero extends Entity {
 	// 	});
 	// }
 
-	function jump(?bumper:en.Bumper) {
+	function jump(useBumpers:Bool) {
+		var bumper : Bumper = null;
+		if( useBumpers ) {
+			var dh = new dn.DecisionHelper(en.Bumper.ALL);
+			dh.keepOnly( e->distCase(e)<=3 );
+			dh.score( e->-distCase(e) );
+			bumper = dh.getBest();
+		}
+
 		setSquashX(0.6);
 		cd.unset("wasOnGround");
 		game.cart.onHeroJump();
@@ -118,7 +126,7 @@ class Hero extends Entity {
 		}
 
 		// Scale anims
-		var moving = ca.lxValue()!=0 && !isSleeping();
+		var moving = getControllerX()!=0;
 		var movingOnGround = onGround && moving;
 
 		spr.scaleX *= (1-turnOverAnim*0.7);
@@ -177,6 +185,26 @@ class Hero extends Entity {
 		return isAlive() && game.isTimeout();
 	}
 
+	function getControllerX() : Float {
+		if( isSleeping() )
+			return 0;
+		else if( ca.lxValue()!=0 )
+			return ca.lxValue();
+		else if( game.mouseDown )
+			return M.fclamp(game.mouseX/game.w(), 0, 1) < 0.5 ? -1 : 1;
+			// return ( M.fclamp(game.mouseX/game.w(), 0, 1) - 0.5 ) * 2;
+		else
+			return 0;
+	}
+
+	public function onShortPress(jumpDir:Int) {
+		if( !isSleeping() && onGroundRecently ) {
+			jump(true);
+			if( !cd.has("walkLock") )
+				autoWalkS(jumpDir, 0.5);
+		}
+	}
+
 	var cliffInsistF = 0.;
 	override function update() {
 		super.update();
@@ -184,14 +212,14 @@ class Hero extends Entity {
 		var spd = 0.016;
 
 		// Jump off cliffs
-		if( !onGround && onGroundRecently && ca.lxValue()!=0 && dyTotal>0 && !cd.hasSetS("cliffMiniJump",0.5) )
+		if( !onGround && onGroundRecently && getControllerX()!=0 && dyTotal>0 && !cd.hasSetS("cliffMiniJump",0.5) )
 			dy = -0.11;
 
 		// Walk
-		if( !isSleeping() && ca.leftDist()>0 && !cd.has("autoWalk") && !cd.has("walkLock") ) {
-			dx += Math.cos( ca.leftAngle() ) * spd * (1-0.5*cd.getRatio("slowdown")) * tmod;
+		if( getControllerX()!=0 && !cd.has("autoWalk") && !cd.has("walkLock") ) {
+			dx += getControllerX() * spd * (1-0.5*cd.getRatio("slowdown")) * tmod;
 			var oldDir = dir;
-			dir = M.radDistance( ca.leftAngle(), 0 ) <= M.PIHALF ? 1 : -1;
+			dir = getControllerX()>0 ? 1 : -1;
 
 			if( oldDir!=dir )
 				turnOverAnim = 1;
@@ -203,14 +231,14 @@ class Hero extends Entity {
 			if( onGround ) {
 				// Climb small step
 				if( level.hasMark(StepSmall, cx, cy, dir) && sightCheckCase(cx,cy) ) {
-					jump();
+					jump(false);
 					autoWalkS(level.getMarkDir(StepSmall, cx, cy), 0.3);
 					xr = 0.5;
 					dy*=0.45;
 				}
 				// Climb high step
 				if( level.hasMark(StepHight, cx, cy, dir) && sightCheckCase(cx,cy) ) {
-					jump();
+					jump(false);
 					autoWalkS(level.getMarkDir(StepHight, cx, cy), 0.3);
 					xr = 0.5;
 				}
@@ -253,10 +281,7 @@ class Hero extends Entity {
 
 		// Jump
 		if( !isSleeping() && ca.aPressed() && ( onGround || onGroundRecently ) ) {
-			var dh = new dn.DecisionHelper(en.Bumper.ALL);
-			dh.keepOnly( e->distCase(e)<=2.5 );
-			dh.score( e->-distCase(e) );
-			jump( dh.getBest() );
+			jump(true);
 		}
 		else if( cd.has("bumperJump") ) {
 			dy += -0.10*tmod;
