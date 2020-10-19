@@ -787,13 +787,13 @@ Camera.prototype = $extend(dn_Process.prototype,{
 			var _g = scroller;
 			_g.posChanged = true;
 			_g.y += this.bumpOffY;
-			if(this.cd.fastCheck.h.hasOwnProperty(50331648)) {
+			if(this.cd.fastCheck.h.hasOwnProperty(75497472)) {
 				var _g = scroller;
-				var v = _g.x + Math.cos(this.ftime * 1.1) * 2.5 * this.shakePower * this.cd._getRatio(50331648);
+				var v = _g.x + Math.cos(this.ftime * 1.1) * 2.5 * this.shakePower * this.cd._getRatio(75497472);
 				_g.posChanged = true;
 				_g.x = v;
 				var _g = scroller;
-				var v = _g.y + Math.sin(0.3 + this.ftime * 1.7) * 2.5 * this.shakePower * this.cd._getRatio(50331648);
+				var v = _g.y + Math.sin(0.3 + this.ftime * 1.7) * 2.5 * this.shakePower * this.cd._getRatio(75497472);
 				_g.posChanged = true;
 				_g.y = v;
 			}
@@ -1384,7 +1384,7 @@ Entity.prototype = {
 		}
 		var _this = Game.ME;
 		this.carriedShaking *= Math.pow(0.98,_this.utmod * _this.getComputedTimeMultiplier());
-		if(!this.cd.fastCheck.h.hasOwnProperty(29360128)) {
+		if(!this.cd.fastCheck.h.hasOwnProperty(54525952)) {
 			var _this = Game.ME;
 			this.blinkColor.x *= Math.pow(0.60,_this.utmod * _this.getComputedTimeMultiplier());
 			var _this = Game.ME;
@@ -1443,7 +1443,7 @@ Entity.prototype = {
 		} else {
 			++i;
 		}
-		if(this.isCarried() && !this.cd.fastCheck.h.hasOwnProperty(8388608)) {
+		if(this.isCarried() && !this.cd.fastCheck.h.hasOwnProperty(33554432)) {
 			this.bdx = this.bdy = 0;
 			var tx = this.carrier.getCarriageX(this.carriedRandOffset);
 			var ty = this.carrier.getCarriageY(this.carriedRandOffset);
@@ -1626,7 +1626,7 @@ Entity.prototype = {
 				allowLower = true;
 			}
 			frames = Math.floor(frames * 1000) / 1000;
-			var cur = _this._getCdObject(4194304);
+			var cur = _this._getCdObject(0);
 			if(!(cur != null && frames < cur.frames && !allowLower)) {
 				if(frames <= 0) {
 					if(cur != null) {
@@ -1636,20 +1636,20 @@ Entity.prototype = {
 						_this.fastCheck.remove(cur.k);
 					}
 				} else {
-					_this.fastCheck.h[4194304] = true;
+					_this.fastCheck.h[0] = true;
 					if(cur != null) {
 						cur.frames = frames;
 					} else {
-						_this.cdList.push(new dn__$Cooldown_CdInst(4194304,frames));
+						_this.cdList.push(new dn__$Cooldown_CdInst(0,frames));
 					}
 				}
 				if(onComplete != null) {
 					if(frames <= 0) {
 						onComplete();
 					} else {
-						var cd = _this._getCdObject(4194304);
+						var cd = _this._getCdObject(0);
 						if(cd == null) {
-							throw haxe_Exception.thrown("cannot bind onComplete(" + 4194304 + "): cooldown " + 4194304 + " isn't running");
+							throw haxe_Exception.thrown("cannot bind onComplete(" + 0 + "): cooldown " + 0 + " isn't running");
 						}
 						cd.cb = onComplete;
 					}
@@ -2730,6 +2730,9 @@ Fx.prototype = $extend(dn_Process.prototype,{
 	,__class__: Fx
 });
 var Game = function() {
+	this.mouseDownTime = -1.;
+	this.mouseDown = false;
+	this.mouseX = -1.;
 	this.gameTimeS = 0.;
 	this.slowMos = new haxe_ds_StringMap();
 	this.curGameSpeed = 1.0;
@@ -2786,13 +2789,60 @@ var Game = function() {
 	_this.y = (c >> 8 & 255) / 255;
 	_this.z = (c & 255) / 255;
 	_this.w = (c >>> 24) / 255;
+	Boot.ME.s2d.addEventListener($bind(this,this.onEvents));
 	this.startLevel(0);
 };
 $hxClasses["Game"] = Game;
 Game.__name__ = "Game";
 Game.__super__ = dn_Process;
 Game.prototype = $extend(dn_Process.prototype,{
-	startLevel: function(idx) {
+	onEvents: function(ev) {
+		switch(ev.kind._hx_index) {
+		case 0:
+			this.onMouseDown(ev);
+			break;
+		case 1:
+			this.onMouseUp();
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			this.onMouseUp();
+			break;
+		case 5:
+			break;
+		case 6:
+			break;
+		case 7:
+			this.onMouseUp();
+			break;
+		case 8:
+			break;
+		case 9:
+			break;
+		case 10:
+			this.onMouseUp();
+			break;
+		case 11:
+			break;
+		case 12:
+			break;
+		}
+	}
+	,onMouseDown: function(e) {
+		this.mouseDownTime = HxOverrides.now() / 1000;
+		this.mouseDown = true;
+		this.mouseX = e.relX;
+	}
+	,onMouseUp: function() {
+		if(this.mouseDown && HxOverrides.now() / 1000 - this.mouseDownTime <= 0.3) {
+			this.hero.onShortPress(this.mouseX >= (dn_Process.CUSTOM_STAGE_WIDTH > 0 ? dn_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width()) * 0.5 ? 1 : -1);
+		}
+		this.mouseDown = false;
+	}
+	,startLevel: function(idx) {
 		var _gthis = this;
 		if(this.level != null) {
 			this.level.destroyed = true;
@@ -2902,7 +2952,7 @@ Game.prototype = $extend(dn_Process.prototype,{
 			allowLower = true;
 		}
 		frames = Math.floor(frames * 1000) / 1000;
-		var cur = _this._getCdObject(0);
+		var cur = _this._getCdObject(29360128);
 		if(!(cur != null && frames < cur.frames && !allowLower)) {
 			if(frames <= 0) {
 				if(cur != null) {
@@ -2912,20 +2962,20 @@ Game.prototype = $extend(dn_Process.prototype,{
 					_this.fastCheck.remove(cur.k);
 				}
 			} else {
-				_this.fastCheck.h[0] = true;
+				_this.fastCheck.h[29360128] = true;
 				if(cur != null) {
 					cur.frames = frames;
 				} else {
-					_this.cdList.push(new dn__$Cooldown_CdInst(0,frames));
+					_this.cdList.push(new dn__$Cooldown_CdInst(29360128,frames));
 				}
 			}
 			if(onComplete != null) {
 				if(frames <= 0) {
 					onComplete();
 				} else {
-					var cd = _this._getCdObject(0);
+					var cd = _this._getCdObject(29360128);
 					if(cd == null) {
-						throw haxe_Exception.thrown("cannot bind onComplete(" + 0 + "): cooldown " + 0 + " isn't running");
+						throw haxe_Exception.thrown("cannot bind onComplete(" + 29360128 + "): cooldown " + 29360128 + " isn't running");
 					}
 					cd.cb = onComplete;
 				}
@@ -3033,6 +3083,7 @@ Game.prototype = $extend(dn_Process.prototype,{
 	}
 	,onDispose: function() {
 		dn_Process.prototype.onDispose.call(this);
+		Boot.ME.s2d.removeEventListener($bind(this,this.onEvents));
 		this.fx.destroyed = true;
 		var _g = 0;
 		var _g1 = Entity.ALL;
@@ -3128,7 +3179,7 @@ Game.prototype = $extend(dn_Process.prototype,{
 		_this.x = x * 0.5 | 0;
 		var _this = this.logo;
 		var x = dn_Process.CUSTOM_STAGE_HEIGHT > 0 ? dn_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
-		var v = this.cd._getRatio(0);
+		var v = this.cd._getRatio(29360128);
 		var v1 = dn_Process.CUSTOM_STAGE_HEIGHT > 0 ? dn_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
 		_this.posChanged = true;
 		_this.y = (x * 0.88 | 0) + v * v1 * 0.2;
@@ -10596,7 +10647,7 @@ en_Bumper.prototype = $extend(Entity.prototype,{
 			allowLower = true;
 		}
 		frames = Math.floor(frames * 1000) / 1000;
-		var cur = _this._getCdObject(54525952);
+		var cur = _this._getCdObject(16777216);
 		if(!(cur != null && frames < cur.frames && !allowLower)) {
 			if(frames <= 0) {
 				if(cur != null) {
@@ -10606,20 +10657,20 @@ en_Bumper.prototype = $extend(Entity.prototype,{
 					_this.fastCheck.remove(cur.k);
 				}
 			} else {
-				_this.fastCheck.h[54525952] = true;
+				_this.fastCheck.h[16777216] = true;
 				if(cur != null) {
 					cur.frames = frames;
 				} else {
-					_this.cdList.push(new dn__$Cooldown_CdInst(54525952,frames));
+					_this.cdList.push(new dn__$Cooldown_CdInst(16777216,frames));
 				}
 			}
 			if(onComplete != null) {
 				if(frames <= 0) {
 					onComplete();
 				} else {
-					var cd = _this._getCdObject(54525952);
+					var cd = _this._getCdObject(16777216);
 					if(cd == null) {
-						throw haxe_Exception.thrown("cannot bind onComplete(" + 54525952 + "): cooldown " + 54525952 + " isn't running");
+						throw haxe_Exception.thrown("cannot bind onComplete(" + 16777216 + "): cooldown " + 16777216 + " isn't running");
 					}
 					cd.cb = onComplete;
 				}
@@ -10687,7 +10738,7 @@ en_Bumper.prototype = $extend(Entity.prototype,{
 	}
 	,update: function() {
 		Entity.prototype.update.call(this);
-		if(!this.cd.fastCheck.h.hasOwnProperty(54525952) && this.spr.groupName == "bumperOut") {
+		if(!this.cd.fastCheck.h.hasOwnProperty(16777216) && this.spr.groupName == "bumperOut") {
 			var _this = this.spr;
 			var l = null;
 			if(l != null) {
@@ -11067,7 +11118,7 @@ en_Cart.prototype = $extend(Entity.prototype,{
 			allowLower = true;
 		}
 		frames = Math.floor(frames * 1000) / 1000;
-		var cur = _this._getCdObject(62914560);
+		var cur = _this._getCdObject(4194304);
 		if(!(cur != null && frames < cur.frames && !allowLower)) {
 			if(frames <= 0) {
 				if(cur != null) {
@@ -11077,20 +11128,20 @@ en_Cart.prototype = $extend(Entity.prototype,{
 					_this.fastCheck.remove(cur.k);
 				}
 			} else {
-				_this.fastCheck.h[62914560] = true;
+				_this.fastCheck.h[4194304] = true;
 				if(cur != null) {
 					cur.frames = frames;
 				} else {
-					_this.cdList.push(new dn__$Cooldown_CdInst(62914560,frames));
+					_this.cdList.push(new dn__$Cooldown_CdInst(4194304,frames));
 				}
 			}
 			if(onComplete != null) {
 				if(frames <= 0) {
 					onComplete();
 				} else {
-					var cd = _this._getCdObject(62914560);
+					var cd = _this._getCdObject(4194304);
 					if(cd == null) {
-						throw haxe_Exception.thrown("cannot bind onComplete(" + 62914560 + "): cooldown " + 62914560 + " isn't running");
+						throw haxe_Exception.thrown("cannot bind onComplete(" + 4194304 + "): cooldown " + 4194304 + " isn't running");
 					}
 					cd.cb = onComplete;
 				}
@@ -11211,7 +11262,7 @@ en_Cart.prototype = $extend(Entity.prototype,{
 		}
 		var spd = needRecal ? 0.024 : 0.013;
 		var tmp;
-		if(this.cd.fastCheck.h.hasOwnProperty(62914560)) {
+		if(this.cd.fastCheck.h.hasOwnProperty(4194304)) {
 			tmp = 0.4;
 		} else if(needRecal) {
 			var tmp1;
@@ -11827,7 +11878,7 @@ var en_Hero = function(e) {
 	}
 	this.gyro = s;
 	this.hasCartoonDistorsion = false;
-	this.carriageWidth *= 0.25;
+	this.carriageWidth = 0;
 };
 $hxClasses["en.Hero"] = en_Hero;
 en_Hero.__name__ = "en.Hero";
@@ -11879,7 +11930,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 			allowLower = true;
 		}
 		frames = Math.floor(frames * 1000) / 1000;
-		var cur = _this._getCdObject(58720256);
+		var cur = _this._getCdObject(25165824);
 		if(!(cur != null && frames < cur.frames && !allowLower)) {
 			if(frames <= 0) {
 				if(cur != null) {
@@ -11889,27 +11940,67 @@ en_Hero.prototype = $extend(Entity.prototype,{
 					_this.fastCheck.remove(cur.k);
 				}
 			} else {
-				_this.fastCheck.h[58720256] = true;
+				_this.fastCheck.h[25165824] = true;
 				if(cur != null) {
 					cur.frames = frames;
 				} else {
-					_this.cdList.push(new dn__$Cooldown_CdInst(58720256,frames));
+					_this.cdList.push(new dn__$Cooldown_CdInst(25165824,frames));
 				}
 			}
 			if(onComplete != null) {
 				if(frames <= 0) {
 					onComplete();
 				} else {
-					var cd = _this._getCdObject(58720256);
+					var cd = _this._getCdObject(25165824);
 					if(cd == null) {
-						throw haxe_Exception.thrown("cannot bind onComplete(" + 58720256 + "): cooldown " + 58720256 + " isn't running");
+						throw haxe_Exception.thrown("cannot bind onComplete(" + 25165824 + "): cooldown " + 25165824 + " isn't running");
 					}
 					cd.cb = onComplete;
 				}
 			}
 		}
 	}
-	,jump: function(bumper) {
+	,jump: function(useBumpers) {
+		var _gthis = this;
+		var bumper = null;
+		if(useBumpers) {
+			var dh = new dn_DecisionHelper(en_Bumper.ALL);
+			var _g = 0;
+			var _g1 = dh.all;
+			while(_g < _g1.length) {
+				var e = _g1[_g];
+				++_g;
+				var tmp;
+				if(!e.out) {
+					var e1 = e.v;
+					var ax = _gthis.cx + _gthis.xr;
+					var ay = _gthis.cy + _gthis.yr;
+					var bx = e1.cx + e1.xr;
+					var by = e1.cy + e1.yr;
+					tmp = !(Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by)) <= 3);
+				} else {
+					tmp = false;
+				}
+				if(tmp) {
+					e.out = true;
+				}
+			}
+			var _g = 0;
+			var _g1 = dh.all;
+			while(_g < _g1.length) {
+				var e = _g1[_g];
+				++_g;
+				if(!e.out) {
+					var e1 = e.v;
+					var ax = _gthis.cx + _gthis.xr;
+					var ay = _gthis.cy + _gthis.yr;
+					var bx = e1.cx + e1.xr;
+					var by = e1.cy + e1.yr;
+					e.score += -Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
+				}
+			}
+			bumper = dh.getBest();
+		}
 		this.setSquashX(0.6);
 		var _this = this.cd;
 		var _g = 0;
@@ -11917,7 +12008,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 		while(_g < _g1.length) {
 			var cd = _g1[_g];
 			++_g;
-			if(cd.k == 4194304) {
+			if(cd.k == 0) {
 				HxOverrides.remove(_this.cdList,cd);
 				cd.frames = 0;
 				cd.cb = null;
@@ -11937,7 +12028,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 				allowLower = true;
 			}
 			frames = Math.floor(frames * 1000) / 1000;
-			var cur = _this._getCdObject(67108864);
+			var cur = _this._getCdObject(8388608);
 			if(!(cur != null && frames < cur.frames && !allowLower)) {
 				if(frames <= 0) {
 					if(cur != null) {
@@ -11947,20 +12038,20 @@ en_Hero.prototype = $extend(Entity.prototype,{
 						_this.fastCheck.remove(cur.k);
 					}
 				} else {
-					_this.fastCheck.h[67108864] = true;
+					_this.fastCheck.h[8388608] = true;
 					if(cur != null) {
 						cur.frames = frames;
 					} else {
-						_this.cdList.push(new dn__$Cooldown_CdInst(67108864,frames));
+						_this.cdList.push(new dn__$Cooldown_CdInst(8388608,frames));
 					}
 				}
 				if(onComplete != null) {
 					if(frames <= 0) {
 						onComplete();
 					} else {
-						var cd = _this._getCdObject(67108864);
+						var cd = _this._getCdObject(8388608);
 						if(cd == null) {
-							throw haxe_Exception.thrown("cannot bind onComplete(" + 67108864 + "): cooldown " + 67108864 + " isn't running");
+							throw haxe_Exception.thrown("cannot bind onComplete(" + 8388608 + "): cooldown " + 8388608 + " isn't running");
 						}
 						cd.cb = onComplete;
 					}
@@ -11974,7 +12065,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 				allowLower = true;
 			}
 			frames = Math.floor(frames * 1000) / 1000;
-			var cur = _this._getCdObject(71303168);
+			var cur = _this._getCdObject(12582912);
 			if(!(cur != null && frames < cur.frames && !allowLower)) {
 				if(frames <= 0) {
 					if(cur != null) {
@@ -11984,20 +12075,20 @@ en_Hero.prototype = $extend(Entity.prototype,{
 						_this.fastCheck.remove(cur.k);
 					}
 				} else {
-					_this.fastCheck.h[71303168] = true;
+					_this.fastCheck.h[12582912] = true;
 					if(cur != null) {
 						cur.frames = frames;
 					} else {
-						_this.cdList.push(new dn__$Cooldown_CdInst(71303168,frames));
+						_this.cdList.push(new dn__$Cooldown_CdInst(12582912,frames));
 					}
 				}
 				if(onComplete != null) {
 					if(frames <= 0) {
 						onComplete();
 					} else {
-						var cd = _this._getCdObject(71303168);
+						var cd = _this._getCdObject(12582912);
 						if(cd == null) {
-							throw haxe_Exception.thrown("cannot bind onComplete(" + 71303168 + "): cooldown " + 71303168 + " isn't running");
+							throw haxe_Exception.thrown("cannot bind onComplete(" + 12582912 + "): cooldown " + 12582912 + " isn't running");
 						}
 						cd.cb = onComplete;
 					}
@@ -12015,7 +12106,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 				allowLower = true;
 			}
 			frames = Math.floor(frames * 1000) / 1000;
-			var cur = _this._getCdObject(75497472);
+			var cur = _this._getCdObject(20971520);
 			if(!(cur != null && frames < cur.frames && !allowLower)) {
 				if(frames <= 0) {
 					if(cur != null) {
@@ -12025,20 +12116,20 @@ en_Hero.prototype = $extend(Entity.prototype,{
 						_this.fastCheck.remove(cur.k);
 					}
 				} else {
-					_this.fastCheck.h[75497472] = true;
+					_this.fastCheck.h[20971520] = true;
 					if(cur != null) {
 						cur.frames = frames;
 					} else {
-						_this.cdList.push(new dn__$Cooldown_CdInst(75497472,frames));
+						_this.cdList.push(new dn__$Cooldown_CdInst(20971520,frames));
 					}
 				}
 				if(onComplete != null) {
 					if(frames <= 0) {
 						onComplete();
 					} else {
-						var cd = _this._getCdObject(75497472);
+						var cd = _this._getCdObject(20971520);
 						if(cd == null) {
-							throw haxe_Exception.thrown("cannot bind onComplete(" + 75497472 + "): cooldown " + 75497472 + " isn't running");
+							throw haxe_Exception.thrown("cannot bind onComplete(" + 20971520 + "): cooldown " + 20971520 + " isn't running");
 						}
 						cd.cb = onComplete;
 					}
@@ -12076,106 +12167,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 			halo.alpha = 0.03 + 0.12 * Game.ME.level.nightRatio;
 			hDir *= -1;
 		}
-		var _this = this.ca;
-		var moving;
-		if(_this.parent.mode == dn_heaps_Mode.Keyboard) {
-			var k = 17;
-			var moving1;
-			if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-				var moving2;
-				var moving3;
-				var moving4;
-				var k1 = _this.parent.primary.h[k];
-				if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-					var k1 = _this.parent.secondary.h[k];
-					moving4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-				} else {
-					moving4 = true;
-				}
-				if(!moving4) {
-					var k1 = _this.parent.third.h[k];
-					moving3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-				} else {
-					moving3 = true;
-				}
-				if(!moving3) {
-					var k1 = _this.parent.fourth.h[k];
-					moving2 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-				} else {
-					moving2 = true;
-				}
-				if(!moving2) {
-					var _this1 = _this.parent.gc;
-					moving1 = _this1.device != null && _this1.toggles[k] > 0;
-				} else {
-					moving1 = true;
-				}
-			} else {
-				moving1 = false;
-			}
-			if(moving1) {
-				moving = -1;
-			} else {
-				var k = 18;
-				var moving1;
-				if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-					var moving2;
-					var moving3;
-					var moving4;
-					var k1 = _this.parent.primary.h[k];
-					if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-						var k1 = _this.parent.secondary.h[k];
-						moving4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						moving4 = true;
-					}
-					if(!moving4) {
-						var k1 = _this.parent.third.h[k];
-						moving3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						moving3 = true;
-					}
-					if(!moving3) {
-						var k1 = _this.parent.fourth.h[k];
-						moving2 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						moving2 = true;
-					}
-					if(!moving2) {
-						var _this1 = _this.parent.gc;
-						moving1 = _this1.device != null && _this1.toggles[k] > 0;
-					} else {
-						moving1 = true;
-					}
-				} else {
-					moving1 = false;
-				}
-				moving = moving1 ? 1 : 0;
-			}
-		} else {
-			var _this1 = _this.parent.gc;
-			var simplified = false;
-			var overrideDeadZone = _this.leftDeadZone;
-			if(overrideDeadZone == null) {
-				overrideDeadZone = -1.;
-			}
-			if(simplified == null) {
-				simplified = false;
-			}
-			if(_this1.device != null) {
-				var idx = dn_heaps_GamePad.MAPPING[18];
-				var overrideDeadZone1 = overrideDeadZone;
-				if(overrideDeadZone1 == null) {
-					overrideDeadZone1 = -1.;
-				}
-				var v = idx > -1 && idx < _this1.device.values.length ? _this1.device.values[idx] : 0;
-				var dz = overrideDeadZone1 < 0. ? _this1.deadZone : overrideDeadZone1;
-				moving = simplified ? v < -dz ? -1. : v > dz ? 1. : 0. : v > -dz && v < dz ? 0. : v;
-			} else {
-				moving = 0.;
-			}
-		}
-		var moving1 = moving != 0 && !(!this.destroyed && Game.ME.gameTimeS >= Const.MAX_GAME_TIME_S);
+		var moving = this.getControllerX() != 0;
 		var movingOnGround;
 		if(this.destroyed) {
 			movingOnGround = true;
@@ -12208,7 +12200,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 			}
 			movingOnGround = movingOnGround1 && this.dy + this.bdy == 0;
 		}
-		var movingOnGround1 = movingOnGround && moving1;
+		var movingOnGround1 = movingOnGround && moving;
 		var _g = this.spr;
 		_g.posChanged = true;
 		_g.scaleX *= 1 - this.turnOverAnim * 0.7;
@@ -12409,7 +12401,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 			Game.ME.fx.grass((this.cx + this.xr) * Const.GRID,(this.cy + this.yr) * Const.GRID,-this.dir);
 		}
 		var _this = this.cd;
-		var frames = (moving1 ? 0.18 : 0.5) * this.cd.baseFps;
+		var frames = (moving ? 0.18 : 0.5) * this.cd.baseFps;
 		var tmp;
 		if(_this.fastCheck.h.hasOwnProperty(83886080)) {
 			tmp = true;
@@ -12516,158 +12508,85 @@ en_Hero.prototype = $extend(Entity.prototype,{
 			Game.ME.fx.zzz((this.cx + this.xr) * Const.GRID - this.dir * 0,(this.cy + this.yr) * Const.GRID - 16,-this.dir);
 		}
 	}
-	,update: function() {
-		var _gthis = this;
-		Entity.prototype.update.call(this);
-		var spd = 0.016;
-		var tmp;
-		var tmp1;
-		var tmp2;
-		var tmp3;
-		if(this.destroyed) {
-			tmp3 = true;
+	,getControllerX: function() {
+		if(!this.destroyed && Game.ME.gameTimeS >= Const.MAX_GAME_TIME_S) {
+			return 0;
 		} else {
-			var tmp4;
-			if(this.yr == 1) {
-				var _this = Game.ME.level;
-				var cx = this.cx;
-				var cy = this.cy + 1;
-				if(!(cx >= 0 && cx < _this.data.l_Collisions.cWid && cy >= 0 && cy < _this.data.l_Collisions.cHei)) {
-					tmp4 = true;
-				} else {
-					var tmp5;
-					var _this1 = _this.data.l_Collisions;
-					if((!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) != 0) {
-						var _this1 = _this.data.l_Collisions;
-						tmp5 = (!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) == 2;
-					} else {
-						tmp5 = true;
-					}
-					if(!tmp5) {
-						var _this1 = _this.data.l_Collisions;
-						tmp4 = (!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) == 4;
-					} else {
-						tmp4 = true;
-					}
-				}
-			} else {
-				tmp4 = false;
-			}
-			tmp3 = tmp4 && this.dy + this.bdy == 0;
-		}
-		if(!tmp3) {
-			var tmp3;
-			if(this.destroyed) {
-				tmp3 = true;
-			} else {
-				var tmp4;
-				if(this.yr == 1) {
-					var _this = Game.ME.level;
-					var cx = this.cx;
-					var cy = this.cy + 1;
-					if(!(cx >= 0 && cx < _this.data.l_Collisions.cWid && cy >= 0 && cy < _this.data.l_Collisions.cHei)) {
-						tmp4 = true;
-					} else {
-						var tmp5;
-						var _this1 = _this.data.l_Collisions;
-						if((!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) != 0) {
-							var _this1 = _this.data.l_Collisions;
-							tmp5 = (!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) == 2;
-						} else {
-							tmp5 = true;
-						}
-						if(!tmp5) {
-							var _this1 = _this.data.l_Collisions;
-							tmp4 = (!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) == 4;
-						} else {
-							tmp4 = true;
-						}
-					}
-				} else {
-					tmp4 = false;
-				}
-				tmp3 = tmp4 && this.dy + this.bdy == 0;
-			}
-			tmp2 = tmp3 || !this.destroyed && this.cd.fastCheck.h.hasOwnProperty(4194304);
-		} else {
-			tmp2 = false;
-		}
-		if(tmp2) {
 			var _this = this.ca;
-			var tmp2;
+			var tmp;
 			if(_this.parent.mode == dn_heaps_Mode.Keyboard) {
 				var k = 17;
-				var tmp3;
+				var tmp1;
 				if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
+					var tmp2;
+					var tmp3;
 					var tmp4;
-					var tmp5;
-					var tmp6;
 					var k1 = _this.parent.primary.h[k];
 					if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
 						var k1 = _this.parent.secondary.h[k];
-						tmp6 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						tmp6 = true;
-					}
-					if(!tmp6) {
-						var k1 = _this.parent.third.h[k];
-						tmp5 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						tmp5 = true;
-					}
-					if(!tmp5) {
-						var k1 = _this.parent.fourth.h[k];
 						tmp4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
 					} else {
 						tmp4 = true;
 					}
 					if(!tmp4) {
-						var _this1 = _this.parent.gc;
-						tmp3 = _this1.device != null && _this1.toggles[k] > 0;
+						var k1 = _this.parent.third.h[k];
+						tmp3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
 					} else {
 						tmp3 = true;
 					}
+					if(!tmp3) {
+						var k1 = _this.parent.fourth.h[k];
+						tmp2 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
+					} else {
+						tmp2 = true;
+					}
+					if(!tmp2) {
+						var _this1 = _this.parent.gc;
+						tmp1 = _this1.device != null && _this1.toggles[k] > 0;
+					} else {
+						tmp1 = true;
+					}
 				} else {
-					tmp3 = false;
+					tmp1 = false;
 				}
-				if(tmp3) {
-					tmp2 = -1;
+				if(tmp1) {
+					tmp = -1;
 				} else {
 					var k = 18;
-					var tmp3;
+					var tmp1;
 					if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
+						var tmp2;
+						var tmp3;
 						var tmp4;
-						var tmp5;
-						var tmp6;
 						var k1 = _this.parent.primary.h[k];
 						if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
 							var k1 = _this.parent.secondary.h[k];
-							tmp6 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							tmp6 = true;
-						}
-						if(!tmp6) {
-							var k1 = _this.parent.third.h[k];
-							tmp5 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							tmp5 = true;
-						}
-						if(!tmp5) {
-							var k1 = _this.parent.fourth.h[k];
 							tmp4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
 						} else {
 							tmp4 = true;
 						}
 						if(!tmp4) {
-							var _this1 = _this.parent.gc;
-							tmp3 = _this1.device != null && _this1.toggles[k] > 0;
+							var k1 = _this.parent.third.h[k];
+							tmp3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
 						} else {
 							tmp3 = true;
 						}
+						if(!tmp3) {
+							var k1 = _this.parent.fourth.h[k];
+							tmp2 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
+						} else {
+							tmp2 = true;
+						}
+						if(!tmp2) {
+							var _this1 = _this.parent.gc;
+							tmp1 = _this1.device != null && _this1.toggles[k] > 0;
+						} else {
+							tmp1 = true;
+						}
 					} else {
-						tmp3 = false;
+						tmp1 = false;
 					}
-					tmp2 = tmp3 ? 1 : 0;
+					tmp = tmp1 ? 1 : 0;
 				}
 			} else {
 				var _this1 = _this.parent.gc;
@@ -12687,16 +12606,260 @@ en_Hero.prototype = $extend(Entity.prototype,{
 					}
 					var v = idx > -1 && idx < _this1.device.values.length ? _this1.device.values[idx] : 0;
 					var dz = overrideDeadZone1 < 0. ? _this1.deadZone : overrideDeadZone1;
-					tmp2 = simplified ? v < -dz ? -1. : v > dz ? 1. : 0. : v > -dz && v < dz ? 0. : v;
+					tmp = simplified ? v < -dz ? -1. : v > dz ? 1. : 0. : v > -dz && v < dz ? 0. : v;
 				} else {
-					tmp2 = 0.;
+					tmp = 0.;
 				}
 			}
-			tmp1 = tmp2 != 0;
+			if(tmp != 0) {
+				var _this = this.ca;
+				if(_this.parent.mode == dn_heaps_Mode.Keyboard) {
+					var k = 17;
+					var tmp;
+					if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
+						var tmp1;
+						var tmp2;
+						var tmp3;
+						var k1 = _this.parent.primary.h[k];
+						if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
+							var k1 = _this.parent.secondary.h[k];
+							tmp3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
+						} else {
+							tmp3 = true;
+						}
+						if(!tmp3) {
+							var k1 = _this.parent.third.h[k];
+							tmp2 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
+						} else {
+							tmp2 = true;
+						}
+						if(!tmp2) {
+							var k1 = _this.parent.fourth.h[k];
+							tmp1 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
+						} else {
+							tmp1 = true;
+						}
+						if(!tmp1) {
+							var _this1 = _this.parent.gc;
+							tmp = _this1.device != null && _this1.toggles[k] > 0;
+						} else {
+							tmp = true;
+						}
+					} else {
+						tmp = false;
+					}
+					if(tmp) {
+						return -1;
+					} else {
+						var k = 18;
+						var tmp;
+						if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
+							var tmp1;
+							var tmp2;
+							var tmp3;
+							var k1 = _this.parent.primary.h[k];
+							if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
+								var k1 = _this.parent.secondary.h[k];
+								tmp3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
+							} else {
+								tmp3 = true;
+							}
+							if(!tmp3) {
+								var k1 = _this.parent.third.h[k];
+								tmp2 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
+							} else {
+								tmp2 = true;
+							}
+							if(!tmp2) {
+								var k1 = _this.parent.fourth.h[k];
+								tmp1 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
+							} else {
+								tmp1 = true;
+							}
+							if(!tmp1) {
+								var _this1 = _this.parent.gc;
+								tmp = _this1.device != null && _this1.toggles[k] > 0;
+							} else {
+								tmp = true;
+							}
+						} else {
+							tmp = false;
+						}
+						if(tmp) {
+							return 1;
+						} else {
+							return 0;
+						}
+					}
+				} else {
+					var _this1 = _this.parent.gc;
+					var simplified = false;
+					var overrideDeadZone = _this.leftDeadZone;
+					if(overrideDeadZone == null) {
+						overrideDeadZone = -1.;
+					}
+					if(simplified == null) {
+						simplified = false;
+					}
+					if(_this1.device != null) {
+						var idx = dn_heaps_GamePad.MAPPING[18];
+						var overrideDeadZone1 = overrideDeadZone;
+						if(overrideDeadZone1 == null) {
+							overrideDeadZone1 = -1.;
+						}
+						var v = idx > -1 && idx < _this1.device.values.length ? _this1.device.values[idx] : 0;
+						var dz = overrideDeadZone1 < 0. ? _this1.deadZone : overrideDeadZone1;
+						if(simplified) {
+							if(v < -dz) {
+								return -1.;
+							} else if(v > dz) {
+								return 1.;
+							} else {
+								return 0.;
+							}
+						} else if(v > -dz && v < dz) {
+							return 0.;
+						} else {
+							return v;
+						}
+					} else {
+						return 0.;
+					}
+				}
+			} else if(Game.ME.mouseDown) {
+				var _this = Game.ME;
+				var x = Game.ME.mouseX / (dn_Process.CUSTOM_STAGE_WIDTH > 0 ? dn_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width());
+				if((x < 0 ? 0 : x > 1 ? 1 : x) < 0.5) {
+					return -1;
+				} else {
+					return 1;
+				}
+			} else {
+				return 0;
+			}
+		}
+	}
+	,onShortPress: function(jumpDir) {
+		var tmp;
+		if(!(!this.destroyed && Game.ME.gameTimeS >= Const.MAX_GAME_TIME_S)) {
+			var tmp1;
+			if(this.destroyed) {
+				tmp1 = true;
+			} else {
+				var tmp2;
+				if(this.yr == 1) {
+					var _this = Game.ME.level;
+					var cx = this.cx;
+					var cy = this.cy + 1;
+					if(!(cx >= 0 && cx < _this.data.l_Collisions.cWid && cy >= 0 && cy < _this.data.l_Collisions.cHei)) {
+						tmp2 = true;
+					} else {
+						var tmp3;
+						var _this1 = _this.data.l_Collisions;
+						if((!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) != 0) {
+							var _this1 = _this.data.l_Collisions;
+							tmp3 = (!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) == 2;
+						} else {
+							tmp3 = true;
+						}
+						if(!tmp3) {
+							var _this1 = _this.data.l_Collisions;
+							tmp2 = (!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) == 4;
+						} else {
+							tmp2 = true;
+						}
+					}
+				} else {
+					tmp2 = false;
+				}
+				tmp1 = tmp2 && this.dy + this.bdy == 0;
+			}
+			tmp = tmp1 || !this.destroyed && this.cd.fastCheck.h.hasOwnProperty(0);
+		} else {
+			tmp = false;
+		}
+		if(tmp) {
+			this.jump(true);
+			if(!this.cd.fastCheck.h.hasOwnProperty(12582912)) {
+				this.autoWalkS(jumpDir,0.5);
+			}
+		}
+	}
+	,update: function() {
+		Entity.prototype.update.call(this);
+		var spd = 0.016;
+		var tmp;
+		var tmp1;
+		var tmp2;
+		if(this.destroyed) {
+			tmp2 = true;
+		} else {
+			var tmp3;
+			if(this.yr == 1) {
+				var _this = Game.ME.level;
+				var cx = this.cx;
+				var cy = this.cy + 1;
+				if(!(cx >= 0 && cx < _this.data.l_Collisions.cWid && cy >= 0 && cy < _this.data.l_Collisions.cHei)) {
+					tmp3 = true;
+				} else {
+					var tmp4;
+					var _this1 = _this.data.l_Collisions;
+					if((!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) != 0) {
+						var _this1 = _this.data.l_Collisions;
+						tmp4 = (!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) == 2;
+					} else {
+						tmp4 = true;
+					}
+					if(!tmp4) {
+						var _this1 = _this.data.l_Collisions;
+						tmp3 = (!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) == 4;
+					} else {
+						tmp3 = true;
+					}
+				}
+			} else {
+				tmp3 = false;
+			}
+			tmp2 = tmp3 && this.dy + this.bdy == 0;
+		}
+		if(!tmp2) {
+			var tmp2;
+			if(this.destroyed) {
+				tmp2 = true;
+			} else {
+				var tmp3;
+				if(this.yr == 1) {
+					var _this = Game.ME.level;
+					var cx = this.cx;
+					var cy = this.cy + 1;
+					if(!(cx >= 0 && cx < _this.data.l_Collisions.cWid && cy >= 0 && cy < _this.data.l_Collisions.cHei)) {
+						tmp3 = true;
+					} else {
+						var tmp4;
+						var _this1 = _this.data.l_Collisions;
+						if((!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) != 0) {
+							var _this1 = _this.data.l_Collisions;
+							tmp4 = (!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) == 2;
+						} else {
+							tmp4 = true;
+						}
+						if(!tmp4) {
+							var _this1 = _this.data.l_Collisions;
+							tmp3 = (!(cx >= 0 && cx < _this1.cWid && cy >= 0 && cy < _this1.cHei) || !_this1.intGrid.h.hasOwnProperty(cx + cy * _this1.cWid) ? -1 : _this1.intGrid.h[cx + cy * _this1.cWid]) == 4;
+						} else {
+							tmp3 = true;
+						}
+					}
+				} else {
+					tmp3 = false;
+				}
+				tmp2 = tmp3 && this.dy + this.bdy == 0;
+			}
+			tmp1 = tmp2 || !this.destroyed && this.cd.fastCheck.h.hasOwnProperty(0);
 		} else {
 			tmp1 = false;
 		}
-		if(tmp1 && this.dy + this.bdy > 0) {
+		if(tmp1 && this.getControllerX() != 0 && this.dy + this.bdy > 0) {
 			var _this = this.cd;
 			var frames = 0.5 * this.cd.baseFps;
 			var tmp1;
@@ -12744,627 +12907,14 @@ en_Hero.prototype = $extend(Entity.prototype,{
 		if(tmp) {
 			this.dy = -0.11;
 		}
-		var tmp;
-		if(!(!this.destroyed && Game.ME.gameTimeS >= Const.MAX_GAME_TIME_S)) {
-			var _this = this.ca;
-			var x;
-			if(_this.parent.mode == dn_heaps_Mode.Keyboard) {
-				var k = 17;
-				var x1;
-				if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-					var x2;
-					var x3;
-					var x4;
-					var k1 = _this.parent.primary.h[k];
-					if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-						var k1 = _this.parent.secondary.h[k];
-						x4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						x4 = true;
-					}
-					if(!x4) {
-						var k1 = _this.parent.third.h[k];
-						x3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						x3 = true;
-					}
-					if(!x3) {
-						var k1 = _this.parent.fourth.h[k];
-						x2 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						x2 = true;
-					}
-					if(!x2) {
-						var _this1 = _this.parent.gc;
-						x1 = _this1.device != null && _this1.toggles[k] > 0;
-					} else {
-						x1 = true;
-					}
-				} else {
-					x1 = false;
-				}
-				if(x1) {
-					x = -1;
-				} else {
-					var k = 18;
-					var x1;
-					if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-						var x2;
-						var x3;
-						var x4;
-						var k1 = _this.parent.primary.h[k];
-						if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-							var k1 = _this.parent.secondary.h[k];
-							x4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							x4 = true;
-						}
-						if(!x4) {
-							var k1 = _this.parent.third.h[k];
-							x3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							x3 = true;
-						}
-						if(!x3) {
-							var k1 = _this.parent.fourth.h[k];
-							x2 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							x2 = true;
-						}
-						if(!x2) {
-							var _this1 = _this.parent.gc;
-							x1 = _this1.device != null && _this1.toggles[k] > 0;
-						} else {
-							x1 = true;
-						}
-					} else {
-						x1 = false;
-					}
-					x = x1 ? 1 : 0;
-				}
-			} else {
-				var _this1 = _this.parent.gc;
-				var simplified = false;
-				var overrideDeadZone = _this.leftDeadZone;
-				if(overrideDeadZone == null) {
-					overrideDeadZone = -1.;
-				}
-				if(simplified == null) {
-					simplified = false;
-				}
-				if(_this1.device != null) {
-					var idx = dn_heaps_GamePad.MAPPING[18];
-					var overrideDeadZone1 = overrideDeadZone;
-					if(overrideDeadZone1 == null) {
-						overrideDeadZone1 = -1.;
-					}
-					var v = idx > -1 && idx < _this1.device.values.length ? _this1.device.values[idx] : 0;
-					var dz = overrideDeadZone1 < 0. ? _this1.deadZone : overrideDeadZone1;
-					x = simplified ? v < -dz ? -1. : v > dz ? 1. : 0. : v > -dz && v < dz ? 0. : v;
-				} else {
-					x = 0.;
-				}
-			}
-			var x1 = x < 0 ? -x : x;
-			var x;
-			if(_this.parent.mode == dn_heaps_Mode.Keyboard) {
-				var k = 21;
-				var x2;
-				if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-					var x3;
-					var x4;
-					var x5;
-					var k1 = _this.parent.primary.h[k];
-					if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-						var k1 = _this.parent.secondary.h[k];
-						x5 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						x5 = true;
-					}
-					if(!x5) {
-						var k1 = _this.parent.third.h[k];
-						x4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						x4 = true;
-					}
-					if(!x4) {
-						var k1 = _this.parent.fourth.h[k];
-						x3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						x3 = true;
-					}
-					if(!x3) {
-						var _this1 = _this.parent.gc;
-						x2 = _this1.device != null && _this1.toggles[k] > 0;
-					} else {
-						x2 = true;
-					}
-				} else {
-					x2 = false;
-				}
-				if(x2) {
-					x = -1;
-				} else {
-					var k = 20;
-					var x2;
-					if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-						var x3;
-						var x4;
-						var x5;
-						var k1 = _this.parent.primary.h[k];
-						if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-							var k1 = _this.parent.secondary.h[k];
-							x5 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							x5 = true;
-						}
-						if(!x5) {
-							var k1 = _this.parent.third.h[k];
-							x4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							x4 = true;
-						}
-						if(!x4) {
-							var k1 = _this.parent.fourth.h[k];
-							x3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							x3 = true;
-						}
-						if(!x3) {
-							var _this1 = _this.parent.gc;
-							x2 = _this1.device != null && _this1.toggles[k] > 0;
-						} else {
-							x2 = true;
-						}
-					} else {
-						x2 = false;
-					}
-					x = x2 ? 1 : 0;
-				}
-			} else {
-				var _this1 = _this.parent.gc;
-				var simplified = false;
-				var overrideDeadZone = _this.leftDeadZone;
-				if(overrideDeadZone == null) {
-					overrideDeadZone = -1.;
-				}
-				if(simplified == null) {
-					simplified = false;
-				}
-				if(_this1.device != null) {
-					var idx = dn_heaps_GamePad.MAPPING[21];
-					var overrideDeadZone1 = overrideDeadZone;
-					if(overrideDeadZone1 == null) {
-						overrideDeadZone1 = -1.;
-					}
-					var v = idx > -1 && idx < _this1.device.values.length ? _this1.device.values[idx] : 0;
-					var dz = overrideDeadZone1 < 0. ? _this1.deadZone : overrideDeadZone1;
-					x = simplified ? v < -dz ? -1. : v > dz ? 1. : 0. : v > -dz && v < dz ? 0. : v;
-				} else {
-					x = 0.;
-				}
-			}
-			var y = x < 0 ? -x : x;
-			tmp = (x1 > y ? x1 : y) > 0;
-		} else {
-			tmp = false;
-		}
-		if(tmp && !this.cd.fastCheck.h.hasOwnProperty(58720256) && !this.cd.fastCheck.h.hasOwnProperty(71303168)) {
+		if(this.getControllerX() != 0 && !this.cd.fastCheck.h.hasOwnProperty(25165824) && !this.cd.fastCheck.h.hasOwnProperty(12582912)) {
 			var tmp = this;
 			var tmp1 = tmp.dx;
-			var _this = this.ca;
-			var tmp2;
-			if(_this.parent.mode == dn_heaps_Mode.Keyboard) {
-				var k = 21;
-				var tmp3;
-				if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-					var tmp4;
-					var tmp5;
-					var tmp6;
-					var k1 = _this.parent.primary.h[k];
-					if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-						var k1 = _this.parent.secondary.h[k];
-						tmp6 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						tmp6 = true;
-					}
-					if(!tmp6) {
-						var k1 = _this.parent.third.h[k];
-						tmp5 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						tmp5 = true;
-					}
-					if(!tmp5) {
-						var k1 = _this.parent.fourth.h[k];
-						tmp4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						tmp4 = true;
-					}
-					if(!tmp4) {
-						var _this1 = _this.parent.gc;
-						tmp3 = _this1.device != null && _this1.toggles[k] > 0;
-					} else {
-						tmp3 = true;
-					}
-				} else {
-					tmp3 = false;
-				}
-				if(tmp3) {
-					tmp2 = -1;
-				} else {
-					var k = 20;
-					var tmp3;
-					if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-						var tmp4;
-						var tmp5;
-						var tmp6;
-						var k1 = _this.parent.primary.h[k];
-						if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-							var k1 = _this.parent.secondary.h[k];
-							tmp6 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							tmp6 = true;
-						}
-						if(!tmp6) {
-							var k1 = _this.parent.third.h[k];
-							tmp5 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							tmp5 = true;
-						}
-						if(!tmp5) {
-							var k1 = _this.parent.fourth.h[k];
-							tmp4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							tmp4 = true;
-						}
-						if(!tmp4) {
-							var _this1 = _this.parent.gc;
-							tmp3 = _this1.device != null && _this1.toggles[k] > 0;
-						} else {
-							tmp3 = true;
-						}
-					} else {
-						tmp3 = false;
-					}
-					tmp2 = tmp3 ? 1 : 0;
-				}
-			} else {
-				var _this1 = _this.parent.gc;
-				var simplified = false;
-				var overrideDeadZone = _this.leftDeadZone;
-				if(overrideDeadZone == null) {
-					overrideDeadZone = -1.;
-				}
-				if(simplified == null) {
-					simplified = false;
-				}
-				if(_this1.device != null) {
-					var idx = dn_heaps_GamePad.MAPPING[21];
-					var overrideDeadZone1 = overrideDeadZone;
-					if(overrideDeadZone1 == null) {
-						overrideDeadZone1 = -1.;
-					}
-					var v = idx > -1 && idx < _this1.device.values.length ? _this1.device.values[idx] : 0;
-					var dz = overrideDeadZone1 < 0. ? _this1.deadZone : overrideDeadZone1;
-					tmp2 = simplified ? v < -dz ? -1. : v > dz ? 1. : 0. : v > -dz && v < dz ? 0. : v;
-				} else {
-					tmp2 = 0.;
-				}
-			}
-			var tmp3;
-			if(_this.parent.mode == dn_heaps_Mode.Keyboard) {
-				var k = 17;
-				var tmp4;
-				if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-					var tmp5;
-					var tmp6;
-					var tmp7;
-					var k1 = _this.parent.primary.h[k];
-					if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-						var k1 = _this.parent.secondary.h[k];
-						tmp7 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						tmp7 = true;
-					}
-					if(!tmp7) {
-						var k1 = _this.parent.third.h[k];
-						tmp6 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						tmp6 = true;
-					}
-					if(!tmp6) {
-						var k1 = _this.parent.fourth.h[k];
-						tmp5 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						tmp5 = true;
-					}
-					if(!tmp5) {
-						var _this1 = _this.parent.gc;
-						tmp4 = _this1.device != null && _this1.toggles[k] > 0;
-					} else {
-						tmp4 = true;
-					}
-				} else {
-					tmp4 = false;
-				}
-				if(tmp4) {
-					tmp3 = -1;
-				} else {
-					var k = 18;
-					var tmp4;
-					if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-						var tmp5;
-						var tmp6;
-						var tmp7;
-						var k1 = _this.parent.primary.h[k];
-						if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-							var k1 = _this.parent.secondary.h[k];
-							tmp7 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							tmp7 = true;
-						}
-						if(!tmp7) {
-							var k1 = _this.parent.third.h[k];
-							tmp6 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							tmp6 = true;
-						}
-						if(!tmp6) {
-							var k1 = _this.parent.fourth.h[k];
-							tmp5 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							tmp5 = true;
-						}
-						if(!tmp5) {
-							var _this1 = _this.parent.gc;
-							tmp4 = _this1.device != null && _this1.toggles[k] > 0;
-						} else {
-							tmp4 = true;
-						}
-					} else {
-						tmp4 = false;
-					}
-					tmp3 = tmp4 ? 1 : 0;
-				}
-			} else {
-				var _this1 = _this.parent.gc;
-				var simplified = false;
-				var overrideDeadZone = _this.leftDeadZone;
-				if(overrideDeadZone == null) {
-					overrideDeadZone = -1.;
-				}
-				if(simplified == null) {
-					simplified = false;
-				}
-				if(_this1.device != null) {
-					var idx = dn_heaps_GamePad.MAPPING[18];
-					var overrideDeadZone1 = overrideDeadZone;
-					if(overrideDeadZone1 == null) {
-						overrideDeadZone1 = -1.;
-					}
-					var v = idx > -1 && idx < _this1.device.values.length ? _this1.device.values[idx] : 0;
-					var dz = overrideDeadZone1 < 0. ? _this1.deadZone : overrideDeadZone1;
-					tmp3 = simplified ? v < -dz ? -1. : v > dz ? 1. : 0. : v > -dz && v < dz ? 0. : v;
-				} else {
-					tmp3 = 0.;
-				}
-			}
-			var tmp4 = Math.cos(Math.atan2(-tmp2,tmp3)) * spd * (1 - 0.5 * this.cd._getRatio(96468992));
+			var tmp2 = this.getControllerX() * spd * (1 - 0.5 * this.cd._getRatio(96468992));
 			var _this = Game.ME;
-			tmp.dx = tmp1 + tmp4 * (_this.utmod * _this.getComputedTimeMultiplier());
+			tmp.dx = tmp1 + tmp2 * (_this.utmod * _this.getComputedTimeMultiplier());
 			var oldDir = this.dir;
-			var _this = this.ca;
-			var a;
-			if(_this.parent.mode == dn_heaps_Mode.Keyboard) {
-				var k = 21;
-				var a1;
-				if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-					var a2;
-					var a3;
-					var a4;
-					var k1 = _this.parent.primary.h[k];
-					if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-						var k1 = _this.parent.secondary.h[k];
-						a4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						a4 = true;
-					}
-					if(!a4) {
-						var k1 = _this.parent.third.h[k];
-						a3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						a3 = true;
-					}
-					if(!a3) {
-						var k1 = _this.parent.fourth.h[k];
-						a2 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						a2 = true;
-					}
-					if(!a2) {
-						var _this1 = _this.parent.gc;
-						a1 = _this1.device != null && _this1.toggles[k] > 0;
-					} else {
-						a1 = true;
-					}
-				} else {
-					a1 = false;
-				}
-				if(a1) {
-					a = -1;
-				} else {
-					var k = 20;
-					var a1;
-					if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-						var a2;
-						var a3;
-						var a4;
-						var k1 = _this.parent.primary.h[k];
-						if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-							var k1 = _this.parent.secondary.h[k];
-							a4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							a4 = true;
-						}
-						if(!a4) {
-							var k1 = _this.parent.third.h[k];
-							a3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							a3 = true;
-						}
-						if(!a3) {
-							var k1 = _this.parent.fourth.h[k];
-							a2 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							a2 = true;
-						}
-						if(!a2) {
-							var _this1 = _this.parent.gc;
-							a1 = _this1.device != null && _this1.toggles[k] > 0;
-						} else {
-							a1 = true;
-						}
-					} else {
-						a1 = false;
-					}
-					a = a1 ? 1 : 0;
-				}
-			} else {
-				var _this1 = _this.parent.gc;
-				var simplified = false;
-				var overrideDeadZone = _this.leftDeadZone;
-				if(overrideDeadZone == null) {
-					overrideDeadZone = -1.;
-				}
-				if(simplified == null) {
-					simplified = false;
-				}
-				if(_this1.device != null) {
-					var idx = dn_heaps_GamePad.MAPPING[21];
-					var overrideDeadZone1 = overrideDeadZone;
-					if(overrideDeadZone1 == null) {
-						overrideDeadZone1 = -1.;
-					}
-					var v = idx > -1 && idx < _this1.device.values.length ? _this1.device.values[idx] : 0;
-					var dz = overrideDeadZone1 < 0. ? _this1.deadZone : overrideDeadZone1;
-					a = simplified ? v < -dz ? -1. : v > dz ? 1. : 0. : v > -dz && v < dz ? 0. : v;
-				} else {
-					a = 0.;
-				}
-			}
-			var a1;
-			if(_this.parent.mode == dn_heaps_Mode.Keyboard) {
-				var k = 17;
-				var a2;
-				if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-					var a3;
-					var a4;
-					var a5;
-					var k1 = _this.parent.primary.h[k];
-					if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-						var k1 = _this.parent.secondary.h[k];
-						a5 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						a5 = true;
-					}
-					if(!a5) {
-						var k1 = _this.parent.third.h[k];
-						a4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						a4 = true;
-					}
-					if(!a4) {
-						var k1 = _this.parent.fourth.h[k];
-						a3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-					} else {
-						a3 = true;
-					}
-					if(!a3) {
-						var _this1 = _this.parent.gc;
-						a2 = _this1.device != null && _this1.toggles[k] > 0;
-					} else {
-						a2 = true;
-					}
-				} else {
-					a2 = false;
-				}
-				if(a2) {
-					a1 = -1;
-				} else {
-					var k = 18;
-					var a2;
-					if(!(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer)) {
-						var a3;
-						var a4;
-						var a5;
-						var k1 = _this.parent.primary.h[k];
-						if(!(k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1))) {
-							var k1 = _this.parent.secondary.h[k];
-							a5 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							a5 = true;
-						}
-						if(!a5) {
-							var k1 = _this.parent.third.h[k];
-							a4 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							a4 = true;
-						}
-						if(!a4) {
-							var k1 = _this.parent.fourth.h[k];
-							a3 = k1 != null && !(_this.manualLock || _this.parent.isLocked() || _this.parent.exclusiveId != null && _this.parent.exclusiveId != _this.id || HxOverrides.now() / 1000 < _this.parent.suspendTimer) && hxd_Key.isDown(k1);
-						} else {
-							a3 = true;
-						}
-						if(!a3) {
-							var _this1 = _this.parent.gc;
-							a2 = _this1.device != null && _this1.toggles[k] > 0;
-						} else {
-							a2 = true;
-						}
-					} else {
-						a2 = false;
-					}
-					a1 = a2 ? 1 : 0;
-				}
-			} else {
-				var _this1 = _this.parent.gc;
-				var simplified = false;
-				var overrideDeadZone = _this.leftDeadZone;
-				if(overrideDeadZone == null) {
-					overrideDeadZone = -1.;
-				}
-				if(simplified == null) {
-					simplified = false;
-				}
-				if(_this1.device != null) {
-					var idx = dn_heaps_GamePad.MAPPING[18];
-					var overrideDeadZone1 = overrideDeadZone;
-					if(overrideDeadZone1 == null) {
-						overrideDeadZone1 = -1.;
-					}
-					var v = idx > -1 && idx < _this1.device.values.length ? _this1.device.values[idx] : 0;
-					var dz = overrideDeadZone1 < 0. ? _this1.deadZone : overrideDeadZone1;
-					a1 = simplified ? v < -dz ? -1. : v > dz ? 1. : 0. : v > -dz && v < dz ? 0. : v;
-				} else {
-					a1 = 0.;
-				}
-			}
-			var a2 = Math.atan2(-a,a1);
-			var b = 0;
-			var a = a2;
-			while(a < -3.1415926535897931) a += 6.283185307179586;
-			while(a > 3.141592653589793) a -= 6.283185307179586;
-			a2 = a;
-			var a = b;
-			while(a < -3.1415926535897931) a += 6.283185307179586;
-			while(a > 3.141592653589793) a -= 6.283185307179586;
-			b = a;
-			var a = a2 - b;
-			while(a < -3.1415926535897931) a += 6.283185307179586;
-			while(a > 3.141592653589793) a -= 6.283185307179586;
-			var x = a;
-			var v = (x < 0 ? -x : x) <= 1.5707963267948966 ? 1 : -1;
+			var v = this.getControllerX() > 0 ? 1 : -1;
 			this.dir = v > 0 ? 1 : v < 0 ? -1 : this.dir;
 			if(oldDir != this.dir) {
 				this.turnOverAnim = 1;
@@ -13511,7 +13061,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 					tmp = false;
 				}
 				if(tmp) {
-					this.jump();
+					this.jump(false);
 					var _this = Game.ME.level;
 					var mark = LevelMark.StepSmall;
 					var cx = this.cx;
@@ -13583,7 +13133,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 					tmp = false;
 				}
 				if(tmp) {
-					this.jump();
+					this.jump(false);
 					var _this = Game.ME.level;
 					var mark = LevelMark.StepHight;
 					var cx = this.cx;
@@ -13596,7 +13146,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 		} else {
 			this.cliffInsistF = 0;
 		}
-		if(this.cd.fastCheck.h.hasOwnProperty(58720256)) {
+		if(this.cd.fastCheck.h.hasOwnProperty(25165824)) {
 			var _this = Game.ME;
 			this.dx += this.dir * spd * (_this.utmod * _this.getComputedTimeMultiplier());
 		}
@@ -13865,7 +13415,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 					}
 					tmp1 = tmp2 && this.dy + this.bdy == 0;
 				}
-				tmp = tmp1 || !this.destroyed && this.cd.fastCheck.h.hasOwnProperty(4194304);
+				tmp = tmp1 || !this.destroyed && this.cd.fastCheck.h.hasOwnProperty(0);
 			} else {
 				tmp = true;
 			}
@@ -13873,46 +13423,11 @@ en_Hero.prototype = $extend(Entity.prototype,{
 			tmp = false;
 		}
 		if(tmp) {
-			var dh = new dn_DecisionHelper(en_Bumper.ALL);
-			var _g = 0;
-			var _g1 = dh.all;
-			while(_g < _g1.length) {
-				var e = _g1[_g];
-				++_g;
-				var tmp;
-				if(!e.out) {
-					var e1 = e.v;
-					var ax = _gthis.cx + _gthis.xr;
-					var ay = _gthis.cy + _gthis.yr;
-					var bx = e1.cx + e1.xr;
-					var by = e1.cy + e1.yr;
-					tmp = !(Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by)) <= 2.5);
-				} else {
-					tmp = false;
-				}
-				if(tmp) {
-					e.out = true;
-				}
-			}
-			var _g = 0;
-			var _g1 = dh.all;
-			while(_g < _g1.length) {
-				var e = _g1[_g];
-				++_g;
-				if(!e.out) {
-					var e1 = e.v;
-					var ax = _gthis.cx + _gthis.xr;
-					var ay = _gthis.cy + _gthis.yr;
-					var bx = e1.cx + e1.xr;
-					var by = e1.cy + e1.yr;
-					e.score += -Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
-				}
-			}
-			this.jump(dh.getBest());
-		} else if(this.cd.fastCheck.h.hasOwnProperty(67108864)) {
+			this.jump(true);
+		} else if(this.cd.fastCheck.h.hasOwnProperty(8388608)) {
 			var _this = Game.ME;
 			this.dy += -0.10 * (_this.utmod * _this.getComputedTimeMultiplier());
-		} else if(this.cd.fastCheck.h.hasOwnProperty(75497472)) {
+		} else if(this.cd.fastCheck.h.hasOwnProperty(20971520)) {
 			var _this = Game.ME;
 			this.dy += -0.04 * (_this.utmod * _this.getComputedTimeMultiplier());
 		}
@@ -13921,7 +13436,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 		while(_g < _g1.length) {
 			var e = _g1[_g];
 			++_g;
-			if(!e.destroyed && !e.isCarried() && !e.cd.fastCheck.h.hasOwnProperty(20971520)) {
+			if(!e.destroyed && !e.isCarried() && !e.cd.fastCheck.h.hasOwnProperty(46137344)) {
 				var tmp;
 				var tmp1;
 				var tmp2;
@@ -14106,7 +13621,7 @@ en_Home.prototype = $extend(Entity.prototype,{
 					allowLower = true;
 				}
 				frames = Math.floor(frames * 1000) / 1000;
-				var cur = _this._getCdObject(16777216);
+				var cur = _this._getCdObject(41943040);
 				if(!(cur != null && frames < cur.frames && !allowLower)) {
 					if(frames <= 0) {
 						if(cur != null) {
@@ -14116,20 +13631,20 @@ en_Home.prototype = $extend(Entity.prototype,{
 							_this.fastCheck.remove(cur.k);
 						}
 					} else {
-						_this.fastCheck.h[16777216] = true;
+						_this.fastCheck.h[41943040] = true;
 						if(cur != null) {
 							cur.frames = frames;
 						} else {
-							_this.cdList.push(new dn__$Cooldown_CdInst(16777216,frames));
+							_this.cdList.push(new dn__$Cooldown_CdInst(41943040,frames));
 						}
 					}
 					if(onComplete != null) {
 						if(frames <= 0) {
 							onComplete();
 						} else {
-							var cd = _this._getCdObject(16777216);
+							var cd = _this._getCdObject(41943040);
 							if(cd == null) {
-								throw haxe_Exception.thrown("cannot bind onComplete(" + 16777216 + "): cooldown " + 16777216 + " isn't running");
+								throw haxe_Exception.thrown("cannot bind onComplete(" + 41943040 + "): cooldown " + 41943040 + " isn't running");
 							}
 							cd.cb = onComplete;
 						}
@@ -14153,7 +13668,7 @@ en_Home.prototype = $extend(Entity.prototype,{
 					allowLower1 = true;
 				}
 				frames1 = Math.floor(frames1 * 1000) / 1000;
-				var cur1 = _this3._getCdObject(20971520);
+				var cur1 = _this3._getCdObject(46137344);
 				if(!(cur1 != null && frames1 < cur1.frames && !allowLower1)) {
 					if(frames1 <= 0) {
 						if(cur1 != null) {
@@ -14163,20 +13678,20 @@ en_Home.prototype = $extend(Entity.prototype,{
 							_this3.fastCheck.remove(cur1.k);
 						}
 					} else {
-						_this3.fastCheck.h[20971520] = true;
+						_this3.fastCheck.h[46137344] = true;
 						if(cur1 != null) {
 							cur1.frames = frames1;
 						} else {
-							_this3.cdList.push(new dn__$Cooldown_CdInst(20971520,frames1));
+							_this3.cdList.push(new dn__$Cooldown_CdInst(46137344,frames1));
 						}
 					}
 					if(onComplete1 != null) {
 						if(frames1 <= 0) {
 							onComplete1();
 						} else {
-							var cd1 = _this3._getCdObject(20971520);
+							var cd1 = _this3._getCdObject(46137344);
 							if(cd1 == null) {
-								throw haxe_Exception.thrown("cannot bind onComplete(" + 20971520 + "): cooldown " + 20971520 + " isn't running");
+								throw haxe_Exception.thrown("cannot bind onComplete(" + 46137344 + "): cooldown " + 46137344 + " isn't running");
 							}
 							cd1.cb = onComplete1;
 						}
@@ -14195,7 +13710,7 @@ en_Home.prototype = $extend(Entity.prototype,{
 					allowLower2 = true;
 				}
 				frames2 = Math.floor(frames2 * 1000) / 1000;
-				var cur2 = _this4._getCdObject(25165824);
+				var cur2 = _this4._getCdObject(50331648);
 				if(!(cur2 != null && frames2 < cur2.frames && !allowLower2)) {
 					if(frames2 <= 0) {
 						if(cur2 != null) {
@@ -14205,34 +13720,34 @@ en_Home.prototype = $extend(Entity.prototype,{
 							_this4.fastCheck.remove(cur2.k);
 						}
 					} else {
-						_this4.fastCheck.h[25165824] = true;
+						_this4.fastCheck.h[50331648] = true;
 						if(cur2 != null) {
 							cur2.frames = frames2;
 						} else {
-							_this4.cdList.push(new dn__$Cooldown_CdInst(25165824,frames2));
+							_this4.cdList.push(new dn__$Cooldown_CdInst(50331648,frames2));
 						}
 					}
 					if(onComplete2 != null) {
 						if(frames2 <= 0) {
 							onComplete2();
 						} else {
-							var cd2 = _this4._getCdObject(25165824);
+							var cd2 = _this4._getCdObject(50331648);
 							if(cd2 == null) {
-								throw haxe_Exception.thrown("cannot bind onComplete(" + 25165824 + "): cooldown " + 25165824 + " isn't running");
+								throw haxe_Exception.thrown("cannot bind onComplete(" + 50331648 + "): cooldown " + 50331648 + " isn't running");
 							}
 							cd2.cb = onComplete2;
 						}
 					}
 				}
 			}
-			if(!e[0].cd.fastCheck.h.hasOwnProperty(25165824) && e[0].cd.fastCheck.h.hasOwnProperty(16777216)) {
+			if(!e[0].cd.fastCheck.h.hasOwnProperty(50331648) && e[0].cd.fastCheck.h.hasOwnProperty(41943040)) {
 				var _this6 = e[0].cd;
 				var _g2 = 0;
 				var _g3 = _this6.cdList;
 				while(_g2 < _g3.length) {
 					var cd3 = _g3[_g2];
 					++_g2;
-					if(cd3.k == 16777216) {
+					if(cd3.k == 41943040) {
 						HxOverrides.remove(_this6.cdList,cd3);
 						cd3.frames = 0;
 						cd3.cb = null;
@@ -14458,7 +13973,7 @@ en_Item.prototype = $extend(Entity.prototype,{
 			allowLower = true;
 		}
 		frames = Math.floor(frames * 1000) / 1000;
-		var cur = _this._getCdObject(20971520);
+		var cur = _this._getCdObject(46137344);
 		if(!(cur != null && frames < cur.frames && !allowLower)) {
 			if(frames <= 0) {
 				if(cur != null) {
@@ -14468,20 +13983,20 @@ en_Item.prototype = $extend(Entity.prototype,{
 					_this.fastCheck.remove(cur.k);
 				}
 			} else {
-				_this.fastCheck.h[20971520] = true;
+				_this.fastCheck.h[46137344] = true;
 				if(cur != null) {
 					cur.frames = frames;
 				} else {
-					_this.cdList.push(new dn__$Cooldown_CdInst(20971520,frames));
+					_this.cdList.push(new dn__$Cooldown_CdInst(46137344,frames));
 				}
 			}
 			if(onComplete != null) {
 				if(frames <= 0) {
 					onComplete();
 				} else {
-					var cd = _this._getCdObject(20971520);
+					var cd = _this._getCdObject(46137344);
 					if(cd == null) {
-						throw haxe_Exception.thrown("cannot bind onComplete(" + 20971520 + "): cooldown " + 20971520 + " isn't running");
+						throw haxe_Exception.thrown("cannot bind onComplete(" + 46137344 + "): cooldown " + 46137344 + " isn't running");
 					}
 					cd.cb = onComplete;
 				}
@@ -14576,13 +14091,13 @@ en_Item.prototype = $extend(Entity.prototype,{
 			var _this = this.cd;
 			var frames = 0.1 * this.cd.baseFps;
 			var tmp1;
-			if(_this.fastCheck.h.hasOwnProperty(33554432)) {
+			if(_this.fastCheck.h.hasOwnProperty(58720256)) {
 				tmp1 = true;
 			} else {
 				var frames1 = frames;
 				var onComplete = null;
 				frames1 = Math.floor(frames1 * 1000) / 1000;
-				var cur = _this._getCdObject(33554432);
+				var cur = _this._getCdObject(58720256);
 				if(!(cur != null && frames1 < cur.frames && false)) {
 					if(frames1 <= 0) {
 						if(cur != null) {
@@ -14592,20 +14107,20 @@ en_Item.prototype = $extend(Entity.prototype,{
 							_this.fastCheck.remove(cur.k);
 						}
 					} else {
-						_this.fastCheck.h[33554432] = true;
+						_this.fastCheck.h[58720256] = true;
 						if(cur != null) {
 							cur.frames = frames1;
 						} else {
-							_this.cdList.push(new dn__$Cooldown_CdInst(33554432,frames1));
+							_this.cdList.push(new dn__$Cooldown_CdInst(58720256,frames1));
 						}
 					}
 					if(onComplete != null) {
 						if(frames1 <= 0) {
 							onComplete();
 						} else {
-							var cd = _this._getCdObject(33554432);
+							var cd = _this._getCdObject(58720256);
 							if(cd == null) {
-								throw haxe_Exception.thrown("cannot bind onComplete(" + 33554432 + "): cooldown " + 33554432 + " isn't running");
+								throw haxe_Exception.thrown("cannot bind onComplete(" + 58720256 + "): cooldown " + 58720256 + " isn't running");
 							}
 							cd.cb = onComplete;
 						}
@@ -14667,13 +14182,13 @@ en_Item.prototype = $extend(Entity.prototype,{
 			var _this = this.cd;
 			var frames = freq * this.cd.baseFps;
 			var tmp1;
-			if(_this.fastCheck.h.hasOwnProperty(37748736)) {
+			if(_this.fastCheck.h.hasOwnProperty(62914560)) {
 				tmp1 = true;
 			} else {
 				var frames1 = frames;
 				var onComplete = null;
 				frames1 = Math.floor(frames1 * 1000) / 1000;
-				var cur = _this._getCdObject(37748736);
+				var cur = _this._getCdObject(62914560);
 				if(!(cur != null && frames1 < cur.frames && false)) {
 					if(frames1 <= 0) {
 						if(cur != null) {
@@ -14683,20 +14198,20 @@ en_Item.prototype = $extend(Entity.prototype,{
 							_this.fastCheck.remove(cur.k);
 						}
 					} else {
-						_this.fastCheck.h[37748736] = true;
+						_this.fastCheck.h[62914560] = true;
 						if(cur != null) {
 							cur.frames = frames1;
 						} else {
-							_this.cdList.push(new dn__$Cooldown_CdInst(37748736,frames1));
+							_this.cdList.push(new dn__$Cooldown_CdInst(62914560,frames1));
 						}
 					}
 					if(onComplete != null) {
 						if(frames1 <= 0) {
 							onComplete();
 						} else {
-							var cd = _this._getCdObject(37748736);
+							var cd = _this._getCdObject(62914560);
 							if(cd == null) {
-								throw haxe_Exception.thrown("cannot bind onComplete(" + 37748736 + "): cooldown " + 37748736 + " isn't running");
+								throw haxe_Exception.thrown("cannot bind onComplete(" + 62914560 + "): cooldown " + 62914560 + " isn't running");
 							}
 							cd.cb = onComplete;
 						}
@@ -15093,7 +14608,7 @@ en_ItemGen.prototype = $extend(Entity.prototype,{
 					allowLower = true;
 				}
 				frames = Math.floor(frames * 1000) / 1000;
-				var cur = _this._getCdObject(12582912);
+				var cur = _this._getCdObject(37748736);
 				if(!(cur != null && frames < cur.frames && !allowLower)) {
 					if(frames <= 0) {
 						if(cur != null) {
@@ -15103,20 +14618,20 @@ en_ItemGen.prototype = $extend(Entity.prototype,{
 							_this.fastCheck.remove(cur.k);
 						}
 					} else {
-						_this.fastCheck.h[12582912] = true;
+						_this.fastCheck.h[37748736] = true;
 						if(cur != null) {
 							cur.frames = frames;
 						} else {
-							_this.cdList.push(new dn__$Cooldown_CdInst(12582912,frames));
+							_this.cdList.push(new dn__$Cooldown_CdInst(37748736,frames));
 						}
 					}
 					if(onComplete != null) {
 						if(frames <= 0) {
 							onComplete();
 						} else {
-							var cd = _this._getCdObject(12582912);
+							var cd = _this._getCdObject(37748736);
 							if(cd == null) {
-								throw haxe_Exception.thrown("cannot bind onComplete(" + 12582912 + "): cooldown " + 12582912 + " isn't running");
+								throw haxe_Exception.thrown("cannot bind onComplete(" + 37748736 + "): cooldown " + 37748736 + " isn't running");
 							}
 							cd.cb = onComplete;
 						}
@@ -24059,6 +23574,19 @@ h2d_Scene.prototype = $extend(h2d_Layers.prototype,{
 	}
 	,addEventListener: function(f) {
 		this.eventListeners.push(f);
+	}
+	,removeEventListener: function(f) {
+		var _g = 0;
+		var _g1 = this.eventListeners;
+		while(_g < _g1.length) {
+			var e = _g1[_g];
+			++_g;
+			if(Reflect.compareMethods(e,f)) {
+				HxOverrides.remove(this.eventListeners,e);
+				return true;
+			}
+		}
+		return false;
 	}
 	,startDrag: function(onEvent,onCancel,refEvent) {
 		var _gthis = this;
@@ -54877,7 +54405,7 @@ Xml.Comment = 3;
 Xml.DocType = 4;
 Xml.ProcessingInstruction = 5;
 Xml.Document = 6;
-dn_Cooldown.__meta__ = { obj : { indexes : ["logoArrival","wasOnGround","carriedFollowLock","spawnLock","homePicked","heroPickLock","homePickLock","keepBlink","shineFx","jump","emitterLife","emitterTick","shaking","open","autoWalk","recentHeroJump","bumperJump","walkLock","extraJump","grass","smoke","zzz","cliffMiniJump","slowdown","bump","bumping","stopFrame","check"]}};
+dn_Cooldown.__meta__ = { obj : { indexes : ["wasOnGround","recentHeroJump","bumperJump","walkLock","open","extraJump","autoWalk","logoArrival","carriedFollowLock","spawnLock","homePicked","heroPickLock","homePickLock","keepBlink","shineFx","jump","emitterLife","emitterTick","shaking","grass","smoke","zzz","cliffMiniJump","slowdown","bump","bumping","stopFrame","check"]}};
 dn_Tweenie.DEFAULT_DURATION = 1000.0;
 dn_data_GetText.CONTEXT = "||";
 dn_data_MoReader.MAGIC = -1794895138;
