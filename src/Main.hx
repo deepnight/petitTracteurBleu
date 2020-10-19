@@ -64,12 +64,12 @@ class Main extends dn.Process {
 		controller.bind(START, Key.N);
 
 		// Start
-		#if js
-		new dn.heaps.GameFocusHelper(Boot.ME.s2d, Assets.fontMedium);
-		delayer.addF( startGame, 1 );
-		#else
-		startGame();
-		#end
+		if( dn.heaps.GameFocusHelper.isUseful() ) {
+			new dn.heaps.GameFocusHelper(Boot.ME.s2d, Assets.fontMedium);
+			delayer.addF( startGame, 1 );
+		}
+		else
+			startGame();
 	}
 
 	public function startGame() {
