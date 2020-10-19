@@ -4779,8 +4779,12 @@ var Main = function(s) {
 	this.controller.bind(0,38,90,87,32);
 	this.controller.bind(4,82);
 	this.controller.bind(5,78);
-	new dn_heaps_GameFocusHelper(Boot.ME.s2d,Assets.fontMedium);
-	this.delayer.addF(null,$bind(this,this.startGame),1);
+	if(dn_heaps_GameFocusHelper.isUseful()) {
+		new dn_heaps_GameFocusHelper(Boot.ME.s2d,Assets.fontMedium);
+		this.delayer.addF(null,$bind(this,this.startGame),1);
+	} else {
+		this.startGame();
+	}
 };
 $hxClasses["Main"] = Main;
 Main.__name__ = "Main";
@@ -6982,6 +6986,21 @@ var dn_heaps_GameFocusHelper = function(s,font) {
 };
 $hxClasses["dn.heaps.GameFocusHelper"] = dn_heaps_GameFocusHelper;
 dn_heaps_GameFocusHelper.__name__ = "dn.heaps.GameFocusHelper";
+dn_heaps_GameFocusHelper.isUseful = function() {
+	switch(hxd_System.get_platform()._hx_index) {
+	case 0:case 1:
+		return false;
+	case 2:
+		var mobileReg = new EReg("Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini","gi");
+		return !mobileReg.match($global.navigator.userAgent);
+	case 3:
+		return false;
+	case 4:
+		return false;
+	case 5:
+		return true;
+	}
+};
 dn_heaps_GameFocusHelper.__super__ = dn_Process;
 dn_heaps_GameFocusHelper.prototype = $extend(dn_Process.prototype,{
 	suspendGame: function() {
