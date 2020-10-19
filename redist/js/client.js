@@ -1367,8 +1367,18 @@ Entity.prototype = {
 			_g.posChanged = true;
 			_g.scaleY = v;
 		}
-		this.sprSquashX += (1 - this.sprSquashX) * 0.12;
-		this.sprSquashY += (1 - this.sprSquashY) * 0.12;
+		var tmp = this;
+		var tmp1 = tmp.sprSquashX;
+		var tmp2 = 1 - this.sprSquashX;
+		var _this = Game.ME;
+		var x = 0.12 * (_this.utmod * _this.getComputedTimeMultiplier());
+		tmp.sprSquashX = tmp1 + tmp2 * (x < 0 ? 0 : x > 1 ? 1 : x);
+		var tmp = this;
+		var tmp1 = tmp.sprSquashY;
+		var tmp2 = 1 - this.sprSquashY;
+		var _this = Game.ME;
+		var x = 0.12 * (_this.utmod * _this.getComputedTimeMultiplier());
+		tmp.sprSquashY = tmp1 + tmp2 * (x < 0 ? 0 : x > 1 ? 1 : x);
 		if(this.isCarried()) {
 			var _g = this.spr;
 			_g.posChanged = true;
@@ -1456,6 +1466,15 @@ Entity.prototype = {
 				var _this = Game.ME;
 				this.dy += Math.sin(a) * 0.11 * (_this.utmod * _this.getComputedTimeMultiplier());
 			}
+			var ax = (this.cx + this.xr) * Const.GRID;
+			var ay = (this.cy + this.yr) * Const.GRID;
+			var _this = Game.ME;
+			if(Math.sqrt((ax - tx) * (ax - tx) + (ay - ty) * (ay - ty)) <= 0.2 * Const.GRID * (_this.utmod * _this.getComputedTimeMultiplier())) {
+				var _this = Game.ME;
+				this.dx *= Math.pow(0.8,_this.utmod * _this.getComputedTimeMultiplier());
+				var _this = Game.ME;
+				this.dy *= Math.pow(0.8,_this.utmod * _this.getComputedTimeMultiplier());
+			}
 			var _this = Game.ME;
 			this.dx *= Math.pow(0.92,_this.utmod * _this.getComputedTimeMultiplier());
 			var _this = Game.ME;
@@ -1463,9 +1482,11 @@ Entity.prototype = {
 		}
 		var tmp;
 		var x = this.dx + this.bdx;
-		if(!((x < 0 ? -x : x) > 0.03)) {
+		var _this = Game.ME;
+		if(!((x < 0 ? -x : x) > 0.03 / (_this.utmod * _this.getComputedTimeMultiplier()))) {
 			var x = this.dy + this.bdy;
-			tmp = (x < 0 ? -x : x) > 0.03;
+			var _this = Game.ME;
+			tmp = (x < 0 ? -x : x) > 0.03 / (_this.utmod * _this.getComputedTimeMultiplier());
 		} else {
 			tmp = true;
 		}
@@ -1476,10 +1497,8 @@ Entity.prototype = {
 				var e = _g1[_g];
 				++_g;
 				var _this = Game.ME;
-				e.carriedShaking += 0.05 * (_this.utmod * _this.getComputedTimeMultiplier());
-				if(e.carriedShaking > 1) {
-					e.carriedShaking = 1;
-				}
+				var x = e.carriedShaking + 0.05 * (_this.utmod * _this.getComputedTimeMultiplier());
+				e.carriedShaking = x < 0 ? 0 : x > 1 ? 1 : x;
 			}
 		}
 		var _this = Game.ME;
