@@ -230,9 +230,8 @@ class Game extends Process {
 			}
 
 			// Force night
-			if( ca.isKeyboardPressed(K.N) ) {
+			if( ca.isKeyboardPressed(K.N) )
 				gameTimeS = Const.MAX_GAME_TIME_S;
-			}
 			#end
 
 			// Restart
