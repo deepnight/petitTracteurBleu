@@ -31,6 +31,8 @@ class Game extends Process {
 
 	public var hero : en.Hero;
 	public var cart : en.Cart;
+	public var teint : h2d.filter.ColorMatrix;
+	public var gameTimeS = 0.;
 
 	public function new() {
 		super(Main.ME);
@@ -42,6 +44,7 @@ class Game extends Process {
 
 		scroller = new h2d.Layers();
 		root.add(scroller, Const.DP_MAIN);
+		scroller.filter = teint = new h2d.filter.ColorMatrix();
 		// scroller.filter = new h2d.filter.ColorMatrix(); // force rendering for pixel perfect
 
 		world = new World();
@@ -62,6 +65,7 @@ class Game extends Process {
 
 		// Init
 		level = new Level( idx, world.levels[idx] );
+		gameTimeS = 0;
 
 		// Create entities
 		hero = new en.Hero( level.data.l_Entities.all_Hero[0] );
@@ -224,6 +228,11 @@ class Game extends Process {
 					}
 				}
 			}
+
+			// Force night
+			if( ca.isKeyboardPressed(K.N) ) {
+				gameTimeS = Const.MAX_GAME_TIME_S;
+			}
 			#end
 
 			// Restart
@@ -233,6 +242,10 @@ class Game extends Process {
 			if( ca.isKeyboardPressed(K.R) && ca.isKeyboardDown(K.SHIFT) )
 				startLevel(0);
 		}
+
+		gameTimeS += tmod/Const.FPS;
+		level.nightRatio = M.fclamp(gameTimeS/Const.MAX_GAME_TIME_S, 0, 1);
+		hero.debug(pretty(gameTimeS));
 	}
 }
 

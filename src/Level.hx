@@ -10,8 +10,16 @@ class Level extends dn.Process {
 
 	var marks : Map< LevelMark, Map<Int,Int> > = new Map();
 	var invalidated = true;
-	var sky : HSprite;
 	var parallax : h2d.TileGroup;
+
+	var skyWrapper : h2d.Object;
+	var skyDayFront : HSprite;
+	var skyDayBack : HSprite;
+	var skyNightFront : HSprite;
+	var skyNightBack : HSprite;
+	var sun : HSprite;
+	var moon : HSprite;
+	public var nightRatio = 0.;
 
 	public function new(idx:Int, lvl:World.World_Level) {
 		super(Game.ME);
@@ -19,13 +27,22 @@ class Level extends dn.Process {
 		createRootInLayers(Game.ME.scroller, Const.DP_BG);
 		data = lvl;
 
-		sky = Assets.tiles.h_get("bg", 0, 0,0.5);
-		Game.ME.root.add(sky, Const.DP_BG);
-		// sky.filter = new h2d.filter.Blur(2, 1, 2);
+		skyWrapper = new h2d.Object();
+		Game.ME.root.add(skyWrapper, Const.DP_BG);
+
+		skyDayBack = Assets.tiles.h_get("bgDayBack", 0, 0,0.5, skyWrapper);
+		skyNightBack = Assets.tiles.h_get("bgNightBack", 0, 0,0.5, skyWrapper);
+		sun = Assets.tiles.h_get("sun",0, 0.5,0.5, skyWrapper);
+		sun.blendMode = Add;
+		moon = Assets.tiles.h_get("moon",0, 0.5,0.5, skyWrapper);
+		moon.blendMode = Add;
+		skyDayFront = Assets.tiles.h_get("bgDayFront", 0, 0,0.5, skyWrapper);
+
+		skyNightFront = Assets.tiles.h_get("bgNightFront", 0, 0,0.5, skyWrapper);
 
 		parallax = new h2d.TileGroup( Assets.ledTilesets.get(data.l_Parallax.tileset.identifier) );
 		Game.ME.root.add(parallax, Const.DP_BG);
-		parallax.colorMatrix = C.getColorizeMatrixH2d(Const.PARALLAX_COLOR, 0.9);
+		parallax.colorMatrix = C.getColorizeMatrixH2d(Const.PARALLAX_NIGHT_COLOR, 0.9);
 		parallax.filter = new h2d.filter.Blur(2, 1, 2);
 		// parallax.alpha = 0.7;
 
@@ -55,14 +72,14 @@ class Level extends dn.Process {
 
 	override function onDispose() {
 		super.onDispose();
-		sky.remove();
+		skyWrapper.remove();
 		parallax.remove();
 	}
 
 	override function onResize() {
 		super.onResize();
-		sky.y = h()*0.5;
-		sky.setScale( M.fclamp( M.fmax( w()/sky.tile.width, h()/sky.tile.height ), 1, 99 ) );
+		skyWrapper.y = h()*0.5;
+		skyWrapper.setScale( M.fclamp( M.fmax( w()/skyDayFront.tile.width, h()/skyDayFront.tile.height ), 1, 99 ) );
 		parallax.setScale(Const.SCALE);
 	}
 
@@ -152,7 +169,7 @@ class Level extends dn.Process {
 		var tilesFront = new h2d.TileGroup(atlasTile, root);
 		data.l_TilesFront.renderInTileGroup(tilesFront, false);
 
-		data.l_Parallax.renderInTileGroup(parallax, true);
+		// data.l_Parallax.renderInTileGroup(parallax, true);
 	}
 
 	override function postUpdate() {
@@ -165,5 +182,20 @@ class Level extends dn.Process {
 
 		parallax.x = game.scroller.x*0.7;
 		parallax.y = game.scroller.y*0.75;
+
+		sun.x = w()*0.2 / skyWrapper.scaleX;
+		sun.y = ( -0.4 + nightRatio*1 ) * h()  / skyWrapper.scaleY;
+
+		moon.x = w()*0.9 / skyWrapper.scaleX;
+		moon.y = ( 0.5 - nightRatio*0.8 ) * h()  / skyWrapper.scaleY;
+
+		skyNightBack.alpha = nightRatio;
+		skyNightFront.alpha = nightRatio;
+		var c = C.interpolateInt(Const.PARALLAX_DAY_COLOR,Const.PARALLAX_NIGHT_COLOR,nightRatio);
+		var m = C.getColorizeMatrixH2d(c, 0.9);
+		parallax.colorMatrix.load(m);
+
+		var m = C.getColorizeMatrixH2d(c, nightRatio*0.4);
+		game.teint.matrix.load(m);
 	}
 }

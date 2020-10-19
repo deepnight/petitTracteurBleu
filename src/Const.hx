@@ -7,8 +7,10 @@ class Const {
 	public static var UI_SCALE = 1.0;
 	public static var GRID = 16;
 
+	public static var MAX_GAME_TIME_S = Std.int( 1.5 * 60 ); // seconds
 	public static var GRAVITY = 0.016;
-	public static var PARALLAX_COLOR = C.hexToInt("#ffb600");
+	public static var PARALLAX_DAY_COLOR = C.hexToInt("#ffb600");
+	public static var PARALLAX_NIGHT_COLOR = C.hexToInt("#4f4895");
 	public static var BG_COLOR = C.hexToInt("#805c93");
 
 	static var _uniq = 0;

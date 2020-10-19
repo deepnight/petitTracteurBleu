@@ -181,7 +181,10 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">export_tiles/bg.png</key>
+            <key type="filename">export_tiles/bgDayBack.png</key>
+            <key type="filename">export_tiles/bgDayFront.png</key>
+            <key type="filename">export_tiles/bgNightBack.png</key>
+            <key type="filename">export_tiles/bgNightFront.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -190,9 +193,9 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>100,100,200,200</rect>
+                <rect>150,100,300,200</rect>
                 <key>scale9Paddings</key>
-                <rect>100,100,200,200</rect>
+                <rect>150,100,300,200</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -447,6 +450,22 @@
                 <rect>32,32,64,64</rect>
                 <key>scale9Paddings</key>
                 <rect>32,32,64,64</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">export_tiles/moon.png</key>
+            <key type="filename">export_tiles/sun.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>44,44,88,88</rect>
+                <key>scale9Paddings</key>
+                <rect>44,44,88,88</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

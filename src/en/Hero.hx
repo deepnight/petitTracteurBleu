@@ -6,7 +6,7 @@ class Hero extends Entity {
 	var largeWheel : HSprite;
 	var smallWheel : HSprite;
 	var gyro : HSprite;
-	var halo : HSprite;
+	var halos : Array<HSprite> = [];
 	var turnOverAnim = 0.;
 
 	public function new(e:World.Entity_Hero) {
@@ -25,13 +25,17 @@ class Hero extends Entity {
 		smallWheel = Assets.tiles.h_get("wheelSmall",0, 0.5,0.5);
 		game.scroller.add(smallWheel, Const.DP_HERO_BACK);
 
-		halo = Assets.tiles.h_get("halo",0, 0.5,0.5);
-		game.scroller.add(halo, Const.DP_BG);
-		halo.colorize(0xffcc00);
-		halo.blendMode = Add;
-		halo.alpha = 0.2;
-		halo.setScale(2);
-		halo.setPosition(footX, footY);
+		for(i in 0...2) {
+			var halo = Assets.tiles.h_get("halo",0, 0.5,0.5);
+			halos.push(halo);
+			game.scroller.add(halo, Const.DP_BG);
+			halo.colorize(0xffcc00);
+			halo.blendMode = Add;
+			halo.rotate(i*0.9);
+			halo.setScale(1.5+i*0.2);
+			halo.scaleX *= i%2==0 ? -1 : 1;
+			halo.setPosition(footX, footY);
+		}
 
 		gyro = Assets.tiles.h_get("tractorGyro",0, 0.5,1, spr);
 		// game.scroller.add(gyro, Const.DP_HERO);
@@ -59,6 +63,9 @@ class Hero extends Entity {
 		back.remove();
 		largeWheel.remove();
 		smallWheel.remove();
+		for(e in halos)
+			e.remove();
+		halos = null;
 		ca.dispose();
 		ca = null;
 	}
@@ -106,9 +113,14 @@ class Hero extends Entity {
 
 		spr.rotation = M.fclampSym( dyTotal * dir, 0.1 );
 
-		halo.x += ( footX-halo.x ) * 0.1;
-		halo.y += ( footY-halo.y-40 ) * 0.1;
-		halo.rotate(0.002*tmod);
+		var hDir = 1;
+		for( halo in halos) {
+			halo.x += ( footX-halo.x+dir*30 ) * 0.1;
+			halo.y += ( footY-halo.y-20 ) * 0.1;
+			halo.rotate(0.0035*tmod*hDir);
+			halo.alpha = 0.03 + 0.12*game.level.nightRatio;
+			hDir*=-1;
+		}
 
 		// Scale anims
 		var moving = ca.lxValue()!=0;
