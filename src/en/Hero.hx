@@ -38,14 +38,9 @@ class Hero extends Entity {
 		}
 
 		gyro = Assets.tiles.h_get("tractorGyro",0, 0.5,1, spr);
-		// game.scroller.add(gyro, Const.DP_HERO);
 
 		hasCartoonDistorsion = false;
-		carriageWidth*=0.25;
-
-		// var g = new h2d.Graphics(spr);
-		// g.beginFill(0x3059ab);
-		// g.drawRect(-10,-16,20,16);
+		carriageWidth = 0;
 	}
 
 
