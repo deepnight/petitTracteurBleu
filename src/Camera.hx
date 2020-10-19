@@ -9,6 +9,10 @@ class Camera extends dn.Process {
 	var bumpOffX = 0.;
 	var bumpOffY = 0.;
 
+	public var targetTrackOffX = 0.;
+	public var targetTrackOffY = 0.;
+	public var zoom = 1.;
+
 	public function new() {
 		super(Game.ME);
 		x = y = 0;
@@ -23,7 +27,9 @@ class Camera extends dn.Process {
 		return M.ceil( Game.ME.h() / Const.SCALE );
 	}
 
-	public function trackTarget(e:Entity, immediate:Bool) {
+	public function 	trackTarget(e:Entity, immediate:Bool, xOff=0., yOff=0.) {
+		targetTrackOffX = xOff;
+		targetTrackOffY = yOff;
 		target = e;
 		if( immediate )
 			recenter();
@@ -35,8 +41,8 @@ class Camera extends dn.Process {
 
 	public function recenter() {
 		if( target!=null ) {
-			x = target.centerX;
-			y = target.centerY;
+			x = target.centerX + targetTrackOffX;
+			y = target.centerY + targetTrackOffY;
 		}
 	}
 
@@ -56,8 +62,8 @@ class Camera extends dn.Process {
 		if( target!=null ) {
 			var s = 0.006;
 			var deadZone = 5;
-			var tx = target.footX;
-			var ty = target.footY - Const.GRID*2;
+			var tx = target.footX + targetTrackOffX/zoom;
+			var ty = target.footY + targetTrackOffY/zoom;
 
 			var d = M.dist(x,y, tx, ty);
 			if( d>=deadZone ) {
@@ -94,20 +100,22 @@ class Camera extends dn.Process {
 			var scroller = Game.ME.scroller;
 
 			// Update scroller
-			if( wid<level.wid*Const.GRID)
-				scroller.x = -x + wid*0.5;
+			if( wid/zoom<level.wid*Const.GRID)
+				scroller.x = -x*zoom + wid*0.5;
 			else
-				scroller.x = wid*0.5 - level.wid*0.5*Const.GRID;
-			if( hei<level.hei*Const.GRID)
-				scroller.y = -y + hei*0.5;
+				scroller.x = wid*0.5/zoom - level.wid*0.5*Const.GRID;
+
+			if( hei/zoom<level.hei*Const.GRID)
+				scroller.y = -y*zoom + hei*0.5;
 			else
-				scroller.y = hei*0.5 - level.hei*0.5*Const.GRID;
+				scroller.y = hei*0.5/zoom - level.hei*0.5*Const.GRID;
 
 			// Clamp
-			if( wid<level.wid*Const.GRID)
-				scroller.x = M.fclamp(scroller.x, wid-level.wid*Const.GRID, 0);
-			if( hei<level.hei*Const.GRID)
-				scroller.y = M.fclamp(scroller.y, hei-level.hei*Const.GRID, 0);
+			var pad = Const.GRID*2;
+			if( wid<level.wid*Const.GRID*zoom )
+				scroller.x = M.fclamp(scroller.x, wid-level.wid*Const.GRID*zoom+pad, -pad);
+			if( hei<level.hei*Const.GRID*zoom )
+				scroller.y = M.fclamp(scroller.y, hei-level.hei*Const.GRID*zoom+pad, -pad);
 
 			// Bumps friction
 			bumpOffX *= Math.pow(0.75, tmod);
@@ -130,6 +138,9 @@ class Camera extends dn.Process {
 			// Rounding
 			scroller.x = M.round(scroller.x);
 			scroller.y = M.round(scroller.y);
+
+			// Zoom
+			scroller.setScale( Const.SCALE * zoom );
 		}
 	}
 }
