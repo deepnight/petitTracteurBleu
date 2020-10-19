@@ -54,7 +54,7 @@ class Hero extends Entity {
 	}
 
 	override function getCarriageY(offset:Float):Float {
-		return game.cart.footY - 4 + Math.sin(sprRotation) * carriageWidth * offset;
+		return game.cart.footY - 10 + Math.sin(sprRotation) * carriageWidth * offset;
 	}
 
 	override function dispose() {
