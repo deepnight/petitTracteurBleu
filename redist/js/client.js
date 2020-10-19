@@ -11839,7 +11839,7 @@ en_Hero.prototype = $extend(Entity.prototype,{
 	}
 	,getCarriageY: function(offset) {
 		var _this = Game.ME.cart;
-		return (_this.cy + _this.yr) * Const.GRID - 4 + Math.sin(this.sprRotation) * this.carriageWidth * offset;
+		return (_this.cy + _this.yr) * Const.GRID - 10 + Math.sin(this.sprRotation) * this.carriageWidth * offset;
 	}
 	,dispose: function() {
 		Entity.prototype.dispose.call(this);
