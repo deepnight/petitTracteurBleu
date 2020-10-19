@@ -66,13 +66,6 @@ class ItemGen extends Entity {
 		ALL.remove(this);
 	}
 
-	public function reset() {
-		cd.unset("spawnLock");
-		cd.unset("spawnTick");
-		while( children.length < data.f_maxChildren )
-			spawn();
-	}
-
 	override function update() {
 		super.update();
 
@@ -90,14 +83,12 @@ class ItemGen extends Entity {
 		}
 
 		// Spawn
-		if( children.length==data.f_maxChildren )
-			cd.setS("spawnLock", rnd(15,20), false);
-		// else if( distCase(hero)<=5 )
-			// cd.setS("spawnLock", rnd(2,3), false);
-		else if( !cd.has("spawnLock") && !cd.has("spawnTick") ) {
-			cd.setS("spawnTick", rnd(2,5));
-			spawn();
-		}
+		// if( children.length==data.f_maxChildren )
+		// 	cd.setS("spawnLock", rnd(15,20), false);
+		// else if( !cd.has("spawnLock") && !cd.has("spawnTick") ) {
+		// 	cd.setS("spawnTick", rnd(2,5));
+		// 	spawn();
+		// }
 
 		// fx.markerEntity(this, cd.has("spawnLock") ? 0xff0000 : 0x00ff00, true);
 	}
