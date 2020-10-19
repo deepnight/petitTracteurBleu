@@ -36,6 +36,13 @@ class Item extends Entity {
 		}
 	}
 
+	public static function hasAnyLeft() {
+		for(e in ALL)
+			if( e.isAlive() && ( !e.isCarried() || e.carrier==Game.ME.hero ) )
+				return true;
+		return false;
+	}
+
 	override function dispose() {
 		super.dispose();
 		ALL.remove(this);

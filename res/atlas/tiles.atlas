@@ -34,252 +34,266 @@ bgNightFront
   index: -1
 bumperOff
   rotate: false
-  xy: 956, 151
+  xy: 925, 152
   size: 32, 24
   orig: 32, 24
   offset: 0, 0
   index: -1
 bumperOut
   rotate: false
-  xy: 956, 124
+  xy: 859, 152
   size: 32, 26
   orig: 32, 26
   offset: 0, 0
   index: -1
 cart0
   rotate: false
-  xy: 956, 58
+  xy: 988, 21
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 empty
   rotate: false
-  xy: 1022, 43
+  xy: 1022, 1
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 fxCircle0
   rotate: false
-  xy: 1001, 1
+  xy: 959, 130
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 fxDot0
   rotate: false
-  xy: 1018, 43
+  xy: 984, 136
   size: 3, 3
   orig: 3, 3
   offset: 0, 0
   index: -1
 fxDust0
   rotate: false
-  xy: 1018, 13
+  xy: 998, 153
   size: 5, 3
   orig: 5, 3
   offset: 0, 0
   index: -1
 fxDust1
   rotate: false
-  xy: 1018, 39
+  xy: 998, 157
   size: 4, 3
   orig: 4, 3
   offset: 0, 0
   index: -1
 fxDust2
   rotate: false
-  xy: 1018, 29
+  xy: 982, 156
   size: 4, 4
   orig: 4, 4
   offset: 0, 0
   index: -1
 fxDust3
   rotate: false
-  xy: 1018, 34
+  xy: 987, 156
   size: 4, 4
   orig: 4, 4
   offset: 0, 0
   index: -1
 fxImpact0
   rotate: false
-  xy: 1006, 170
+  xy: 942, 177
   size: 15, 9
   orig: 15, 9
   offset: 0, 0
   index: -1
 fxLeaf0
   rotate: false
-  xy: 1018, 1
+  xy: 976, 155
   size: 5, 5
   orig: 5, 5
   offset: 0, 0
   index: -1
 fxLeaf1
   rotate: false
-  xy: 1018, 7
+  xy: 992, 153
   size: 5, 5
   orig: 5, 5
   offset: 0, 0
   index: -1
 fxLeaf2
   rotate: false
-  xy: 1018, 17
+  xy: 983, 144
   size: 4, 5
   orig: 4, 5
   offset: 0, 0
   index: -1
 fxLeaf3
   rotate: false
-  xy: 1018, 23
+  xy: 983, 150
   size: 4, 5
   orig: 4, 5
   offset: 0, 0
   index: -1
 fxLine0
   rotate: false
-  xy: 990, 52
+  xy: 988, 13
   size: 33, 3
   orig: 33, 3
   offset: 0, 0
   index: -1
 fxLineDir0
   rotate: false
-  xy: 990, 56
+  xy: 988, 17
   size: 33, 3
   orig: 33, 3
   offset: 0, 0
   index: -1
 fxSmallCircle0
   rotate: false
-  xy: 1006, 180
+  xy: 976, 144
   size: 6, 6
   orig: 6, 6
   offset: 0, 0
   index: -1
 fxSmoke0
   rotate: false
-  xy: 956, 1
+  xy: 976, 161
   size: 44, 44
   orig: 44, 44
   offset: 0, 0
   index: -1
 fxTail0
   rotate: false
-  xy: 956, 46
+  xy: 988, 1
   size: 33, 11
   orig: 33, 11
   offset: 0, 0
   index: -1
+fxZ
+  rotate: false
+  xy: 976, 136
+  size: 7, 7
+  orig: 7, 7
+  offset: 0, 0
+  index: -1
 halo
   rotate: false
-  xy: 602, 178
+  xy: 859, 1
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 itemApple
   rotate: false
-  xy: 1001, 18
+  xy: 959, 147
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 itemCow
   rotate: false
-  xy: 989, 126
+  xy: 892, 152
   size: 32, 26
   orig: 32, 26
   offset: 0, 0
   index: -1
 itemDiamond
   rotate: false
-  xy: 1001, 35
+  xy: 958, 164
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 itemWood
   rotate: false
-  xy: 989, 153
+  xy: 925, 177
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 logo
   rotate: false
-  xy: 731, 178
+  xy: 859, 130
   size: 99, 21
   orig: 99, 21
   offset: 0, 0
   index: -1
 moon
   rotate: false
-  xy: 602, 1
+  xy: 602, 198
   size: 176, 176
   orig: 176, 176
   offset: 0, 0
   index: -1
 pixel
   rotate: false
-  xy: 1022, 45
+  xy: 1022, 3
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
+sleepMask
+  rotate: false
+  xy: 602, 1
+  size: 256, 196
+  orig: 256, 196
+  offset: 0, 0
+  index: -1
 sun
   rotate: false
-  xy: 779, 1
+  xy: 779, 198
   size: 176, 176
   orig: 176, 176
   offset: 0, 0
   index: -1
 tractorBack0
   rotate: false
-  xy: 989, 60
+  xy: 988, 54
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 tractorBase0
   rotate: false
-  xy: 956, 91
+  xy: 988, 87
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 tractorGyro0
   rotate: false
-  xy: 989, 93
+  xy: 988, 120
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 uiBar
   rotate: false
-  xy: 1013, 180
+  xy: 976, 151
   size: 6, 3
   orig: 6, 3
   offset: 0, 0
   index: -1
 uiBarBg
   rotate: false
-  xy: 990, 46
+  xy: 976, 130
   size: 8, 5
   orig: 8, 5
   offset: 0, 0
   index: -1
 wheelLarge0
   rotate: false
-  xy: 1006, 153
+  xy: 958, 181
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wheelSmall0
   rotate: false
-  xy: 989, 170
+  xy: 859, 179
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

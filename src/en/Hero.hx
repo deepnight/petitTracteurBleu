@@ -123,15 +123,19 @@ class Hero extends Entity {
 		}
 
 		// Scale anims
-		var moving = ca.lxValue()!=0;
+		var moving = ca.lxValue()!=0 && !isSleeping();
 		var movingOnGround = onGround && moving;
 
 		spr.scaleX *= (1-turnOverAnim*0.7);
 		turnOverAnim *= Math.pow(0.8,tmod);
 
-		var t = ftime*0.1 + uid;
+		var t = !isSleeping() ? ftime*0.1 : ftime*0.03;
 		spr.scaleX *= 0.95 + Math.cos(t)*0.05;
 		spr.scaleY *= 0.95 + Math.sin(t)*0.05;
+		if( isSleeping() ) {
+			spr.scaleX*=1.1;
+			spr.scaleY*=0.9;
+		}
 		if( !movingOnGround )
 			spr.y += -1 + Math.sin(t)*2;
 
@@ -165,8 +169,17 @@ class Hero extends Entity {
 		back.scaleY = spr.scaleY;
 		back.rotation = spr.rotation;
 
+		if( isSleeping() && !cd.hasSetS("zzz",0.9) )
+			fx.zzz(footX-dir*0, footY-16, -dir);
+
+
 		// var t = ftime*0.1 + uid;
 		// smallWheel.scaleY = 0.8 + Math.sin(t)*0.2;
+	}
+
+
+	public inline function isSleeping() {
+		return isAlive() && game.isTimeout();
 	}
 
 	var cliffInsistF = 0.;
@@ -180,7 +193,7 @@ class Hero extends Entity {
 			dy = -0.11;
 
 		// Walk
-		if( ca.leftDist()>0 && !cd.has("autoWalk") && !cd.has("walkLock") ) {
+		if( !isSleeping() && ca.leftDist()>0 && !cd.has("autoWalk") && !cd.has("walkLock") ) {
 			dx += Math.cos( ca.leftAngle() ) * spd * (1-0.5*cd.getRatio("slowdown")) * tmod;
 			var oldDir = dir;
 			dir = M.radDistance( ca.leftAngle(), 0 ) <= M.PIHALF ? 1 : -1;
@@ -244,7 +257,7 @@ class Hero extends Entity {
 		}
 
 		// Jump
-		if( ca.aPressed() && ( onGround || onGroundRecently ) ) {
+		if( !isSleeping() && ca.aPressed() && ( onGround || onGroundRecently ) ) {
 			var dh = new dn.DecisionHelper(en.Bumper.ALL);
 			dh.keepOnly( e->distCase(e)<=2.5 );
 			dh.score( e->-distCase(e) );

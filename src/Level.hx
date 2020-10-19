@@ -184,10 +184,10 @@ class Level extends dn.Process {
 		parallax.x = game.scroller.x*0.7;
 		parallax.y = game.scroller.y*0.75;
 
-		sun.x = w()*0.2 / skyWrapper.scaleX;
+		sun.x = w()*0.3 / skyWrapper.scaleX;
 		sun.y = ( -0.4 + nightRatio*1 ) * h()  / skyWrapper.scaleY;
 
-		moon.x = w()*0.9 / skyWrapper.scaleX;
+		moon.x = w()*0.6 / skyWrapper.scaleX;
 		moon.y = ( 0.5 - nightRatio*0.8 ) * h()  / skyWrapper.scaleY;
 
 		skyNightBack.alpha = nightRatio;

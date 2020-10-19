@@ -32,8 +32,9 @@ class Game extends Process {
 	public var hero : en.Hero;
 	public var cart : en.Cart;
 	public var teint : h2d.filter.ColorMatrix;
-	public var gameTimeS = 0.;
+	var gameTimeS = 0.;
 	var logo : HSprite;
+	var sleepMask : HSprite;
 
 	public function new() {
 		super(Main.ME);
@@ -46,12 +47,16 @@ class Game extends Process {
 		scroller = new h2d.Layers();
 		root.add(scroller, Const.DP_MAIN);
 		scroller.filter = teint = new h2d.filter.ColorMatrix();
-		// scroller.filter = new h2d.filter.ColorMatrix(); // force rendering for pixel perfect
 
 		world = new World();
 		camera = new Camera();
 		fx = new Fx();
 		hud = new ui.Hud();
+
+		sleepMask = Assets.tiles.h_get("sleepMask");
+		root.add(sleepMask, Const.DP_TOP);
+		sleepMask.colorize(C.hexToInt("#16162b"), 1);
+
 		startLevel(0);
 	}
 
@@ -67,13 +72,19 @@ class Game extends Process {
 		if( logo!=null )
 			logo.remove();
 
+		tw.completeAll();
+
 		// Init
 		level = new Level( idx, world.levels[idx] );
 		gameTimeS = 0;
+		camera.zoom = 1;
+
+		sleepMask.alpha = 0;
+		sleepMask.visible = false;
 
 		// Create entities
 		hero = new en.Hero( level.data.l_Entities.all_Hero[0] );
-		camera.trackTarget( hero, true );
+		camera.trackTarget( hero, true, 0, -Const.GRID*2 );
 		cart = new en.Cart();
 
 		for(e in level.data.l_Entities.all_Item)
@@ -95,6 +106,7 @@ class Game extends Process {
 		logo = Assets.tiles.h_get("logo",0, 0.5,0.5);
 		root.add(logo, Const.DP_UI);
 		tw.createMs(logo.alpha, 0, 10000);
+		cd.setS("logoArrival", 1.5);
 
 		Process.resizeAll();
 	}
@@ -115,10 +127,12 @@ class Game extends Process {
 	override function onResize() {
 		super.onResize();
 		scroller.setScale(Const.SCALE);
-		if( logo!=null ) {
-			logo.x = Std.int( w()*0.5 );
-			logo.y = Std.int( h()*0.88 );
+		if( logo!=null )
 			logo.setScale(Const.SCALE);
+
+		if( sleepMask!=null ) {
+			sleepMask.scaleX = w()/sleepMask.tile.width;
+			sleepMask.scaleY = h()/sleepMask.tile.height;
 		}
 	}
 
@@ -193,6 +207,10 @@ class Game extends Process {
 		for(e in Entity.ALL) if( !e.destroyed ) e.preUpdate();
 	}
 
+	public inline function isTimeout() {
+		return gameTimeS>=Const.MAX_GAME_TIME_S;
+	}
+
 	override function postUpdate() {
 		super.postUpdate();
 
@@ -205,6 +223,18 @@ class Game extends Process {
 		updateSlowMos();
 		baseTimeMul = ( 0.2 + 0.8*curGameSpeed ) * ( ucd.has("stopFrame") ? 0.3 : 1 );
 		Assets.tiles.tmod = tmod;
+
+		// Logo
+		logo.x = Std.int( w()*0.5 );
+		logo.y = Std.int( h()*0.88 ) + cd.getRatio("logoArrival")*h()*0.2;
+
+		if( isTimeout() ) {
+			// Sleep mask
+			sleepMask.visible = true;
+			sleepMask.alpha += ( 1 - sleepMask.alpha ) * 0.05;
+
+			camera.zoom += ( 2 - camera.zoom )*0.01;
+		}
 	}
 
 	override function fixedUpdate() {
@@ -246,7 +276,7 @@ class Game extends Process {
 
 			// Force night
 			if( ca.isKeyboardDown(K.N) )
-				gameTimeS += 1*tmod;
+				gameTimeS += 5*tmod;
 			#end
 
 			// Restart
@@ -258,8 +288,11 @@ class Game extends Process {
 		}
 
 		gameTimeS += tmod/Const.FPS;
+
+		if( !en.Item.hasAnyLeft() )
+			gameTimeS += 1*tmod;
+
 		level.nightRatio = M.fclamp(gameTimeS/Const.MAX_GAME_TIME_S, 0, 1);
-		hero.debug(pretty(gameTimeS));
 	}
 }
 

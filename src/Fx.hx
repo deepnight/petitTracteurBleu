@@ -256,7 +256,6 @@ class Fx extends dn.Process {
 			var a = M.PI2*i/n + rnd(0,0.1,true);
 			var p = allocTopAdd(getTile("fxLineDir"), x+rnd(0,8,true), y-h);
 			p.setFadeS(rnd(0.3,0.5), 0, 0.1);
-			// p.setCenterRatio(0.5,0.5);
 			p.rotation = -M.PIHALF;
 			p.colorize(c);
 			p.scaleX = rnd(1,2);
@@ -269,6 +268,14 @@ class Fx extends dn.Process {
 			p.lifeS = 0.5;
 			p.delayS = 0.2 * i/n + rnd(0,0.05,true);
 		}
+	}
+
+	public function zzz(x:Float, y:Float, dir:Int) {
+		var p = allocTopNormal(getTile("fxZ"), x+rnd(0,3,true), y-rnd(0,2));
+		p.setFadeS( rnd(0.8,1), 0.2, rnd(2,3) );
+		p.dx = dir*0.06;
+		p.dy = -0.2;
+		p.frict = 0.995;
 	}
 
 	public function leaves(x:Float, y:Float) {
