@@ -33,6 +33,7 @@ class Game extends Process {
 	public var cart : en.Cart;
 	public var teint : h2d.filter.ColorMatrix;
 	public var gameTimeS = 0.;
+	var logo : HSprite;
 
 	public function new() {
 		super(Main.ME);
@@ -63,6 +64,9 @@ class Game extends Process {
 			e.destroy();
 		gc();
 
+		if( logo!=null )
+			logo.remove();
+
 		// Init
 		level = new Level( idx, world.levels[idx] );
 		gameTimeS = 0;
@@ -86,6 +90,12 @@ class Game extends Process {
 
 		fx.clear();
 		hud.invalidate();
+
+		// Logo
+		logo = Assets.tiles.h_get("logo",0, 0.5,0.5);
+		root.add(logo, Const.DP_UI);
+		tw.createMs(logo.alpha, 0, 10000);
+
 		Process.resizeAll();
 	}
 
@@ -105,6 +115,11 @@ class Game extends Process {
 	override function onResize() {
 		super.onResize();
 		scroller.setScale(Const.SCALE);
+		if( logo!=null ) {
+			logo.x = Std.int( w()*0.5 );
+			logo.y = Std.int( h()*0.88 );
+			logo.setScale(Const.SCALE);
+		}
 	}
 
 

@@ -200,6 +200,13 @@ itemWood
   orig: 16, 16
   offset: 0, 0
   index: -1
+logo
+  rotate: false
+  xy: 731, 178
+  size: 99, 21
+  orig: 99, 21
+  offset: 0, 0
+  index: -1
 moon
   rotate: false
   xy: 602, 1

@@ -453,6 +453,21 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">export_tiles/logo.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>39,16,78,32</rect>
+                <key>scale9Paddings</key>
+                <rect>39,16,78,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">export_tiles/moon.png</key>
             <key type="filename">export_tiles/sun.png</key>
             <struct type="IndividualSpriteSettings">
