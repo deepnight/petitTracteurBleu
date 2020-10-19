@@ -553,8 +553,8 @@ class Entity {
 			spr.scaleY *= 1 + Math.sin(t)*0.15;
 		}
 
-		sprSquashX += (1-sprSquashX) * 0.12;
-		sprSquashY += (1-sprSquashY) * 0.12;
+		sprSquashX += (1-sprSquashX) * M.fclamp(0.12*tmod, 0, 1);
+		sprSquashY += (1-sprSquashY) * M.fclamp(0.12*tmod, 0, 1);
 
 		if( isCarried() ) {
 			spr.x += 6*carriedRandOffset;
@@ -635,17 +635,20 @@ class Entity {
 				dx+=Math.cos(a)*0.08 * tmod;
 				dy+=Math.sin(a)*0.11 * tmod;
 			}
+			if( M.dist(footX, footY, tx, ty) <= 0.2*Const.GRID*tmod ) {
+				// Brake on approach to avoid shaking on slow devices
+				dx *= Math.pow(0.8,tmod);
+				dy *= Math.pow(0.8,tmod);
+			}
+
 			dx *= Math.pow(0.92,tmod);
 			dy *= Math.pow(0.92,tmod);
 		}
 
 		// Shake carriage
-		if( M.fabs(dxTotal)>0.03 || M.fabs(dyTotal)>0.03 ) {
-			for(e in carriedEnts) {
-				e.carriedShaking += 0.05*tmod;
-				if( e.carriedShaking>1 )
-					e.carriedShaking = 1;
-			}
+		if( M.fabs(dxTotal)>0.03/tmod || M.fabs(dyTotal)>0.03/tmod ) {
+			for(e in carriedEnts)
+				e.carriedShaking = M.fclamp( e.carriedShaking + 0.05*tmod, 0, 1 );
 		}
 
 		// X
