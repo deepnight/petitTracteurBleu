@@ -211,6 +211,14 @@ class Game extends Process {
 		return gameTimeS>=Const.MAX_GAME_TIME_S;
 	}
 
+	public inline function isAlmostTimeout() {
+		return gameTimeS >= Const.MAX_GAME_TIME_S - Const.ALMOST_TIMEOUT;
+	}
+
+	public inline function getAlmostTimeoutRatio() {
+		return M.fclamp( 1 - ( Const.MAX_GAME_TIME_S-gameTimeS ) / Const.ALMOST_TIMEOUT, 0, 1 );
+	}
+
 	override function postUpdate() {
 		super.postUpdate();
 
@@ -228,12 +236,12 @@ class Game extends Process {
 		logo.x = Std.int( w()*0.5 );
 		logo.y = Std.int( h()*0.88 ) + cd.getRatio("logoArrival")*h()*0.2;
 
-		if( isTimeout() ) {
+		if( isAlmostTimeout() ) {
 			// Sleep mask
 			sleepMask.visible = true;
-			sleepMask.alpha += ( 1 - sleepMask.alpha ) * 0.05;
+			sleepMask.alpha += ( getAlmostTimeoutRatio() - sleepMask.alpha ) * 0.05;
 
-			camera.zoom += ( 2 - camera.zoom )*0.01;
+			camera.zoom += ( ( 1 + getAlmostTimeoutRatio() ) - camera.zoom )*0.01;
 		}
 	}
 
@@ -278,10 +286,6 @@ class Game extends Process {
 			if( ca.isKeyboardDown(K.N) )
 				gameTimeS += 5*tmod;
 			#end
-
-			// Restart
-			if( ca.selectPressed() )
-				restartLevel();
 
 			if( ca.isKeyboardPressed(K.R) && ca.isKeyboardDown(K.SHIFT) )
 				startLevel(0);
