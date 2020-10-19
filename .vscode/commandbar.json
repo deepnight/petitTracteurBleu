@@ -49,7 +49,7 @@
 		{
 			"text": "📦 Redist",
 			"color": "lightgreen",
-			"command": "haxelib run redistHelper hl.dx.hxml js.hxml -p TracteurBleu -zip",
+			"command": "haxelib run redistHelper hl.dx.hxml js.hxml -p PetitTracteurBleu -zip",
 			"alignment": "right",
 			"skipTerminateQuickPick": false,
 			"priority": -50
