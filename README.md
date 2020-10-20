@@ -1,15 +1,13 @@
 # About
 
-Base structure for my games, using **Heaps** framework (https://heaps.io) and **Haxe** language (https://haxe.org).
+You are Little Blue Tractor and your goal is to find all the cows and bring them back home before night falls (the game lasts about 3 mins).
 
-# Installation & usage
+“Petit Tracteur Bleu” is a game I created for my 2.5 years old son, Gabriel, because he loves tractors. So please, don’t expect anything crazy here, it’s just a very simple game :)
 
-Please check this documentation for every details: https://deepnight.net/tutorial/using-my-gamebase-to-create-a-heaps-game/
+It was designed to be played by someone who never played a video game before, and most movements are automated. The manual jump mechanic is only useful to explore hidden areas (using bumpers).
 
-If you need some extra "advanced features", you can also give a try to the **advancedBase** branch: https://github.com/deepnight/gameBase/tree/advancedBase
+# Compiling
 
- * Status effects on Entity.hx (like Stun or whatever you could think of)
- * Stackable slow-motions management for Game.hx
- * Level marks (can be useful for AI coding, for example by marking platform ends)
- * A few very basic extra UI components that should be useful for any game projects (like a Bar).
- * etc.
+Please refer to my `GameBase` project to build this one:
+
+https://deepnight.net/tutorial/using-my-gamebase-to-create-a-heaps-game/
