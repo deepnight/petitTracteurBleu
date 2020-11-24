@@ -83,7 +83,7 @@ class Hero extends Entity {
 		var bumper : Bumper = null;
 		if( useBumpers ) {
 			var dh = new dn.DecisionHelper(en.Bumper.ALL);
-			dh.keepOnly( e->distCase(e)<=3 );
+			dh.keepOnly( e->distCase(e)<=4 );
 			dh.score( e->-distCase(e) );
 			bumper = dh.getBest();
 		}
@@ -121,7 +121,7 @@ class Hero extends Entity {
 			halo.x += ( footX-halo.x+dir*30 ) * 0.1;
 			halo.y += ( footY-halo.y-20 ) * 0.1;
 			halo.rotate(0.0035*tmod*hDir);
-			halo.alpha = 0.03 + 0.12*game.level.nightRatio;
+			halo.alpha = 0.03 + 0.12*game.level.clampedNightRatio;
 			hDir*=-1;
 		}
 
@@ -182,7 +182,7 @@ class Hero extends Entity {
 
 
 	public inline function isSleeping() {
-		return isAlive() && game.isTimeout();
+		return false;
 	}
 
 	function getControllerX() : Float {
@@ -253,7 +253,7 @@ class Hero extends Entity {
 		}
 
 		// Brake on cliff
-		if( onGround && level.hasMark(CliffHigh, cx,cy, M.sign(dxTotal)) && cliffInsistF<=0.8*Const.FPS ) {
+		if( onGround && level.hasMark(CliffHigh, cx,cy, M.sign(dxTotal)) && cliffInsistF<=0.4*Const.FPS ) {
 			var cliffXr = ( 0.5 + 0.4*M.sign(dxTotal) );
 			var ratio = 1-M.fabs( cliffXr - xr );
 			dx *= Math.pow(0.95 - 0.85*ratio,tmod);

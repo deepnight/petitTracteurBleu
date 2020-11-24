@@ -19,7 +19,9 @@ class Level extends dn.Process {
 	var skyNightBack : HSprite;
 	var sun : HSprite;
 	var moon : HSprite;
-	public var nightRatio = 0.;
+	public var rawNightRatio = 0.;
+	public var clampedNightRatio(get,never): Float;
+		inline function get_clampedNightRatio() return 0.5 - Math.cos(M.PI*rawNightRatio)*0.5;
 
 	public function new(idx:Int, lvl:World.World_Level) {
 		super(Game.ME);
@@ -185,18 +187,18 @@ class Level extends dn.Process {
 		parallax.y = game.scroller.y*0.75;
 
 		sun.x = w()*0.3 / skyWrapper.scaleX;
-		sun.y = ( -0.4 + nightRatio*1 ) * h()  / skyWrapper.scaleY;
+		sun.y = ( -0.4 + clampedNightRatio*1 ) * h()  / skyWrapper.scaleY;
 
 		moon.x = w()*0.6 / skyWrapper.scaleX;
-		moon.y = ( 0.5 - nightRatio*0.8 ) * h()  / skyWrapper.scaleY;
+		moon.y = ( 0.5 - clampedNightRatio*0.8 ) * h()  / skyWrapper.scaleY;
 
-		skyNightBack.alpha = nightRatio;
-		skyNightFront.alpha = nightRatio;
-		var c = C.interpolateInt(Const.PARALLAX_DAY_COLOR,Const.PARALLAX_NIGHT_COLOR,nightRatio);
+		skyNightBack.alpha = clampedNightRatio;
+		skyNightFront.alpha = clampedNightRatio;
+		var c = C.interpolateInt(Const.PARALLAX_DAY_COLOR,Const.PARALLAX_NIGHT_COLOR,clampedNightRatio);
 		var m = C.getColorizeMatrixH2d(c, 0.9);
 		parallax.colorMatrix.load(m);
 
-		var m = C.getColorizeMatrixH2d(c, nightRatio*0.4);
+		var m = C.getColorizeMatrixH2d(c, clampedNightRatio*0.4);
 		game.teint.matrix.load(m);
 	}
 }

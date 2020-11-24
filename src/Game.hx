@@ -253,18 +253,6 @@ class Game extends Process {
 		for(e in Entity.ALL) if( !e.destroyed ) e.preUpdate();
 	}
 
-	public inline function isTimeout() {
-		return gameTimeS>=Const.MAX_GAME_TIME_S;
-	}
-
-	public inline function isAlmostTimeout() {
-		return gameTimeS >= Const.MAX_GAME_TIME_S - Const.ALMOST_TIMEOUT;
-	}
-
-	public inline function getAlmostTimeoutRatio() {
-		return M.fclamp( 1 - ( Const.MAX_GAME_TIME_S-gameTimeS ) / Const.ALMOST_TIMEOUT, 0, 1 );
-	}
-
 	override function postUpdate() {
 		super.postUpdate();
 
@@ -281,14 +269,6 @@ class Game extends Process {
 		// Logo
 		logo.x = Std.int( w()*0.5 );
 		logo.y = Std.int( h()*0.88 ) + cd.getRatio("logoArrival")*h()*0.2;
-
-		if( isAlmostTimeout() ) {
-			// Sleep mask
-			sleepMask.visible = true;
-			sleepMask.alpha += ( getAlmostTimeoutRatio() - sleepMask.alpha ) * 0.05;
-
-			camera.zoom += ( ( 1 + getAlmostTimeoutRatio() ) - camera.zoom )*0.01;
-		}
 	}
 
 	override function fixedUpdate() {
@@ -342,7 +322,8 @@ class Game extends Process {
 		if( !en.Item.hasAnyLeft() )
 			gameTimeS += 1*tmod;
 
-		level.nightRatio = M.fclamp(gameTimeS/Const.MAX_GAME_TIME_S, 0, 1);
+		// level.nightRatio = M.fclamp(gameTimeS/Const.MAX_GAME_TIME_S, 0, 1);
+		level.rawNightRatio+=0.0004*tmod;
 	}
 }
 
