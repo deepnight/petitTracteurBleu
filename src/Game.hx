@@ -32,9 +32,9 @@ class Game extends Process {
 	public var hero : en.Hero;
 	public var cart : en.Cart;
 	public var teint : h2d.filter.ColorMatrix;
-	var gameTimeS = 0.;
 	var logo : HSprite;
 	var sleepMask : HSprite;
+	public var levelComplete = false;
 
 	public var mouseX = -1.;
 	public var mouseDown = false;
@@ -92,6 +92,27 @@ class Game extends Process {
 		mouseX = e.relX;
 	}
 
+	var texts : Array<h2d.Object> = [];
+	public function bigText(str:String, c:UInt) {
+		var wrapper = new h2d.Object();
+		texts.push(wrapper);
+		root.add(wrapper, Const.DP_UI);
+		var tf = new h2d.Text(Assets.fontLarge, wrapper);
+		tf.text = str;
+		tf.scale(Const.SCALE);
+		tf.textColor = c;
+		wrapper.x = Std.int( w()*0.5 - tf.textWidth*tf.scaleX*0.5 );
+		wrapper.y = 0;
+
+		tw.createS(tf.y, -tf.textHeight*tf.scaleY>50, 1);
+	}
+
+	function clearBigTexts() {
+		for(t in texts)
+			t.remove();
+		texts = [];
+	}
+
 	function onMouseUp() {
 		if( mouseDown && haxe.Timer.stamp()-mouseDownTime<=0.3 )
 			hero.onShortPress( mouseX>=w()*0.5 ? 1 : -1 );
@@ -108,6 +129,8 @@ class Game extends Process {
 		// Cleanup
 		if( level!=null )
 			level.destroy();
+		levelComplete = false;
+		clearBigTexts();
 
 		for(e in Entity.ALL)
 			e.destroy();
@@ -120,7 +143,6 @@ class Game extends Process {
 
 		// Init
 		level = new Level( idx, world.levels[idx] );
-		gameTimeS = 0;
 		camera.zoom = 1;
 
 		sleepMask.alpha = 0;
@@ -308,21 +330,33 @@ class Game extends Process {
 				}
 			}
 
+			// Kill al items
+			if( ca.isKeyboardDown(K.K) )
+				for(e in en.Item.ALL)
+					e.destroy();
+
 			// Force night
 			if( ca.isKeyboardDown(K.N) )
-				gameTimeS += 5*tmod;
+				level.rawNightRatio+=0.01*tmod;
 			#end
 
 			if( ca.isKeyboardPressed(K.R) && ca.isKeyboardDown(K.SHIFT) )
 				startLevel(0);
 		}
 
-		gameTimeS += tmod/Const.FPS;
+		// Victory!
+		if( !levelComplete && !en.Item.hasAnyLeft() ) {
+			levelComplete = true;
+			sleepMask.visible = true;
+			hero.winX = hero.footX;
+			bigText("Bravo !", 0xffcc00);
+		}
 
-		if( !en.Item.hasAnyLeft() )
-			gameTimeS += 1*tmod;
+		if( levelComplete ) {
+			sleepMask.alpha += (0.8-sleepMask.alpha) * M.fmin(1, 0.06*tmod);
+			camera.zoom += (1.5-camera.zoom) * M.fmin(1, 0.01*tmod);
+		}
 
-		// level.nightRatio = M.fclamp(gameTimeS/Const.MAX_GAME_TIME_S, 0, 1);
 		level.rawNightRatio+=0.0004*tmod;
 	}
 }

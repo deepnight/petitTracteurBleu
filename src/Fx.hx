@@ -270,6 +270,42 @@ class Fx extends dn.Process {
 		}
 	}
 
+	function _firework(p:HParticle) { // 0=cos ang, 1=max scale, 2=cos speed
+		if( collides(p) ) {
+			p.gy = 0;
+			p.dr = 0;
+			p.scaleY*=Math.pow(0.99,tmod);
+		}
+		else {
+			p.scaleX = Math.cos(p.data0)*p.data1 * p.data7;
+			p.data0 += p.data2*tmod;
+			p.dr += Math.cos(ftime*2)*0.03;
+		}
+	}
+
+	public function fireworks(x:Float, y:Float) {
+		for(i in 0...20) {
+			var a = rnd(0, M.PI);
+			var p = allocBgNormal(getTile("fxFirework"), x+Math.cos(a)*rnd(3,8), y+Math.sin(a)*rnd(3,8));
+			p.rotation = rnd(0,M.PI2);
+			p.moveAwayFrom(x, y+10, rnd(4,9));
+			p.colorize( C.makeColorHsl(rnd(0,1),0.8, 1) );
+
+			p.data7 = rnd(0.5,1);
+			p.scaleX = p.data7;
+			p.scaleY = rnd(0.4, 1) * p.data7;
+			p.frict = rnd(0.8, 0.9);
+			p.setFadeS(rnd(0.7,1), 0.1, rnd(1,2));
+			p.gy = rnd(0.02, 0.10);
+			p.lifeS = rnd(1,3);
+
+			p.onUpdate = _firework;
+			p.data0 = rnd(0,M.PI2);
+			p.data1 = rnd(0.5,1);
+			p.data2 = 0.1;
+		}
+	}
+
 	public function zzz(x:Float, y:Float, dir:Int) {
 		var p = allocTopNormal(getTile("fxZ"), x+rnd(0,3,true), y-rnd(0,2));
 		p.setFadeS( rnd(0.8,1), 0.2, rnd(2,3) );

@@ -8,6 +8,7 @@ class Hero extends Entity {
 	var gyro : HSprite;
 	var halos : Array<HSprite> = [];
 	var turnOverAnim = 0.;
+	public var winX = 0.;
 
 	public function new(e:World.Entity_Hero) {
 		super(e.cx, e.cy);
@@ -185,8 +186,12 @@ class Hero extends Entity {
 		return false;
 	}
 
+	public inline function controlsLocked() {
+		return game.levelComplete;
+	}
+
 	function getControllerX() : Float {
-		if( isSleeping() )
+		if( controlsLocked() )
 			return 0;
 		else if( ca.lxValue()!=0 )
 			return ca.lxValue();
@@ -198,7 +203,7 @@ class Hero extends Entity {
 	}
 
 	public function onShortPress(jumpDir:Int) {
-		if( !isSleeping() && onGroundRecently ) {
+		if( !controlsLocked() && onGroundRecently ) {
 			jump(true);
 			if( !cd.has("walkLock") )
 				autoWalkS(jumpDir, 0.5);
@@ -280,7 +285,7 @@ class Hero extends Entity {
 		}
 
 		// Jump
-		if( !isSleeping() && ca.aPressed() && ( onGround || onGroundRecently ) ) {
+		if( !controlsLocked() && ca.aPressed() && ( onGround || onGroundRecently ) ) {
 			jump(true);
 		}
 		else if( cd.has("bumperJump") ) {
@@ -288,6 +293,27 @@ class Hero extends Entity {
 		}
 		else if( cd.has("extraJump") ) {
 			dy += -0.04*tmod;
+		}
+
+		// Level complete jumps
+		if( game.levelComplete && onGround && !cd.hasSetS("happyJump",rnd(0.4,0.6)) ) {
+			var jDir = Std.random(2)*2-1;
+			var maxDist = Const.GRID*1;
+			if( footX>winX+maxDist )
+				jDir = -1;
+			if( footX<winX-maxDist )
+				jDir = 1;
+			dx = rnd(0.1,0.2) * jDir;
+			if( dir!=jDir ) {
+				setSquashX(0.3);
+				dir = jDir;
+			}
+			else
+				setSquashX(0.6);
+			dy = -rnd(0.2,0.25);
+			game.cart.dy = -rnd(0.1,0.15);
+			fx.fireworks(centerX, centerY);
+			gravityMul = 0.7;
 		}
 
 		// Execute 1 auto-action
