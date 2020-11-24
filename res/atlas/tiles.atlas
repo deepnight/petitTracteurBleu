@@ -102,6 +102,13 @@ fxDust3
   orig: 4, 4
   offset: 0, 0
   index: -1
+fxFirework0
+  rotate: false
+  xy: 988, 23
+  size: 9, 9
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
 fxImpact0
   rotate: false
   xy: 921, 185
@@ -174,7 +181,7 @@ fxTail0
   index: -1
 fxZ
   rotate: false
-  xy: 921, 195
+  xy: 921, 201
   size: 7, 7
   orig: 7, 7
   offset: 0, 0
@@ -279,7 +286,7 @@ uiBar
   index: -1
 uiBarBg
   rotate: false
-  xy: 988, 23
+  xy: 921, 195
   size: 8, 5
   orig: 8, 5
   offset: 0, 0
