@@ -39,11 +39,11 @@ class Main extends dn.Process {
 				}, 0.2);
 			});
 
-			hxd.Res.world.world.watch(function() {
+			hxd.Res.world.world_ldtk.watch(function() {
 				delayer.cancelById("led");
 				delayer.addS("led", function() {
 					if( Game.ME!=null )
-						Game.ME.onLedReload( hxd.Res.world.world.entry.getBytes().toString() );
+						Game.ME.onLedReload( hxd.Res.world.world_ldtk.entry.getBytes().toString() );
 				}, 0.2);
 			});
 		#end
