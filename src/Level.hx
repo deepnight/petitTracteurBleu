@@ -136,7 +136,7 @@ class Level extends dn.Process {
 	public inline function hasCollision(cx,cy) : Bool {
 		return !isValid(cx,cy)
 			? true
-			: data.l_Collisions.getInt(cx,cy)==0 || data.l_Collisions.getInt(cx,cy)==2 || data.l_Collisions.getInt(cx,cy)==4;
+			: data.l_Collisions.getInt(cx,cy)==1 || data.l_Collisions.getInt(cx,cy)==3 || data.l_Collisions.getInt(cx,cy)==5;
 	}
 
 	public function getGroundDist(cx,cy) {
@@ -156,21 +156,21 @@ class Level extends dn.Process {
 		var atlasTile = Assets.ledTilesets.get( data.l_Collisions.tileset.identifier );
 
 		var bg = new h2d.TileGroup(atlasTile, root);
-		data.l_BgElements.renderInTileGroup(bg, false);
+		data.l_BgElements.render(bg);
 		bg.colorMatrix = C.getColorizeMatrixH2d(Const.BG_COLOR, 0.8);
 
 		var shadow = new h2d.TileGroup(atlasTile, root);
-		data.l_Shadows.renderInTileGroup(shadow, false);
+		data.l_Shadows.render(shadow);
 		shadow.alpha = data.l_Shadows.opacity;
 
 		var walls = new h2d.TileGroup(atlasTile, root);
-		data.l_Collisions.renderInTileGroup(walls, false);
+		data.l_Collisions.render(walls);
 
 		var tilesMain = new h2d.TileGroup(atlasTile, root);
-		data.l_TilesMain.renderInTileGroup(tilesMain, false);
+		data.l_TilesMain.render(tilesMain);
 
 		var tilesFront = new h2d.TileGroup(atlasTile, root);
-		data.l_TilesFront.renderInTileGroup(tilesFront, false);
+		data.l_TilesFront.render(tilesFront);
 
 		// data.l_Parallax.renderInTileGroup(parallax, true);
 	}
