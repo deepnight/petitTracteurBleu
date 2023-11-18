@@ -5,3 +5,5 @@
 -lib ldtk-haxe-api
 -main Boot
 -dce full
+
+-D windowSize=1280x720

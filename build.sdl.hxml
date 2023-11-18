@@ -1,0 +1,3 @@
+hl.hxml
+-lib hlsdl
+-hl bin/client.hl
