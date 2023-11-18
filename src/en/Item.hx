@@ -56,7 +56,7 @@ class Item extends Entity {
 	override function onBeingCarried(by:Entity) {
 		super.onBeingCarried(by);
 		if( by.is(en.Home) ) {
-			colorMatrix.load( C.getColorizeMatrixH2d(Const.BG_COLOR, 0.4) );
+			colorMatrix.load( Const.BG_COLOR.getColorizeMatrixH2d(0.4) );
 			spr.alpha = 0.5;
 		}
 

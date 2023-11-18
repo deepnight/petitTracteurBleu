@@ -60,7 +60,7 @@ class Game extends Process {
 
 		sleepMask = Assets.tiles.h_get("sleepMask");
 		root.add(sleepMask, Const.DP_TOP);
-		sleepMask.colorize(C.hexToInt("#16162b"), 1);
+		sleepMask.colorize(new Col("#16162b"), 1);
 
 		Boot.ME.s2d.addEventListener( onEvents );
 
@@ -142,7 +142,7 @@ class Game extends Process {
 		tw.completeAll();
 
 		// Init
-		level = new Level( idx, world.levels[idx] );
+		level = new Level( idx, world.all_worlds.Default.levels[idx] );
 		camera.zoom = 1;
 
 		sleepMask.alpha = 0;
@@ -324,7 +324,7 @@ class Game extends Process {
 					for( id in allMarks ) {
 						var m = LevelMark.createByName(id);
 						if( level.hasMark(m, cx,cy) )
-							fx.markerText(cx,cy, id.substr(0,2), C.makeColorHsl(i/allMarks.length), 10 );
+							fx.markerText(cx,cy, id.substr(0,2), Col.fromHsl(i/allMarks.length, 1, 1), 10 );
 						i++;
 					}
 				}

@@ -45,7 +45,7 @@ class Level extends dn.Process {
 
 		parallax = new h2d.TileGroup( Assets.ledTilesets.get(data.l_Parallax.tileset.identifier) );
 		Game.ME.root.add(parallax, Const.DP_BG);
-		parallax.colorMatrix = C.getColorizeMatrixH2d(Const.PARALLAX_NIGHT_COLOR, 0.9);
+		parallax.colorMatrix = Const.PARALLAX_NIGHT_COLOR.getColorizeMatrixH2d(0.9);
 		parallax.filter = new h2d.filter.Blur(2, 1, 2);
 		// parallax.alpha = 0.7;
 
@@ -157,7 +157,7 @@ class Level extends dn.Process {
 
 		var bg = new h2d.TileGroup(atlasTile, root);
 		data.l_BgElements.render(bg);
-		bg.colorMatrix = C.getColorizeMatrixH2d(Const.BG_COLOR, 0.8);
+		bg.colorMatrix = Const.BG_COLOR.getColorizeMatrixH2d(0.8);
 
 		var shadow = new h2d.TileGroup(atlasTile, root);
 		data.l_Shadows.render(shadow);
@@ -194,11 +194,11 @@ class Level extends dn.Process {
 
 		skyNightBack.alpha = clampedNightRatio;
 		skyNightFront.alpha = clampedNightRatio;
-		var c = C.interpolateInt(Const.PARALLAX_DAY_COLOR,Const.PARALLAX_NIGHT_COLOR,clampedNightRatio);
-		var m = C.getColorizeMatrixH2d(c, 0.9);
+		var c = Const.PARALLAX_DAY_COLOR.to( Const.PARALLAX_NIGHT_COLOR, clampedNightRatio );
+		var m = c.getColorizeMatrixH2d(0.9);
 		parallax.colorMatrix.load(m);
 
-		var m = C.getColorizeMatrixH2d(c, clampedNightRatio*0.4);
+		var m = c.getColorizeMatrixH2d(clampedNightRatio*0.4);
 		game.teint.matrix.load(m);
 	}
 }

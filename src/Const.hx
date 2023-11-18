@@ -8,9 +8,9 @@ class Const {
 	public static var GRID = 16;
 
 	public static var GRAVITY = 0.016;
-	public static var PARALLAX_DAY_COLOR = C.hexToInt("#ffb600");
-	public static var PARALLAX_NIGHT_COLOR = C.hexToInt("#4f4895");
-	public static var BG_COLOR = C.hexToInt("#805c93");
+	public static var PARALLAX_DAY_COLOR = new Col("#ffb600");
+	public static var PARALLAX_NIGHT_COLOR = new Col("#4f4895");
+	public static var BG_COLOR = new Col("#805c93");
 
 	static var _uniq = 0;
 	public static var NEXT_UNIQ(get,never) : Int; static inline function get_NEXT_UNIQ() return _uniq++;

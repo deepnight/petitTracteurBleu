@@ -347,7 +347,7 @@ class Entity {
 			debugBounds = null;
 		}
 
-		cd.destroy();
+		cd.dispose();
 		cd = null;
     }
 
@@ -386,7 +386,7 @@ class Entity {
 	}
 
 	function renderBounds() {
-		var c = Color.makeColorHsl((uid%20)/20, 1, 1);
+		var c = Col.fromHsl((uid%20)/20, 1, 1);
 		debugBounds.clear();
 
 		// Radius

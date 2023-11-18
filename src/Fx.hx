@@ -289,7 +289,7 @@ class Fx extends dn.Process {
 			var p = allocBgNormal(getTile("fxFirework"), x+Math.cos(a)*rnd(3,8), y+Math.sin(a)*rnd(3,8));
 			p.rotation = rnd(0,M.PI2);
 			p.moveAwayFrom(x, y+10, rnd(4,9));
-			p.colorize( C.makeColorHsl(rnd(0,1),0.8, 1) );
+			p.colorize( Col.fromHsl(rnd(0,1),0.8, 1) );
 
 			p.data7 = rnd(0.5,1);
 			p.scaleX = p.data7;
