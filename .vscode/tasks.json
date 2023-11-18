@@ -6,7 +6,7 @@
         {
             "label": "HL debug",
             "type": "hxml",
-            "file": "hl.debug.hxml",
+            "file": "build.dev.hxml",
             "presentation": {
                 "reveal": "never",
                 "panel": "dedicated",
@@ -22,7 +22,7 @@
         {
             "label": "HL release",
             "type": "hxml",
-            "file": "hl.dx.hxml",
+            "file": "build.directx.hxml",
             "presentation": {
                 "reveal": "never",
                 "panel": "dedicated",
@@ -34,19 +34,7 @@
         {
             "label": "JS release",
             "type": "hxml",
-            "file": "js.hxml",
-            "presentation": {
-                "reveal": "never",
-                "panel": "dedicated",
-                "clear": true
-            },
-            "problemMatcher": [ "$haxe-absolute", "$haxe", "$haxe-error", "$haxe-trace" ],
-        },
-
-        {
-            "label": "Flash release",
-            "type": "hxml",
-            "file": "swf.hxml",
+            "file": "build.js.hxml",
             "presentation": {
                 "reveal": "never",
                 "panel": "dedicated",
@@ -65,18 +53,6 @@
                 "clear": true
             },
             "problemMatcher": [ "$haxe-absolute", "$haxe", "$haxe-error", "$haxe-trace" ],
-        },
-
-        {
-            "label": "JS debug",
-            "type": "hxml",
-            "file": "js.debug.hxml",
-            "presentation": {
-                "reveal": "never",
-                "panel": "dedicated",
-                "clear": true
-            },
-            "problemMatcher": ["$haxe"],
         }
     ]
 }
